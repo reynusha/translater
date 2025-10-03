@@ -14,18 +14,21 @@
         }
 
         :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-text-color: #000000;
-            --tg-theme-hint-color: #999999;
-            --tg-theme-link-color: #2481cc;
-            --tg-theme-button-color: #2481cc;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-secondary-bg-color: #f0f0f0;
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --text-tertiary: #48484a;
+            --accent-blue: #2ea6ff;
+            --accent-green: #34c759;
+            --accent-red: #ff453a;
+            --border-color: #38383a;
         }
 
         body {
-            background: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
@@ -37,50 +40,74 @@
 
         /* Header */
         .header {
-            background: var(--tg-theme-bg-color);
-            padding: 16px;
-            border-bottom: 1px solid #e5e5e5;
+            background: var(--bg-primary);
+            padding: 20px 16px 16px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .header-title {
             font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: #000000;
+            margin-bottom: 6px;
+            color: var(--text-primary);
         }
 
         .header-subtitle {
             font-size: 15px;
-            color: #666666;
+            color: var(--text-secondary);
             line-height: 1.4;
-            margin-bottom: 16px;
+        }
+
+        /* Balance */
+        .balance-section {
+            background: var(--bg-secondary);
+            padding: 20px 16px;
+            margin: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .balance-label {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
         }
 
         /* Search */
         .search-container {
             padding: 0 16px 16px;
-            border-bottom: 1px solid #e5e5e5;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e5e5e5;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             font-size: 16px;
-            background: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
+            outline: none;
         }
 
         .search-input::placeholder {
-            color: var(--tg-theme-hint-color);
+            color: var(--text-tertiary);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
         }
 
         /* Tabs */
         .tabs {
             display: flex;
-            background: var(--tg-theme-bg-color);
-            border-bottom: 1px solid #e5e5e5;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
             padding: 0 16px;
         }
 
@@ -89,7 +116,7 @@
             margin-right: 24px;
             background: none;
             border: none;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
@@ -98,8 +125,8 @@
         }
 
         .tab.active {
-            color: var(--tg-theme-link-color);
-            border-bottom-color: var(--tg-theme-link-color);
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
         }
 
         /* Content */
@@ -117,12 +144,12 @@
 
         /* Numbers List */
         .numbers-list {
-            background: var(--tg-theme-bg-color);
+            background: var(--bg-primary);
         }
 
         .number-item {
-            padding: 16px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 18px 16px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -131,7 +158,7 @@
         }
 
         .number-item:active {
-            background-color: var(--tg-theme-secondary-bg-color);
+            background-color: var(--bg-secondary);
         }
 
         .number-item.sold {
@@ -150,14 +177,15 @@
         .number-value {
             font-size: 17px;
             font-weight: 600;
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
             margin-bottom: 4px;
             font-feature-settings: "tnum";
+            letter-spacing: 0.5px;
         }
 
         .number-status {
             font-size: 15px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
         }
 
         .number-price {
@@ -167,19 +195,19 @@
         .price-amount {
             font-size: 17px;
             font-weight: 600;
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
             margin-bottom: 2px;
         }
 
         .price-label {
             font-size: 13px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
         }
 
         .sold-badge {
-            background: #ff3b30;
+            background: var(--accent-red);
             color: white;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
@@ -187,20 +215,20 @@
 
         /* Profile */
         .profile-section {
-            background: var(--tg-theme-bg-color);
+            background: var(--bg-primary);
         }
 
         .profile-header {
-            padding: 24px 16px;
+            padding: 32px 16px;
             text-align: center;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .profile-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0088cc 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -208,20 +236,18 @@
             font-weight: 600;
             color: white;
             margin: 0 auto 16px;
-            border: 4px solid white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .profile-username {
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 4px;
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
         }
 
         .profile-join-date {
             font-size: 15px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
         }
 
         .owned-section {
@@ -232,12 +258,12 @@
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 8px;
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
         }
 
         .section-subtitle {
             font-size: 15px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             margin-bottom: 20px;
             line-height: 1.4;
         }
@@ -245,23 +271,25 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
         }
 
         .empty-icon {
             font-size: 64px;
             margin-bottom: 16px;
-            opacity: 0.5;
+            opacity: 0.3;
         }
 
         .empty-text {
             font-size: 16px;
             margin-bottom: 8px;
+            color: var(--text-secondary);
         }
 
         .empty-subtext {
             font-size: 14px;
             opacity: 0.7;
+            color: var(--text-tertiary);
         }
 
         /* Purchase Modal */
@@ -271,7 +299,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             display: none;
             align-items: center;
             justify-content: center;
@@ -284,33 +312,34 @@
         }
 
         .modal {
-            background: var(--tg-theme-bg-color);
+            background: var(--bg-secondary);
             border-radius: 14px;
             padding: 24px;
             max-width: 320px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
         }
 
         .modal-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 12px;
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
         }
 
         .modal-number {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 16px;
-            color: var(--tg-theme-text-color);
+            color: var(--text-primary);
             font-feature-settings: "tnum";
+            letter-spacing: 0.5px;
         }
 
         .modal-price {
             font-size: 16px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             margin-bottom: 24px;
         }
 
@@ -321,7 +350,7 @@
 
         .modal-button {
             flex: 1;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border: none;
             border-radius: 10px;
             font-size: 16px;
@@ -331,55 +360,36 @@
         }
 
         .modal-button.cancel {
-            background: var(--tg-theme-secondary-bg-color);
-            color: var(--tg-theme-text-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
 
         .modal-button.buy {
-            background: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+            background: var(--accent-blue);
+            color: white;
         }
 
         .modal-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Balance */
-        .balance-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 16px;
-            color: white;
-            margin-bottom: 16px;
-        }
-
-        .balance-label {
-            font-size: 15px;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .balance-amount {
-            font-size: 28px;
-            font-weight: 700;
+            opacity: 0.8;
+            transform: scale(0.98);
         }
 
         /* Loading */
         .loading {
             text-align: center;
             padding: 60px 20px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             font-size: 16px;
         }
 
-        /* Fragment-style badges */
-        .fragment-badge {
-            background: #34c759;
+        /* Owned badge */
+        .owned-badge {
+            background: var(--accent-green);
             color: white;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
-            margin-left: 8px;
         }
     </style>
 </head>
@@ -387,21 +397,21 @@
     <div class="app">
         <!-- Header -->
         <div class="header">
-            <div class="header-title">Buy and Sell Collectible Numbers</div>
+            <div class="header-title">Anonymous Numbers</div>
             <div class="header-subtitle">
-                Trade anonymous numbers for your social accounts. These are collectible NFT numbers that provide privacy and exclusivity.
+                Collectible virtual numbers for private social accounts
             </div>
         </div>
 
         <!-- Balance -->
         <div class="balance-section">
-            <div class="balance-label">YOUR TELEGRAM STARS BALANCE</div>
-            <div class="balance-amount" id="user-balance">650 ⭐</div>
+            <div class="balance-label">YOUR TELEGRAM STARS</div>
+            <div class="balance-amount" id="user-balance">650 STARS</div>
         </div>
 
         <!-- Search -->
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="+777 Enter a phone number..." id="search-input">
+            <input type="text" class="search-input" placeholder="+777 Search numbers..." id="search-input">
         </div>
 
         <!-- Tabs -->
@@ -430,13 +440,13 @@
                     <div class="owned-section">
                         <div class="section-title">My Collection</div>
                         <div class="section-subtitle">
-                            Collectible private NFT numbers for anonymous social accounts
+                            Collectible virtual numbers for anonymous social accounts
                         </div>
                         <div id="owned-numbers-list">
                             <div class="empty-state">
                                 <div class="empty-icon">📱</div>
-                                <div class="empty-text">No numbers yet</div>
-                                <div class="empty-subtext">Purchase your first number in the marketplace</div>
+                                <div class="empty-text">No numbers purchased</div>
+                                <div class="empty-subtext">Get your first number in marketplace</div>
                             </div>
                         </div>
                     </div>
@@ -449,7 +459,7 @@
             <div class="modal">
                 <div class="modal-title">Purchase Number</div>
                 <div class="modal-number" id="modal-number">+777 00 000 000</div>
-                <div class="modal-price">650 Telegram Stars</div>
+                <div class="modal-price">650 STARS</div>
                 <div class="modal-buttons">
                     <button class="modal-button cancel" onclick="closeModal()">Cancel</button>
                     <button class="modal-button buy" onclick="confirmPurchase()">Buy Now</button>
@@ -621,11 +631,11 @@
                     return;
                 }
 
-                // Simulate Telegram Stars transfer confirmation
+                // Simulate Telegram Stars transfer
                 const confirmed = await new Promise((resolve) => {
                     this.#tg.showPopup({
-                        title: 'Transfer Telegram Stars',
-                        message: `Do you want to transfer ${price} Telegram Stars to purchase ${number}?`,
+                        title: 'Transfer Stars',
+                        message: `Transfer ${price} Telegram Stars to purchase ${number}?`,
                         buttons: [
                             {
                                 type: 'default',
@@ -638,7 +648,6 @@
                         ]
                     });
                     
-                    // Simulate successful transfer
                     setTimeout(() => resolve(true), 100);
                 });
 
@@ -655,8 +664,8 @@
                 this.#tg.HapticFeedback.impactOccurred('heavy');
                 
                 this.#tg.showPopup({
-                    title: 'Purchase Complete!',
-                    message: `You successfully purchased ${number} for ${price} Telegram Stars.`,
+                    title: 'Purchase Complete',
+                    message: `You purchased ${number} for ${price} Stars.`,
                     buttons: [{ type: 'ok' }]
                 });
 
@@ -668,7 +677,7 @@
 
             updateUI() {
                 // Update balance
-                document.getElementById('user-balance').textContent = `${this.state.balance} ⭐`;
+                document.getElementById('user-balance').textContent = `${this.state.balance} STARS`;
                 this.updateNumbersList();
             }
 
@@ -690,12 +699,12 @@
                              onclick="${isSold ? '' : `app.showPurchaseModal('${number}')`}">
                             <div class="number-info">
                                 <div class="number-value">${number}</div>
-                                <div class="number-status">Collectible Number</div>
+                                <div class="number-status">Virtual Number</div>
                             </div>
                             <div class="number-price">
                                 ${isSold ? 
                                     '<div class="sold-badge">SOLD</div>' : 
-                                    '<div class="price-amount">650 ⭐</div><div class="price-label">Fixed price</div>'
+                                    '<div class="price-amount">650 STARS</div><div class="price-label">Fixed price</div>'
                                 }
                             </div>
                         </div>
@@ -722,8 +731,8 @@
                     ownedList.innerHTML = `
                         <div class="empty-state">
                             <div class="empty-icon">📱</div>
-                            <div class="empty-text">No numbers yet</div>
-                            <div class="empty-subtext">Purchase your first number in the marketplace</div>
+                            <div class="empty-text">No numbers purchased</div>
+                            <div class="empty-subtext">Get your first number in marketplace</div>
                         </div>
                     `;
                 } else {
@@ -731,10 +740,10 @@
                         <div class="number-item">
                             <div class="number-info">
                                 <div class="number-value">${number}</div>
-                                <div class="number-status">Owned • Collectible NFT</div>
+                                <div class="number-status">Owned • Virtual Number</div>
                             </div>
                             <div class="number-price">
-                                <div class="price-amount" style="color: #34c759;">Owned</div>
+                                <div class="owned-badge">OWNED</div>
                             </div>
                         </div>
                     `).join('');
