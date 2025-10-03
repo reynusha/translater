@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Numbers</title>
+    <title>Fragment Numbers</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -14,25 +14,20 @@
         }
 
         :root {
-            --tg-theme-bg-color: #1c1c1e;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-hint-color: #98989e;
-            --tg-theme-link-color: #2ea6ff;
-            --tg-theme-button-color: #2ea6ff;
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-text-color: #000000;
+            --tg-theme-hint-color: #999999;
+            --tg-theme-link-color: #2481cc;
+            --tg-theme-button-color: #2481cc;
             --tg-theme-button-text-color: #ffffff;
-            --tg-theme-secondary-bg-color: #2c2c2e;
-            --tg-theme-header-bg-color: #1c1c1e;
-            --tg-theme-accent-text-color: #2ea6ff;
-            --tg-theme-section-bg-color: #2c2c2e;
-            --tg-theme-section-header-text-color: #ffffff;
-            --tg-theme-subtitle-text-color: #98989e;
-            --tg-theme-destructive-text-color: #ff453a;
+            --tg-theme-secondary-bg-color: #f0f0f0;
         }
 
         body {
             background: var(--tg-theme-bg-color);
             color: var(--tg-theme-text-color);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
         .app {
@@ -40,11 +35,11 @@
             margin: 0 auto;
         }
 
-        /* Header */
+        /* Header - Exact Fragment Style */
         .header {
-            background: var(--tg-theme-header-bg-color);
-            padding: 16px;
-            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            background: var(--tg-theme-bg-color);
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e5e5;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -54,20 +49,41 @@
             font-size: 17px;
             font-weight: 600;
             text-align: center;
+            color: #000000;
         }
 
-        /* Tabs */
+        /* Balance Header */
+        .balance-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 16px;
+            color: white;
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        /* Tabs - Fragment Style */
         .tabs {
             display: flex;
             background: var(--tg-theme-secondary-bg-color);
-            margin: 8px;
+            margin: 16px;
             border-radius: 10px;
             overflow: hidden;
+            border: 1px solid #e5e5e5;
         }
 
         .tab {
             flex: 1;
-            padding: 12px;
+            padding: 12px 16px;
             text-align: center;
             background: none;
             border: none;
@@ -75,7 +91,7 @@
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .tab.active {
@@ -85,7 +101,7 @@
 
         /* Content */
         .content {
-            padding: 16px;
+            padding: 0 16px 16px;
         }
 
         .tab-content {
@@ -96,167 +112,279 @@
             display: block;
         }
 
-        /* Numbers Grid */
+        /* Numbers Grid - Fragment Card Style */
         .numbers-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 8px;
+            gap: 12px;
+            margin-top: 16px;
         }
 
         .number-card {
-            background: var(--tg-theme-section-bg-color);
+            background: var(--tg-theme-bg-color);
+            border: 1px solid #e5e5e5;
             border-radius: 12px;
             padding: 16px;
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .number-info {
-            flex: 1;
-        }
-
-        .number-value {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--tg-theme-text-color);
-            margin-bottom: 4px;
-        }
-
-        .number-price {
-            font-size: 15px;
-            color: var(--tg-theme-subtitle-text-color);
-        }
-
-        .buy-button {
-            background: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 15px;
-            font-weight: 600;
+            transition: all 0.2s ease;
             cursor: pointer;
-            transition: opacity 0.3s ease;
         }
 
-        .buy-button:active {
-            opacity: 0.7;
+        .number-card:active {
+            transform: scale(0.98);
+            background: var(--tg-theme-secondary-bg-color);
         }
 
-        .buy-button.owned {
-            background: var(--tg-theme-subtitle-text-color);
+        .number-card.sold {
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
-        /* Profile */
-        .profile-header {
-            background: var(--tg-theme-section-bg-color);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
+        .number-card.sold:active {
+            transform: none;
+            background: var(--tg-theme-bg-color);
         }
 
-        .profile-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--tg-theme-button-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+        .number-value {
+            font-size: 18px;
             font-weight: 600;
-            color: white;
-            margin: 0 auto 12px;
+            color: var(--tg-theme-text-color);
+            margin-bottom: 8px;
+            font-feature-settings: "tnum";
         }
 
-        .profile-username {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .profile-join-date {
-            font-size: 15px;
-            color: var(--tg-theme-subtitle-text-color);
-        }
-
-        .owned-numbers {
-            background: var(--tg-theme-section-bg-color);
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .section-title {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--tg-theme-subtitle-text-color);
-        }
-
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--tg-theme-subtitle-text-color);
-        }
-
-        /* Balance */
-        .balance-section {
-            background: var(--tg-theme-section-bg-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
+        .number-status {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .balance-label {
+        .number-price {
             font-size: 15px;
-            color: var(--tg-theme-subtitle-text-color);
+            color: var(--tg-theme-hint-color);
+            font-weight: 500;
         }
 
-        .balance-value {
+        .sold-badge {
+            background: #ff3b30;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background: var(--tg-theme-bg-color);
+        }
+
+        .profile-header {
+            background: var(--tg-theme-bg-color);
+            padding: 24px 16px;
+            text-align: center;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 600;
+            color: white;
+            margin: 0 auto 16px;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .profile-username {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .profile-join-date {
+            font-size: 15px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .owned-section {
+            padding: 24px 16px;
+        }
+
+        .section-title {
             font-size: 17px;
             font-weight: 600;
-            color: var(--tg-theme-accent-text-color);
+            margin-bottom: 16px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .section-subtitle {
+            font-size: 15px;
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-subtext {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Purchase Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--tg-theme-bg-color);
+            border-radius: 14px;
+            padding: 24px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .modal-number {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--tg-theme-text-color);
+            font-feature-settings: "tnum";
+        }
+
+        .modal-price {
+            font-size: 16px;
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 24px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-button.cancel {
+            background: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+        }
+
+        .modal-button.buy {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+        }
+
+        .modal-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--tg-theme-hint-color);
+            font-size: 16px;
+        }
+
+        /* Fragment-specific details */
+        .fragment-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 16px;
+        }
+
+        .fragment-badge h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .fragment-badge p {
+            font-size: 15px;
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
     <div class="app">
+        <!-- Header -->
         <div class="header">
-            <div class="header-title">Anonymous Numbers</div>
+            <div class="header-title">Fragment Numbers</div>
         </div>
 
+        <!-- Balance -->
+        <div class="balance-header">
+            <div class="balance-label">YOUR BALANCE</div>
+            <div class="balance-amount" id="user-balance">650 ⭐</div>
+        </div>
+
+        <!-- Tabs -->
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('market')">Market</button>
+            <button class="tab active" onclick="switchTab('market')">Marketplace</button>
             <button class="tab" onclick="switchTab('profile')">Profile</button>
         </div>
 
         <div class="content">
             <!-- Market Tab -->
             <div id="market-tab" class="tab-content active">
-                <div class="balance-section">
-                    <div class="balance-label">Your Balance</div>
-                    <div class="balance-value" id="user-balance">0 stars</div>
-                </div>
-                
                 <div class="numbers-grid" id="numbers-grid">
                     <div class="loading">Loading numbers...</div>
                 </div>
@@ -264,36 +392,56 @@
 
             <!-- Profile Tab -->
             <div id="profile-tab" class="tab-content">
-                <div class="profile-header">
-                    <div class="profile-avatar" id="profile-avatar">U</div>
-                    <div class="profile-username" id="profile-username">User</div>
-                    <div class="profile-join-date" id="profile-join-date">Joined just now</div>
-                </div>
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profile-avatar">U</div>
+                        <div class="profile-username" id="profile-username">User</div>
+                        <div class="profile-join-date" id="profile-join-date">Joined recently</div>
+                    </div>
 
-                <div class="owned-numbers">
-                    <div class="section-title">My Numbers</div>
-                    <div id="owned-numbers-list">
-                        <div class="empty-state">
-                            <div class="empty-icon">📱</div>
-                            <div>No numbers purchased yet</div>
+                    <div class="owned-section">
+                        <div class="section-title">My Collection</div>
+                        <div class="section-subtitle">
+                            Collectible private NFT numbers that provide anonymity for your social accounts
+                        </div>
+                        <div id="owned-numbers-list">
+                            <div class="empty-state">
+                                <div class="empty-icon">📱</div>
+                                <div class="empty-text">No numbers yet</div>
+                                <div class="empty-subtext">Purchase your first number in the marketplace</div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase Modal -->
+        <div class="modal-overlay" id="purchase-modal">
+            <div class="modal">
+                <div class="modal-title">Purchase Number</div>
+                <div class="modal-number" id="modal-number">+777 00 000 000</div>
+                <div class="modal-price">650 Telegram Stars</div>
+                <div class="modal-buttons">
+                    <button class="modal-button cancel" onclick="closeModal()">Cancel</button>
+                    <button class="modal-button buy" onclick="confirmPurchase()">Buy Now</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        class AnonymousNumbersApp {
+        class FragmentNumbersApp {
             #tg = window.Telegram.WebApp;
             
             state = {
-                balance: 10000,
+                balance: 650,
                 purchasedNumbers: [],
                 userId: null,
                 username: 'User',
                 joinDate: null,
-                numbers: []
+                numbers: [],
+                selectedNumber: null
             };
 
             constructor() {
@@ -302,11 +450,11 @@
 
             init() {
                 this.#tg.expand();
+                this.#tg.enableClosingConfirmation();
                 this.setupUser();
                 this.loadState();
                 this.generateNumbers();
                 this.updateUI();
-                this.applyTheme();
             }
 
             setupUser() {
@@ -328,21 +476,22 @@
                 // Generate 999 more random numbers
                 for (let i = 1; i < 1000; i++) {
                     const part1 = Math.floor(Math.random() * 100).toString().padStart(2, '0');
-                    const part2 = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-                    numbers.push(`+777 ${part1} ${part2}`);
+                    const part2 = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                    const part3 = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                    numbers.push(`+777 ${part1} ${part3} ${part2}`);
                 }
                 
                 this.state.numbers = numbers;
             }
 
             loadState() {
-                const userKey = `anonymousNumbers_${this.state.userId}`;
+                const userKey = `fragmentNumbers_${this.state.userId}`;
                 const saved = localStorage.getItem(userKey);
                 
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
-                        this.state.balance = parsed.balance || 10000;
+                        this.state.balance = parsed.balance !== undefined ? parsed.balance : 650;
                         this.state.purchasedNumbers = parsed.purchasedNumbers || [];
                         this.state.joinDate = parsed.joinDate || this.state.joinDate;
                     } catch (error) {
@@ -354,7 +503,7 @@
             }
 
             saveState() {
-                const userKey = `anonymousNumbers_${this.state.userId}`;
+                const userKey = `fragmentNumbers_${this.state.userId}`;
                 localStorage.setItem(userKey, JSON.stringify(this.state));
             }
 
@@ -370,13 +519,13 @@
                 }
             }
 
-            buyNumber(number) {
-                const price = 650;
-                
-                if (this.state.balance < price) {
+            showPurchaseModal(number) {
+                // Check if already sold globally
+                const globalSoldNumbers = JSON.parse(localStorage.getItem('globalSoldNumbers') || '[]');
+                if (globalSoldNumbers.includes(number)) {
                     this.#tg.showPopup({
-                        title: 'Insufficient Balance',
-                        message: `You need ${price} stars to purchase this number.`,
+                        title: 'Number Sold',
+                        message: 'This number has already been purchased by another user.',
                         buttons: [{ type: 'ok' }]
                     });
                     return;
@@ -391,41 +540,115 @@
                     return;
                 }
 
+                this.state.selectedNumber = number;
+                document.getElementById('modal-number').textContent = number;
+                document.getElementById('purchase-modal').classList.add('active');
+            }
+
+            closePurchaseModal() {
+                document.getElementById('purchase-modal').classList.remove('active');
+                this.state.selectedNumber = null;
+            }
+
+            async confirmPurchase() {
+                const number = this.state.selectedNumber;
+                const price = 650;
+
+                // Check global availability
+                const globalSoldNumbers = JSON.parse(localStorage.getItem('globalSoldNumbers') || '[]');
+                if (globalSoldNumbers.includes(number)) {
+                    this.#tg.showPopup({
+                        title: 'Number Sold',
+                        message: 'This number was just purchased by another user.',
+                        buttons: [{ type: 'ok' }]
+                    });
+                    this.closePurchaseModal();
+                    this.updateUI();
+                    return;
+                }
+
+                if (this.state.balance < price) {
+                    this.#tg.showPopup({
+                        title: 'Insufficient Stars',
+                        message: `You need ${price} Telegram Stars to purchase this number. Would you like to purchase more Stars?`,
+                        buttons: [
+                            { type: 'ok', text: 'Buy Stars' },
+                            { type: 'cancel', text: 'Cancel' }
+                        ]
+                    });
+                    return;
+                }
+
+                // Simulate Telegram Stars purchase flow
+                const confirmed = await this.showStarsConfirmation();
+                if (!confirmed) return;
+
+                // Process purchase
                 this.state.balance -= price;
                 this.state.purchasedNumbers.push(number);
+                
+                // Mark as sold globally
+                globalSoldNumbers.push(number);
+                localStorage.setItem('globalSoldNumbers', JSON.stringify(globalSoldNumbers));
                 
                 this.#tg.HapticFeedback.impactOccurred('heavy');
                 
                 this.#tg.showPopup({
-                    title: 'Purchase Successful!',
-                    message: `You bought ${number} for ${price} stars.`,
+                    title: 'Purchase Complete!',
+                    message: `You successfully purchased ${number} for ${price} Telegram Stars.`,
                     buttons: [{ type: 'ok' }]
                 });
 
                 this.saveState();
+                this.closePurchaseModal();
                 this.updateUI();
                 this.updateProfile();
             }
 
+            async showStarsConfirmation() {
+                return new Promise((resolve) => {
+                    this.#tg.showPopup({
+                        title: 'Confirm Purchase',
+                        message: `Do you want to transfer 650 Telegram Stars to purchase this number?`,
+                        buttons: [
+                            {
+                                type: 'default',
+                                text: 'Transfer Stars',
+                                id: 'confirm'
+                            },
+                            {
+                                type: 'cancel',
+                                text: 'Cancel'
+                            }
+                        ]
+                    });
+
+                    // In real app, you would handle the actual Telegram Stars transfer
+                    // For demo, we'll simulate successful transfer
+                    setTimeout(() => resolve(true), 100);
+                });
+            }
+
             updateUI() {
                 // Update balance
-                document.getElementById('user-balance').textContent = `${this.state.balance.toLocaleString()} stars`;
+                document.getElementById('user-balance').textContent = `${this.state.balance} ⭐`;
                 
                 // Update numbers grid
                 const numbersGrid = document.getElementById('numbers-grid');
+                const globalSoldNumbers = JSON.parse(localStorage.getItem('globalSoldNumbers') || '[]');
+                
                 numbersGrid.innerHTML = this.state.numbers.map(number => {
+                    const isSold = globalSoldNumbers.includes(number);
                     const isOwned = this.state.purchasedNumbers.includes(number);
+                    
                     return `
-                        <div class="number-card">
-                            <div class="number-info">
-                                <div class="number-value">${number}</div>
-                                <div class="number-price">650 stars</div>
+                        <div class="number-card ${isSold ? 'sold' : ''}" 
+                             onclick="app.showPurchaseModal('${number}')">
+                            <div class="number-value">${number}</div>
+                            <div class="number-status">
+                                <div class="number-price">650 Stars</div>
+                                ${isSold ? '<div class="sold-badge">SOLD</div>' : ''}
                             </div>
-                            <button class="buy-button ${isOwned ? 'owned' : ''}" 
-                                    onclick="app.buyNumber('${number}')"
-                                    ${isOwned ? 'disabled' : ''}>
-                                ${isOwned ? 'Owned' : 'Buy'}
-                            </button>
                         </div>
                     `;
                 }).join('');
@@ -438,7 +661,11 @@
                 
                 const joinDate = new Date(this.state.joinDate);
                 document.getElementById('profile-join-date').textContent = 
-                    `Joined ${joinDate.toLocaleDateString()} at ${joinDate.toLocaleTimeString()}`;
+                    `Joined ${joinDate.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}`;
                 
                 // Update owned numbers
                 const ownedList = document.getElementById('owned-numbers-list');
@@ -446,29 +673,20 @@
                     ownedList.innerHTML = `
                         <div class="empty-state">
                             <div class="empty-icon">📱</div>
-                            <div>No numbers purchased yet</div>
+                            <div class="empty-text">No numbers yet</div>
+                            <div class="empty-subtext">Purchase your first number in the marketplace</div>
                         </div>
                     `;
                 } else {
                     ownedList.innerHTML = this.state.purchasedNumbers.map(number => `
-                        <div class="number-card" style="margin-bottom: 8px;">
-                            <div class="number-info">
-                                <div class="number-value">${number}</div>
-                                <div class="number-price" style="color: var(--tg-theme-accent-text-color);">Active</div>
+                        <div class="number-card" style="margin-bottom: 12px;">
+                            <div class="number-value">${number}</div>
+                            <div class="number-status">
+                                <div class="number-price" style="color: #34c759;">Owned</div>
                             </div>
                         </div>
                     `).join('');
                 }
-            }
-
-            applyTheme() {
-                // Apply Telegram theme colors
-                document.documentElement.style.setProperty('--tg-theme-bg-color', this.#tg.backgroundColor || '#1c1c1e');
-                document.documentElement.style.setProperty('--tg-theme-text-color', this.#tg.textColor || '#ffffff');
-                document.documentElement.style.setProperty('--tg-theme-hint-color', this.#tg.hintColor || '#98989e');
-                document.documentElement.style.setProperty('--tg-theme-link-color', this.#tg.linkColor || '#2ea6ff');
-                document.documentElement.style.setProperty('--tg-theme-button-color', this.#tg.buttonColor || '#2ea6ff');
-                document.documentElement.style.setProperty('--tg-theme-button-text-color', this.#tg.buttonTextColor || '#ffffff');
             }
         }
 
@@ -477,10 +695,18 @@
             app.switchTab(tabName);
         }
 
+        function closeModal() {
+            app.closePurchaseModal();
+        }
+
+        function confirmPurchase() {
+            app.confirmPurchase();
+        }
+
         // Initialize app
         let app;
         document.addEventListener('DOMContentLoaded', () => {
-            app = new AnonymousNumbersApp();
+            app = new FragmentNumbersApp();
         });
     </script>
 </body>
