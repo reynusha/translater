@@ -6,15 +6,13 @@
     <title>Collectible Gifts</title>
     <style>
         :root {
-            --bg-primary: #1e1e1e;
-            --bg-secondary: #2d2d2d;
-            --bg-tertiary: #3a3a3a;
-            --text-primary: #ffffff;
-            --text-secondary: #aaaaaa;
-            --accent: #3390ec;
-            --border: #444444;
-            --gradient-start: #3390ec;
-            --gradient-end: #8247e5;
+            --tg-theme-bg-color: #1e1e1e;
+            --tg-theme-text-color: #ffffff;
+            --tg-theme-hint-color: #aaaaaa;
+            --tg-theme-link-color: #3390ec;
+            --tg-theme-button-color: #3390ec;
+            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-secondary-bg-color: #2d2d2d;
         }
 
         * {
@@ -25,28 +23,25 @@
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
             line-height: 1.5;
         }
 
         .container {
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 100%;
             padding: 16px;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 16px;
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
         }
 
         .header h1 {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 600;
         }
 
@@ -54,7 +49,7 @@
             display: flex;
             justify-content: space-around;
             margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #333;
         }
 
         .nav-tab {
@@ -63,14 +58,14 @@
             text-align: center;
             cursor: pointer;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: var(--tg-theme-hint-color);
             transition: all 0.2s;
             border-bottom: 2px solid transparent;
         }
 
         .nav-tab.active {
-            color: var(--text-primary);
-            border-bottom: 2px solid var(--accent);
+            color: var(--tg-theme-text-color);
+            border-bottom: 2px solid var(--tg-theme-button-color);
         }
 
         .section {
@@ -81,21 +76,26 @@
             display: block;
         }
 
+        .gifts-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1fr;
+        }
+
         .gift-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 16px;
             padding: 16px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
+            border: 1px solid #333;
         }
 
         .gift-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .gift-name {
@@ -107,9 +107,10 @@
         .gift-details {
             display: flex;
             justify-content: space-between;
-            color: var(--text-secondary);
-            font-size: 14px;
+            align-items: center;
             margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--tg-theme-hint-color);
         }
 
         .gift-price {
@@ -117,18 +118,20 @@
             align-items: center;
             font-weight: 600;
             color: #ffd700;
+            font-size: 16px;
         }
 
         .buy-button {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            color: white;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
             border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
+            border-radius: 12px;
+            padding: 12px 20px;
             width: 100%;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
+            font-size: 16px;
         }
 
         .buy-button:hover {
@@ -140,17 +143,31 @@
             cursor: not-allowed;
         }
 
+        .sold-out-badge {
+            background: #ff4757;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 8px;
+        }
+
         .profile-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 16px;
         }
 
         .avatar {
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin-right: 16px;
         }
 
@@ -160,7 +177,7 @@
         }
 
         .profile-info p {
-            color: var(--text-secondary);
+            color: var(--tg-theme-hint-color);
             font-size: 14px;
         }
 
@@ -169,39 +186,41 @@
         }
 
         .owned-gifts h3 {
-            margin-bottom: 12px;
-            font-size: 16px;
+            margin-bottom: 16px;
+            font-size: 18px;
         }
 
-        .gift-grid {
+        .owned-gifts-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
         .owned-gift-card {
-            background: var(--bg-tertiary);
-            border-radius: 8px;
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 12px;
             padding: 12px;
             text-align: center;
+            border: 1px solid #333;
         }
 
         .owned-gift-image {
             width: 100%;
-            height: 100px;
+            height: 120px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .owned-gift-name {
             font-size: 14px;
             margin-bottom: 4px;
+            font-weight: 600;
         }
 
         .owned-gift-count {
-            color: var(--text-secondary);
+            color: var(--tg-theme-hint-color);
             font-size: 12px;
         }
 
@@ -213,31 +232,33 @@
         .marketplace-message h2 {
             font-size: 24px;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-weight: 700;
         }
 
         .marketplace-message p {
-            color: var(--text-secondary);
+            color: var(--tg-theme-hint-color);
             line-height: 1.6;
+            font-size: 16px;
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 20px;
             margin-bottom: 16px;
             font-weight: 600;
         }
 
-        .sold-out-badge {
-            background: #ff4757;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .stars-icon {
             display: inline-block;
-            margin-bottom: 8px;
+            margin-right: 4px;
         }
     </style>
 </head>
@@ -257,34 +278,36 @@
         <div class="section active" id="home">
             <div class="section-title">Available Gifts</div>
             
-            <div class="gift-card" id="sculpture">
-                <img src="https://i.postimg.cc/jjKZKCz1/IMG-20250902-072312-313.jpg" alt="Sculpture" class="gift-image">
-                <div class="gift-name">Sculpture</div>
-                <div class="gift-details">
-                    <span>Available: <span id="sculpture-available">550</span>/550</span>
-                    <span class="gift-price">50 ⭐</span>
+            <div class="gifts-grid">
+                <div class="gift-card" id="sculpture-card">
+                    <img src="https://i.postimg.cc/jjKZKCz1/IMG-20250902-072312-313.jpg" alt="Sculpture" class="gift-image">
+                    <div class="gift-name">Sculpture</div>
+                    <div class="gift-details">
+                        <span>Available: <span id="sculpture-available">550</span>/550</span>
+                        <span class="gift-price"><span class="stars-icon">⭐</span>50</span>
+                    </div>
+                    <button class="buy-button" data-gift="sculpture" data-price="50">Buy Now</button>
                 </div>
-                <button class="buy-button" data-gift="sculpture" data-price="50">Buy Now</button>
-            </div>
 
-            <div class="gift-card" id="crystal-lion">
-                <img src="https://i.postimg.cc/ZK1hPkNx/kmc-20251004-221530.png" alt="Crystal Lion" class="gift-image">
-                <div class="gift-name">Crystal Lion</div>
-                <div class="gift-details">
-                    <span>Available: <span id="crystal-lion-available">1000</span>/1000</span>
-                    <span class="gift-price">25 ⭐</span>
+                <div class="gift-card" id="crystal-lion-card">
+                    <img src="https://i.postimg.cc/ZK1hPkNx/kmc-20251004-221530.png" alt="Crystal Lion" class="gift-image">
+                    <div class="gift-name">Crystal Lion</div>
+                    <div class="gift-details">
+                        <span>Available: <span id="crystal-lion-available">1000</span>/1000</span>
+                        <span class="gift-price"><span class="stars-icon">⭐</span>25</span>
+                    </div>
+                    <button class="buy-button" data-gift="crystalLion" data-price="25">Buy Now</button>
                 </div>
-                <button class="buy-button" data-gift="crystal-lion" data-price="25">Buy Now</button>
-            </div>
 
-            <div class="gift-card" id="dollar">
-                <div class="gift-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
-                <div class="gift-name">Dollar</div>
-                <div class="gift-details">
-                    <span>Available: <span id="dollar-available">3000</span>/3000</span>
-                    <span class="gift-price">5 ⭐</span>
+                <div class="gift-card" id="dollar-card">
+                    <div class="gift-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
+                    <div class="gift-name">Dollar</div>
+                    <div class="gift-details">
+                        <span>Available: <span id="dollar-available">3000</span>/3000</span>
+                        <span class="gift-price"><span class="stars-icon">⭐</span>5</span>
+                    </div>
+                    <button class="buy-button" data-gift="dollar" data-price="5">Buy Now</button>
                 </div>
-                <button class="buy-button" data-gift="dollar" data-price="5">Buy Now</button>
             </div>
 
             <div class="section-title" id="sold-out-title" style="display: none;">Sold Out</div>
@@ -302,9 +325,9 @@
             </div>
 
             <div class="owned-gifts">
-                <h3>Your Gifts</h3>
-                <div class="gift-grid" id="owned-gifts-grid">
-                    <!-- Owned gifts will be displayed here -->
+                <h3>Your Collection</h3>
+                <div class="owned-gifts-grid" id="owned-gifts-grid">
+                    <div class="empty-state">No gifts purchased yet</div>
                 </div>
             </div>
         </div>
@@ -319,140 +342,158 @@
     </div>
 
     <script>
-        // Initialize Telegram WebApp
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gift data
+            const gifts = {
+                sculpture: {
+                    name: 'Sculpture',
+                    total: 550,
+                    available: 550,
+                    price: 50,
+                    image: 'https://i.postimg.cc/jjKZKCz1/IMG-20250902-072312-313.jpg'
+                },
+                crystalLion: {
+                    name: 'Crystal Lion',
+                    total: 1000,
+                    available: 1000,
+                    price: 25,
+                    image: 'https://i.postimg.cc/ZK1hPkNx/kmc-20251004-221530.png'
+                },
+                dollar: {
+                    name: 'Dollar',
+                    total: 3000,
+                    available: 3000,
+                    price: 5,
+                    image: null
+                }
+            };
 
-        // User data
-        let userData = {
-            username: tg.initDataUnsafe?.user?.username || 'user',
-            memberSince: new Date(),
-            ownedGifts: {
-                sculpture: 0,
-                crystalLion: 0,
-                dollar: 0
+            // User data
+            let userData = {
+                username: 'user',
+                memberSince: new Date(),
+                ownedGifts: {
+                    sculpture: 0,
+                    crystalLion: 0,
+                    dollar: 0
+                }
+            };
+
+            // DOM elements
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const sections = document.querySelectorAll('.section');
+            const buyButtons = document.querySelectorAll('.buy-button');
+            const usernameElement = document.getElementById('username');
+            const memberSinceElement = document.getElementById('member-since');
+            const ownedGiftsGrid = document.getElementById('owned-gifts-grid');
+            const soldOutContainer = document.getElementById('sold-out-container');
+            const soldOutTitle = document.getElementById('sold-out-title');
+
+            // Load user data from localStorage
+            function loadUserData() {
+                const savedData = localStorage.getItem('collectibleGiftsUserData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    userData = {
+                        ...userData,
+                        ...parsedData,
+                        memberSince: new Date(parsedData.memberSince)
+                    };
+                }
+                
+                // Update UI with user data
+                usernameElement.textContent = '@' + userData.username;
+                const daysSince = Math.floor((new Date() - userData.memberSince) / (1000 * 60 * 60 * 24));
+                memberSinceElement.textContent = `Member for ${daysSince} days`;
+                
+                updateOwnedGiftsDisplay();
+                
+                // Update gift availability
+                updateGiftAvailability();
             }
-        };
 
-        // Gift data
-        const gifts = {
-            sculpture: {
-                name: 'Sculpture',
-                total: 550,
-                available: 550,
-                price: 50,
-                image: 'https://i.postimg.cc/jjKZKCz1/IMG-20250902-072312-313.jpg'
-            },
-            crystalLion: {
-                name: 'Crystal Lion',
-                total: 1000,
-                available: 1000,
-                price: 25,
-                image: 'https://i.postimg.cc/ZK1hPkNx/kmc-20251004-221530.png'
-            },
-            dollar: {
-                name: 'Dollar',
-                total: 3000,
-                available: 3000,
-                price: 5,
-                image: null
+            // Save user data to localStorage
+            function saveUserData() {
+                localStorage.setItem('collectibleGiftsUserData', JSON.stringify(userData));
             }
-        };
 
-        // DOM elements
-        const navTabs = document.querySelectorAll('.nav-tab');
-        const sections = document.querySelectorAll('.section');
-        const buyButtons = document.querySelectorAll('.buy-button');
-        const usernameElement = document.getElementById('username');
-        const memberSinceElement = document.getElementById('member-since');
-        const ownedGiftsGrid = document.getElementById('owned-gifts-grid');
-        const soldOutContainer = document.getElementById('sold-out-container');
-        const soldOutTitle = document.getElementById('sold-out-title');
-
-        // Load user data from localStorage
-        function loadUserData() {
-            const savedData = localStorage.getItem('collectibleGiftsUserData');
-            if (savedData) {
-                userData = JSON.parse(savedData);
-                userData.memberSince = new Date(userData.memberSince);
-            }
-            
-            // Update UI with user data
-            usernameElement.textContent = '@' + userData.username;
-            const daysSince = Math.floor((new Date() - userData.memberSince) / (1000 * 60 * 60 * 24));
-            memberSinceElement.textContent = `Member for ${daysSince} days`;
-            
-            updateOwnedGiftsDisplay();
-        }
-
-        // Save user data to localStorage
-        function saveUserData() {
-            localStorage.setItem('collectibleGiftsUserData', JSON.stringify(userData));
-        }
-
-        // Update the display of owned gifts
-        function updateOwnedGiftsDisplay() {
-            ownedGiftsGrid.innerHTML = '';
-            
-            for (const [giftId, count] of Object.entries(userData.ownedGifts)) {
-                if (count > 0) {
-                    const gift = gifts[giftId];
-                    const giftCard = document.createElement('div');
-                    giftCard.className = 'owned-gift-card';
-                    
-                    if (gift.image) {
-                        giftCard.innerHTML = `
-                            <img src="${gift.image}" alt="${gift.name}" class="owned-gift-image">
-                            <div class="owned-gift-name">${gift.name}</div>
-                            <div class="owned-gift-count">Owned: ${count}</div>
-                        `;
-                    } else {
-                        giftCard.innerHTML = `
-                            <div class="owned-gift-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
-                            <div class="owned-gift-name">${gift.name}</div>
-                            <div class="owned-gift-count">Owned: ${count}</div>
-                        `;
+            // Update gift availability display
+            function updateGiftAvailability() {
+                for (const [giftId, gift] of Object.entries(gifts)) {
+                    const availableElement = document.getElementById(`${giftId}-available`);
+                    if (availableElement) {
+                        availableElement.textContent = gift.available;
                     }
                     
-                    ownedGiftsGrid.appendChild(giftCard);
+                    // Disable button if sold out
+                    if (gift.available === 0) {
+                        const button = document.querySelector(`[data-gift="${giftId}"]`);
+                        if (button) {
+                            button.disabled = true;
+                            button.textContent = 'Sold Out';
+                            
+                            // Move to sold out section
+                            const card = document.getElementById(`${giftId}-card`);
+                            if (card) {
+                                soldOutTitle.style.display = 'block';
+                                const soldOutBadge = document.createElement('div');
+                                soldOutBadge.className = 'sold-out-badge';
+                                soldOutBadge.textContent = 'SOLD OUT';
+                                card.appendChild(soldOutBadge);
+                                soldOutContainer.appendChild(card);
+                            }
+                        }
+                    }
                 }
             }
-            
-            if (ownedGiftsGrid.children.length === 0) {
-                ownedGiftsGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary);">You don\'t own any gifts yet</p>';
-            }
-        }
 
-        // Handle gift purchase
-        function handlePurchase(giftId) {
-            const gift = gifts[giftId];
-            
-            if (gift.available <= 0) {
-                tg.showPopup({
-                    title: 'Out of Stock',
-                    message: `Sorry, ${gift.name} is sold out.`,
-                    buttons: [{ type: 'ok' }]
-                });
-                return;
-            }
-            
-            // In a real implementation, this would use Telegram's official Stars payment
-            tg.showPopup({
-                title: 'Confirm Purchase',
-                message: `Do you want to buy ${gift.name} for ${gift.price} Stars?`,
-                buttons: [
-                    { type: 'cancel' },
-                    { 
-                        type: 'default', 
-                        text: 'Buy', 
-                        id: 'buy'
+            // Update the display of owned gifts
+            function updateOwnedGiftsDisplay() {
+                ownedGiftsGrid.innerHTML = '';
+                let hasGifts = false;
+                
+                for (const [giftId, count] of Object.entries(userData.ownedGifts)) {
+                    if (count > 0) {
+                        hasGifts = true;
+                        const gift = gifts[giftId];
+                        const giftCard = document.createElement('div');
+                        giftCard.className = 'owned-gift-card';
+                        
+                        if (gift.image) {
+                            giftCard.innerHTML = `
+                                <img src="${gift.image}" alt="${gift.name}" class="owned-gift-image">
+                                <div class="owned-gift-name">${gift.name}</div>
+                                <div class="owned-gift-count">Owned: ${count}</div>
+                            `;
+                        } else {
+                            giftCard.innerHTML = `
+                                <div class="owned-gift-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
+                                <div class="owned-gift-name">${gift.name}</div>
+                                <div class="owned-gift-count">Owned: ${count}</div>
+                            `;
+                        }
+                        
+                        ownedGiftsGrid.appendChild(giftCard);
                     }
-                ]
-            });
-            
-            tg.onEvent('popupClosed', (event) => {
-                if (event.button_id === 'buy') {
+                }
+                
+                if (!hasGifts) {
+                    ownedGiftsGrid.innerHTML = '<div class="empty-state">No gifts purchased yet</div>';
+                }
+            }
+
+            // Handle gift purchase
+            function handlePurchase(giftId) {
+                const gift = gifts[giftId];
+                
+                if (gift.available <= 0) {
+                    alert(`Sorry, ${gift.name} is sold out.`);
+                    return;
+                }
+                
+                // Simple confirmation
+                if (confirm(`Do you want to buy ${gift.name} for ${gift.price} Stars?`)) {
                     // Simulate successful purchase
                     gift.available--;
                     userData.ownedGifts[giftId]++;
@@ -462,61 +503,57 @@
                     
                     // Check if gift is sold out
                     if (gift.available === 0) {
-                        const giftCard = document.getElementById(giftId);
-                        const buyButton = giftCard.querySelector('.buy-button');
-                        buyButton.disabled = true;
-                        buyButton.textContent = 'Sold Out';
-                        
-                        // Move to sold out section
-                        soldOutTitle.style.display = 'block';
-                        giftCard.querySelector('.gift-details').innerHTML = `<span class="sold-out-badge">SOLD OUT</span>`;
-                        soldOutContainer.appendChild(giftCard);
+                        const button = document.querySelector(`[data-gift="${giftId}"]`);
+                        if (button) {
+                            button.disabled = true;
+                            button.textContent = 'Sold Out';
+                            
+                            // Move to sold out section
+                            const card = document.getElementById(`${giftId}-card`);
+                            if (card) {
+                                soldOutTitle.style.display = 'block';
+                                const soldOutBadge = document.createElement('div');
+                                soldOutBadge.className = 'sold-out-badge';
+                                soldOutBadge.textContent = 'SOLD OUT';
+                                card.appendChild(soldOutBadge);
+                                soldOutContainer.appendChild(card);
+                            }
+                        }
                     }
                     
                     updateOwnedGiftsDisplay();
                     saveUserData();
                     
-                    tg.showPopup({
-                        title: 'Purchase Successful',
-                        message: `You've successfully purchased ${gift.name}!`,
-                        buttons: [{ type: 'ok' }]
-                    });
+                    alert(`You've successfully purchased ${gift.name}!`);
                 }
-                
-                // Remove the event listener to prevent multiple bindings
-                tg.offEvent('popupClosed', arguments.callee);
-            });
-        }
+            }
 
-        // Initialize the app
-        function initApp() {
             // Set up navigation
             navTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.getAttribute('data-tab');
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
                     
+                    // Update active tab
                     navTabs.forEach(t => t.classList.remove('active'));
-                    sections.forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
                     
-                    tab.classList.add('active');
+                    // Show active section
+                    sections.forEach(s => s.classList.remove('active'));
                     document.getElementById(tabId).classList.add('active');
                 });
             });
             
             // Set up buy buttons
             buyButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const giftId = button.getAttribute('data-gift');
+                button.addEventListener('click', function() {
+                    const giftId = this.getAttribute('data-gift');
                     handlePurchase(giftId);
                 });
             });
             
-            // Load user data
+            // Load initial data
             loadUserData();
-        }
-
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+        });
     </script>
 </body>
 </html>
