@@ -1,695 +1,522 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Messenger</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Collectible Gifts</title>
     <style>
+        :root {
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent: #3390ec;
+            --border: #444444;
+            --gradient-start: #3390ec;
+            --gradient-end: #8247e5;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 100%;
+            max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding: 16px;
         }
 
-        .app-header {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-tab {
+            padding: 12px 0;
+            flex: 1;
             text-align: center;
-            margin-bottom: 20px;
-            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
         }
 
-        .app-logo {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 5px;
+        .nav-tab.active {
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent);
         }
 
-        .app-subtitle {
-            opacity: 0.9;
-            font-size: 14px;
+        .section {
+            display: none;
         }
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            flex-grow: 1;
+        .section.active {
+            display: block;
+        }
+
+        .gift-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .gift-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        }
+
+        .gift-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .gift-details {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
         }
 
-        .hidden {
-            display: none !important;
+        .gift-price {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #ffd700;
         }
 
-        .btn {
-            background: #0088cc;
+        .buy-button {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 8px;
+            padding: 10px 16px;
+            width: 100%;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 10px;
+            transition: opacity 0.2s;
         }
 
-        .btn:hover {
-            background: #0077bb;
-            transform: translateY(-2px);
+        .buy-button:hover {
+            opacity: 0.9;
         }
 
-        .btn-secondary {
-            background: transparent;
-            color: #0088cc;
-            border: 1px solid #0088cc;
+        .buy-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .btn-secondary:hover {
-            background: rgba(0, 136, 204, 0.1);
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        .input-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #555;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border 0.3s ease;
-        }
-
-        .input-field:focus {
-            border-color: #0088cc;
-            outline: none;
-        }
-
-        .user-info {
+        .profile-header {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
         }
 
-        .user-avatar {
-            width: 50px;
-            height: 50px;
+        .avatar {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            margin-right: 15px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            margin-right: 16px;
         }
 
-        .user-details {
-            flex-grow: 1;
-        }
-
-        .user-name {
-            font-weight: bold;
+        .profile-info h2 {
             font-size: 18px;
+            margin-bottom: 4px;
         }
 
-        .user-username {
-            color: #777;
+        .profile-info p {
+            color: var(--text-secondary);
             font-size: 14px;
         }
 
-        .search-container {
-            margin-bottom: 20px;
+        .owned-gifts {
+            margin-top: 20px;
         }
 
-        .search-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+        .owned-gifts h3 {
+            margin-bottom: 12px;
             font-size: 16px;
-            margin-bottom: 10px;
         }
 
-        .search-results {
-            border: 1px solid #eee;
-            border-radius: 10px;
-            max-height: 200px;
-            overflow-y: auto;
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
 
-        .user-result {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
+        .owned-gift-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
         }
 
-        .user-result:hover {
-            background: #f9f9f9;
+        .owned-gift-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
         }
 
-        .user-result:last-child {
-            border-bottom: none;
+        .owned-gift-name {
+            font-size: 14px;
+            margin-bottom: 4px;
         }
 
-        .chat-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            padding: 15px;
-            background: #f9f9f9;
-            border-bottom: 1px solid #eee;
-            font-weight: bold;
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            max-height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .message-sent {
-            align-self: flex-end;
-            background: #0088cc;
-            color: white;
-            border-bottom-right-radius: 5px;
-        }
-
-        .message-received {
-            align-self: flex-start;
-            background: #f0f0f0;
-            color: #333;
-            border-bottom-left-radius: 5px;
-        }
-
-        .message-sender {
+        .owned-gift-count {
+            color: var(--text-secondary);
             font-size: 12px;
-            opacity: 0.7;
-            margin-bottom: 3px;
         }
 
-        .chat-input-container {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #eee;
-            background: #f9f9f9;
-        }
-
-        .chat-input {
-            flex-grow: 1;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-
-        .send-button {
-            background: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .error-message {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 5px;
+        .marketplace-message {
             text-align: center;
+            padding: 40px 20px;
         }
 
-        .success-message {
-            color: #2ecc71;
-            font-size: 14px;
-            margin-top: 5px;
-            text-align: center;
-        }
-
-        .welcome-screen {
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        .welcome-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .welcome-title {
+        .marketplace-message h2 {
             font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .welcome-text {
-            color: #777;
-            margin-bottom: 30px;
-            line-height: 1.5;
+        .marketplace-message p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .sold-out-badge {
+            background: #ff4757;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="app-header">
-            <div class="app-logo">Telegram Messenger</div>
-            <div class="app-subtitle">Общайтесь с друзьями и находите новых</div>
+        <div class="header">
+            <h1>Collectible Gifts</h1>
         </div>
 
-        <!-- Экран приветствия -->
-        <div class="card" id="welcomeScreen">
-            <div class="welcome-screen">
-                <div class="welcome-icon">💬</div>
-                <div class="welcome-title">Добро пожаловать!</div>
-                <div class="welcome-text">
-                    Это мини-приложение для общения с другими пользователями Telegram. 
-                    Вы можете найти друзей по никнейму и обмениваться сообщениями.
-                </div>
-                <button class="btn" id="startBtn">Начать общение</button>
-            </div>
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="home">Home</div>
+            <div class="nav-tab" data-tab="profile">Profile</div>
+            <div class="nav-tab" data-tab="market">Market</div>
         </div>
 
-        <!-- Экран авторизации -->
-        <div class="card hidden" id="authScreen">
-            <div class="user-info">
-                <div class="user-avatar" id="authAvatar">U</div>
-                <div class="user-details">
-                    <div class="user-name" id="authName">Пользователь</div>
-                    <div class="user-username" id="authUsername">@username</div>
-                </div>
-            </div>
+        <!-- Home Section -->
+        <div class="section active" id="home">
+            <div class="section-title">Available Gifts</div>
             
-            <div class="input-group">
-                <label class="input-label">Ваш никнейм</label>
-                <input type="text" class="input-field" id="usernameInput" placeholder="Придумайте уникальный никнейм">
-                <div class="error-message" id="usernameError"></div>
+            <div class="gift-card" id="sculpture">
+                <img src="https://i.postimg.cc/jjKZKCz1/IMG-20250902-072312-313.jpg" alt="Sculpture" class="gift-image">
+                <div class="gift-name">Sculpture</div>
+                <div class="gift-details">
+                    <span>Available: <span id="sculpture-available">550</span>/550</span>
+                    <span class="gift-price">50 ⭐</span>
+                </div>
+                <button class="buy-button" data-gift="sculpture" data-price="50">Buy Now</button>
             </div>
-            
-            <button class="btn" id="registerBtn">Зарегистрироваться</button>
-            <button class="btn btn-secondary" id="changeAccountBtn">Сменить аккаунт</button>
+
+            <div class="gift-card" id="crystal-lion">
+                <img src="https://i.postimg.cc/ZK1hPkNx/kmc-20251004-221530.png" alt="Crystal Lion" class="gift-image">
+                <div class="gift-name">Crystal Lion</div>
+                <div class="gift-details">
+                    <span>Available: <span id="crystal-lion-available">1000</span>/1000</span>
+                    <span class="gift-price">25 ⭐</span>
+                </div>
+                <button class="buy-button" data-gift="crystal-lion" data-price="25">Buy Now</button>
+            </div>
+
+            <div class="gift-card" id="dollar">
+                <div class="gift-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
+                <div class="gift-name">Dollar</div>
+                <div class="gift-details">
+                    <span>Available: <span id="dollar-available">3000</span>/3000</span>
+                    <span class="gift-price">5 ⭐</span>
+                </div>
+                <button class="buy-button" data-gift="dollar" data-price="5">Buy Now</button>
+            </div>
+
+            <div class="section-title" id="sold-out-title" style="display: none;">Sold Out</div>
+            <div id="sold-out-container"></div>
         </div>
 
-        <!-- Основной экран приложения -->
-        <div class="card hidden" id="mainScreen">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">U</div>
-                <div class="user-details">
-                    <div class="user-name" id="userName">Пользователь</div>
-                    <div class="user-username" id="userUsername">@username</div>
-                </div>
-                <button class="btn btn-secondary" id="logoutBtn" style="width: auto; padding: 8px 15px;">Выйти</button>
-            </div>
-
-            <div class="search-container">
-                <input type="text" class="search-input" id="searchInput" placeholder="Поиск пользователей по никнейму">
-                <div class="search-results hidden" id="searchResults">
-                    <!-- Результаты поиска будут здесь -->
+        <!-- Profile Section -->
+        <div class="section" id="profile">
+            <div class="profile-header">
+                <div class="avatar"></div>
+                <div class="profile-info">
+                    <h2 id="username">@username</h2>
+                    <p id="member-since">Member since: Loading...</p>
                 </div>
             </div>
 
-            <div class="chat-container">
-                <div class="chat-header" id="chatHeader">Выберите пользователя для общения</div>
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Сообщения будут здесь -->
+            <div class="owned-gifts">
+                <h3>Your Gifts</h3>
+                <div class="gift-grid" id="owned-gifts-grid">
+                    <!-- Owned gifts will be displayed here -->
                 </div>
-                <div class="chat-input-container hidden" id="chatInputContainer">
-                    <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение...">
-                    <button class="send-button" id="sendMessageBtn">➤</button>
-                </div>
+            </div>
+        </div>
+
+        <!-- Market Section -->
+        <div class="section" id="market">
+            <div class="marketplace-message">
+                <h2>Dreams Come True</h2>
+                <p>Very soon, our marketplace will be launched where you can trade your collectible gifts. Buy and sell them freely. From that point, gift prices will be determined exclusively by the community.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Инициализация Telegram Web App
+        // Initialize Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.BackButton.hide();
+        tg.enableClosingConfirmation();
 
-        // Элементы DOM
-        const welcomeScreen = document.getElementById('welcomeScreen');
-        const authScreen = document.getElementById('authScreen');
-        const mainScreen = document.getElementById('mainScreen');
-        const startBtn = document.getElementById('startBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const changeAccountBtn = document.getElementById('changeAccountBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const usernameInput = document.getElementById('usernameInput');
-        const usernameError = document.getElementById('usernameError');
-        const searchInput = document.getElementById('searchInput');
-        const searchResults = document.getElementById('searchResults');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatHeader = document.getElementById('chatHeader');
-        const chatInputContainer = document.getElementById('chatInputContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendMessageBtn = document.getElementById('sendMessageBtn');
-        const authAvatar = document.getElementById('authAvatar');
-        const authName = document.getElementById('authName');
-        const authUsername = document.getElementById('authUsername');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userUsername = document.getElementById('userUsername');
-
-        // Данные приложения
-        let currentUser = null;
-        let currentChat = null;
-        let users = JSON.parse(localStorage.getItem('messenger_users') || '{}');
-        let messages = JSON.parse(localStorage.getItem('messenger_messages') || '{}');
-
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
-            // Получаем данные пользователя Telegram
-            const tgUser = tg.initDataUnsafe.user;
-            
-            if (tgUser) {
-                // Показываем данные пользователя в форме авторизации
-                authAvatar.textContent = tgUser.first_name ? tgUser.first_name[0].toUpperCase() : 'U';
-                authName.textContent = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Пользователь Telegram';
-                authUsername.textContent = `@${tgUser.username || 'user'}`;
-                
-                // Проверяем, есть ли пользователь в нашей базе
-                const userId = tgUser.id.toString();
-                if (users[userId]) {
-                    // Пользователь уже зарегистрирован - авторизуем автоматически
-                    currentUser = users[userId];
-                    showMainScreen();
-                } else {
-                    // Пользователь новый - показываем экран регистрации
-                    showAuthScreen();
-                }
-            } else {
-                // Пользователь не авторизован в Telegram
-                showAuthScreen();
+        // User data
+        let userData = {
+            username: tg.initDataUnsafe?.user?.username || 'user',
+            memberSince: new Date(),
+            ownedGifts: {
+                sculpture: 0,
+                crystalLion: 0,
+                dollar: 0
             }
-        });
+        };
 
-        // Обработчики событий
-        startBtn.addEventListener('click', function() {
-            welcomeScreen.classList.add('hidden');
-            const tgUser = tg.initDataUnsafe.user;
-            
-            if (tgUser) {
-                const userId = tgUser.id.toString();
-                if (users[userId]) {
-                    currentUser = users[userId];
-                    showMainScreen();
-                } else {
-                    showAuthScreen();
-                }
-            } else {
-                showAuthScreen();
+        // Gift data
+        const gifts = {
+            sculpture: {
+                name: 'Sculpture',
+                total: 550,
+                available: 550,
+                price: 50,
+                image: 'https://i.postimg.cc/jjKZKCz1/IMG-20250902-072312-313.jpg'
+            },
+            crystalLion: {
+                name: 'Crystal Lion',
+                total: 1000,
+                available: 1000,
+                price: 25,
+                image: 'https://i.postimg.cc/ZK1hPkNx/kmc-20251004-221530.png'
+            },
+            dollar: {
+                name: 'Dollar',
+                total: 3000,
+                available: 3000,
+                price: 5,
+                image: null
             }
-        });
+        };
 
-        registerBtn.addEventListener('click', function() {
-            const username = usernameInput.value.trim();
-            
-            if (!username) {
-                usernameError.textContent = 'Введите никнейм';
-                return;
+        // DOM elements
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
+        const buyButtons = document.querySelectorAll('.buy-button');
+        const usernameElement = document.getElementById('username');
+        const memberSinceElement = document.getElementById('member-since');
+        const ownedGiftsGrid = document.getElementById('owned-gifts-grid');
+        const soldOutContainer = document.getElementById('sold-out-container');
+        const soldOutTitle = document.getElementById('sold-out-title');
+
+        // Load user data from localStorage
+        function loadUserData() {
+            const savedData = localStorage.getItem('collectibleGiftsUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+                userData.memberSince = new Date(userData.memberSince);
             }
             
-            // Проверяем, не занят ли никнейм
-            const isUsernameTaken = Object.values(users).some(user => 
-                user.username.toLowerCase() === username.toLowerCase()
-            );
+            // Update UI with user data
+            usernameElement.textContent = '@' + userData.username;
+            const daysSince = Math.floor((new Date() - userData.memberSince) / (1000 * 60 * 60 * 24));
+            memberSinceElement.textContent = `Member for ${daysSince} days`;
             
-            if (isUsernameTaken) {
-                usernameError.textContent = 'Этот никнейм уже занят';
-                return;
-            }
-            
-            // Регистрируем пользователя
-            const tgUser = tg.initDataUnsafe.user;
-            const userId = tgUser.id.toString();
-            
-            currentUser = {
-                id: userId,
-                firstName: tgUser.first_name || '',
-                lastName: tgUser.last_name || '',
-                username: username,
-                telegramUsername: tgUser.username || ''
-            };
-            
-            users[userId] = currentUser;
-            localStorage.setItem('messenger_users', JSON.stringify(users));
-            
-            showMainScreen();
-        });
-
-        changeAccountBtn.addEventListener('click', function() {
-            // Очищаем данные текущего пользователя
-            currentUser = null;
-            showAuthScreen();
-        });
-
-        logoutBtn.addEventListener('click', function() {
-            currentUser = null;
-            showAuthScreen();
-        });
-
-        searchInput.addEventListener('input', function() {
-            const query = searchInput.value.trim().toLowerCase();
-            
-            if (query.length < 2) {
-                searchResults.classList.add('hidden');
-                return;
-            }
-            
-            // Ищем пользователей по никнейму
-            const results = Object.values(users).filter(user => 
-                user.username.toLowerCase().includes(query) && user.id !== currentUser.id
-            );
-            
-            displaySearchResults(results);
-        });
-
-        sendMessageBtn.addEventListener('click', function() {
-            sendMessage();
-        });
-
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // Функции отображения экранов
-        function showAuthScreen() {
-            welcomeScreen.classList.add('hidden');
-            authScreen.classList.remove('hidden');
-            mainScreen.classList.add('hidden');
-            
-            // Очищаем поля
-            usernameInput.value = '';
-            usernameError.textContent = '';
+            updateOwnedGiftsDisplay();
         }
 
-        function showMainScreen() {
-            welcomeScreen.classList.add('hidden');
-            authScreen.classList.add('hidden');
-            mainScreen.classList.remove('hidden');
-            
-            // Обновляем информацию о пользователе
-            userAvatar.textContent = currentUser.firstName ? currentUser.firstName[0].toUpperCase() : currentUser.username[0].toUpperCase();
-            userName.textContent = `${currentUser.firstName} ${currentUser.lastName}`.trim() || currentUser.username;
-            userUsername.textContent = `@${currentUser.username}`;
-            
-            // Очищаем поиск и чат
-            searchInput.value = '';
-            searchResults.classList.add('hidden');
-            chatMessages.innerHTML = '';
-            chatHeader.textContent = 'Выберите пользователя для общения';
-            chatInputContainer.classList.add('hidden');
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('collectibleGiftsUserData', JSON.stringify(userData));
         }
 
-        // Функция отображения результатов поиска
-        function displaySearchResults(results) {
-            searchResults.innerHTML = '';
+        // Update the display of owned gifts
+        function updateOwnedGiftsDisplay() {
+            ownedGiftsGrid.innerHTML = '';
             
-            if (results.length === 0) {
-                const noResults = document.createElement('div');
-                noResults.className = 'user-result';
-                noResults.textContent = 'Пользователи не найдены';
-                searchResults.appendChild(noResults);
-            } else {
-                results.forEach(user => {
-                    const userElement = document.createElement('div');
-                    userElement.className = 'user-result';
-                    userElement.innerHTML = `
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                            display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 10px;">
-                            ${user.firstName ? user.firstName[0].toUpperCase() : user.username[0].toUpperCase()}
-                        </div>
-                        <div>
-                            <div style="font-weight: bold;">${user.firstName} ${user.lastName}</div>
-                            <div style="color: #777; font-size: 14px;">@${user.username}</div>
-                        </div>
-                    `;
+            for (const [giftId, count] of Object.entries(userData.ownedGifts)) {
+                if (count > 0) {
+                    const gift = gifts[giftId];
+                    const giftCard = document.createElement('div');
+                    giftCard.className = 'owned-gift-card';
                     
-                    userElement.addEventListener('click', function() {
-                        openChat(user);
+                    if (gift.image) {
+                        giftCard.innerHTML = `
+                            <img src="${gift.image}" alt="${gift.name}" class="owned-gift-image">
+                            <div class="owned-gift-name">${gift.name}</div>
+                            <div class="owned-gift-count">Owned: ${count}</div>
+                        `;
+                    } else {
+                        giftCard.innerHTML = `
+                            <div class="owned-gift-image" style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
+                            <div class="owned-gift-name">${gift.name}</div>
+                            <div class="owned-gift-count">Owned: ${count}</div>
+                        `;
+                    }
+                    
+                    ownedGiftsGrid.appendChild(giftCard);
+                }
+            }
+            
+            if (ownedGiftsGrid.children.length === 0) {
+                ownedGiftsGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary);">You don\'t own any gifts yet</p>';
+            }
+        }
+
+        // Handle gift purchase
+        function handlePurchase(giftId) {
+            const gift = gifts[giftId];
+            
+            if (gift.available <= 0) {
+                tg.showPopup({
+                    title: 'Out of Stock',
+                    message: `Sorry, ${gift.name} is sold out.`,
+                    buttons: [{ type: 'ok' }]
+                });
+                return;
+            }
+            
+            // In a real implementation, this would use Telegram's official Stars payment
+            tg.showPopup({
+                title: 'Confirm Purchase',
+                message: `Do you want to buy ${gift.name} for ${gift.price} Stars?`,
+                buttons: [
+                    { type: 'cancel' },
+                    { 
+                        type: 'default', 
+                        text: 'Buy', 
+                        id: 'buy'
+                    }
+                ]
+            });
+            
+            tg.onEvent('popupClosed', (event) => {
+                if (event.button_id === 'buy') {
+                    // Simulate successful purchase
+                    gift.available--;
+                    userData.ownedGifts[giftId]++;
+                    
+                    // Update UI
+                    document.getElementById(`${giftId}-available`).textContent = gift.available;
+                    
+                    // Check if gift is sold out
+                    if (gift.available === 0) {
+                        const giftCard = document.getElementById(giftId);
+                        const buyButton = giftCard.querySelector('.buy-button');
+                        buyButton.disabled = true;
+                        buyButton.textContent = 'Sold Out';
+                        
+                        // Move to sold out section
+                        soldOutTitle.style.display = 'block';
+                        giftCard.querySelector('.gift-details').innerHTML = `<span class="sold-out-badge">SOLD OUT</span>`;
+                        soldOutContainer.appendChild(giftCard);
+                    }
+                    
+                    updateOwnedGiftsDisplay();
+                    saveUserData();
+                    
+                    tg.showPopup({
+                        title: 'Purchase Successful',
+                        message: `You've successfully purchased ${gift.name}!`,
+                        buttons: [{ type: 'ok' }]
                     });
+                }
+                
+                // Remove the event listener to prevent multiple bindings
+                tg.offEvent('popupClosed', arguments.callee);
+            });
+        }
+
+        // Initialize the app
+        function initApp() {
+            // Set up navigation
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
                     
-                    searchResults.appendChild(userElement);
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
                 });
-            }
+            });
             
-            searchResults.classList.remove('hidden');
-        }
-
-        // Функция открытия чата с пользователем
-        function openChat(user) {
-            currentChat = user;
-            chatHeader.textContent = `Чат с @${user.username}`;
-            chatInputContainer.classList.remove('hidden');
-            
-            // Загружаем историю сообщений
-            loadChatHistory();
-            
-            // Скрываем результаты поиска
-            searchResults.classList.add('hidden');
-            searchInput.value = '';
-        }
-
-        // Функция загрузки истории чата
-        function loadChatHistory() {
-            chatMessages.innerHTML = '';
-            
-            const chatId = getChatId(currentUser.id, currentChat.id);
-            const chatMessagesList = messages[chatId] || [];
-            
-            if (chatMessagesList.length === 0) {
-                const noMessages = document.createElement('div');
-                noMessages.style.textAlign = 'center';
-                noMessages.style.color: '#777';
-                noMessages.style.padding = '20px';
-                noMessages.textContent = 'Нет сообщений. Начните общение!';
-                chatMessages.appendChild(noMessages);
-            } else {
-                chatMessagesList.forEach(msg => {
-                    displayMessage(msg);
+            // Set up buy buttons
+            buyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const giftId = button.getAttribute('data-gift');
+                    handlePurchase(giftId);
                 });
-            }
+            });
             
-            // Прокручиваем вниз
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Load user data
+            loadUserData();
         }
 
-        // Функция отправки сообщения
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            
-            if (!text || !currentChat) {
-                return;
-            }
-            
-            const message = {
-                id: Date.now(),
-                senderId: currentUser.id,
-                receiverId: currentChat.id,
-                text: text,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Сохраняем сообщение
-            const chatId = getChatId(currentUser.id, currentChat.id);
-            if (!messages[chatId]) {
-                messages[chatId] = [];
-            }
-            messages[chatId].push(message);
-            localStorage.setItem('messenger_messages', JSON.stringify(messages));
-            
-            // Отображаем сообщение
-            displayMessage(message);
-            
-            // Очищаем поле ввода
-            messageInput.value = '';
-            
-            // Прокручиваем вниз
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Функция отображения сообщения
-        function displayMessage(message) {
-            const messageElement = document.createElement('div');
-            const isSent = message.senderId === currentUser.id;
-            
-            messageElement.className = `message ${isSent ? 'message-sent' : 'message-received'}`;
-            
-            if (!isSent) {
-                const senderElement = document.createElement('div');
-                senderElement.className = 'message-sender';
-                senderElement.textContent = `@${currentChat.username}`;
-                messageElement.appendChild(senderElement);
-            }
-            
-            const textElement = document.createElement('div');
-            textElement.textContent = message.text;
-            messageElement.appendChild(textElement);
-            
-            chatMessages.appendChild(messageElement);
-        }
-
-        // Вспомогательная функция для получения ID чата
-        function getChatId(user1, user2) {
-            return [user1, user2].sort().join('_');
-        }
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
