@@ -1,774 +1,695 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fragment Numbers</title>
+    <title>Telegram Messenger</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        :root {
-            --bg-primary: #0f0f0f;
-            --bg-secondary: #1a1a1a;
-            --bg-tertiary: #2a2a2a;
-            --text-primary: #ffffff;
-            --text-secondary: #8e8e93;
-            --text-tertiary: #48484a;
-            --accent-blue: #2ea6ff;
-            --accent-green: #34c759;
-            --accent-red: #ff453a;
-            --border-color: #38383a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .app {
+        .container {
             max-width: 100%;
             margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Header */
-        .header {
-            background: var(--bg-primary);
-            padding: 20px 16px 16px;
-            border-bottom: 1px solid var(--border-color);
+        .app-header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
         }
 
-        .header-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-        }
-
-        .header-subtitle {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        /* Balance */
-        .balance-section {
-            background: var(--bg-secondary);
-            padding: 20px 16px;
-            margin: 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .balance-label {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .balance-amount {
+        .app-logo {
             font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
-        /* Search */
+        .app-subtitle {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #0077bb;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #0088cc;
+            border: 1px solid #0088cc;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 136, 204, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #0088cc;
+            outline: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .user-details {
+            flex-grow: 1;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-username {
+            color: #777;
+            font-size: 14px;
+        }
+
         .search-container {
-            padding: 0 16px 16px;
+            margin-bottom: 20px;
         }
 
         .search-input {
             width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border: 1px solid #ddd;
             border-radius: 10px;
             font-size: 16px;
-            color: var(--text-primary);
-            outline: none;
+            margin-bottom: 10px;
         }
 
-        .search-input::placeholder {
-            color: var(--text-tertiary);
+        .search-results {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        .search-input:focus {
-            border-color: var(--accent-blue);
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 16px;
-        }
-
-        .tab {
-            padding: 16px 0;
-            margin-right: 24px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 16px;
-            font-weight: 500;
+        .user-result {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .tab.active {
-            color: var(--accent-blue);
-            border-bottom-color: var(--accent-blue);
-        }
-
-        /* Content */
-        .content {
-            padding: 0;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Numbers List */
-        .numbers-list {
-            background: var(--bg-primary);
-        }
-
-        .number-item {
-            padding: 18px 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .number-item:active {
-            background-color: var(--bg-secondary);
-        }
-
-        .number-item.sold {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .number-item.sold:active {
-            background-color: transparent;
-        }
-
-        .number-info {
-            flex: 1;
-        }
-
-        .number-value {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            font-feature-settings: "tnum";
-            letter-spacing: 0.5px;
-        }
-
-        .number-status {
-            font-size: 15px;
-            color: var(--text-secondary);
-        }
-
-        .number-price {
-            text-align: right;
-        }
-
-        .price-amount {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-        }
-
-        .price-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .sold-badge {
-            background: var(--accent-red);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* Profile */
-        .profile-section {
-            background: var(--bg-primary);
-        }
-
-        .profile-header {
-            padding: 32px 16px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, #0088cc 100%);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 600;
+        }
+
+        .user-result:hover {
+            background: #f9f9f9;
+        }
+
+        .user-result:last-child {
+            border-bottom: none;
+        }
+
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .message-sent {
+            align-self: flex-end;
+            background: #0088cc;
             color: white;
-            margin: 0 auto 16px;
+            border-bottom-right-radius: 5px;
         }
 
-        .profile-username {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--text-primary);
+        .message-received {
+            align-self: flex-start;
+            background: #f0f0f0;
+            color: #333;
+            border-bottom-left-radius: 5px;
         }
 
-        .profile-join-date {
-            font-size: 15px;
-            color: var(--text-secondary);
-        }
-
-        .owned-section {
-            padding: 24px 16px;
-        }
-
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .section-subtitle {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.3;
-        }
-
-        .empty-text {
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-        }
-
-        .empty-subtext {
-            font-size: 14px;
+        .message-sender {
+            font-size: 12px;
             opacity: 0.7;
-            color: var(--text-tertiary);
+            margin-bottom: 3px;
         }
 
-        /* Purchase Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
+        .chat-input-container {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+            background: #f9f9f9;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .send-button {
+            background: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--bg-secondary);
-            border-radius: 14px;
-            padding: 24px;
-            max-width: 320px;
-            width: 100%;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .modal-number {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--text-primary);
-            font-feature-settings: "tnum";
-            letter-spacing: 0.5px;
-        }
-
-        .modal-price {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .modal-button {
-            flex: 1;
-            padding: 14px 16px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .modal-button.cancel {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .modal-button.buy {
-            background: var(--accent-blue);
-            color: white;
-        }
-
-        .modal-button:active {
-            opacity: 0.8;
-            transform: scale(0.98);
-        }
-
-        /* Loading */
-        .loading {
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
             text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-            font-size: 16px;
         }
 
-        /* Owned badge */
-        .owned-badge {
-            background: var(--accent-green);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
+        .success-message {
+            color: #2ecc71;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .welcome-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text {
+            color: #777;
+            margin-bottom: 30px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-title">Anonymous Numbers</div>
-            <div class="header-subtitle">
-                Collectible virtual numbers for private social accounts
+    <div class="container">
+        <div class="app-header">
+            <div class="app-logo">Telegram Messenger</div>
+            <div class="app-subtitle">Общайтесь с друзьями и находите новых</div>
+        </div>
+
+        <!-- Экран приветствия -->
+        <div class="card" id="welcomeScreen">
+            <div class="welcome-screen">
+                <div class="welcome-icon">💬</div>
+                <div class="welcome-title">Добро пожаловать!</div>
+                <div class="welcome-text">
+                    Это мини-приложение для общения с другими пользователями Telegram. 
+                    Вы можете найти друзей по никнейму и обмениваться сообщениями.
+                </div>
+                <button class="btn" id="startBtn">Начать общение</button>
             </div>
         </div>
 
-        <!-- Balance -->
-        <div class="balance-section">
-            <div class="balance-label">YOUR TELEGRAM STARS</div>
-            <div class="balance-amount" id="user-balance">650 STARS</div>
+        <!-- Экран авторизации -->
+        <div class="card hidden" id="authScreen">
+            <div class="user-info">
+                <div class="user-avatar" id="authAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="authName">Пользователь</div>
+                    <div class="user-username" id="authUsername">@username</div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Ваш никнейм</label>
+                <input type="text" class="input-field" id="usernameInput" placeholder="Придумайте уникальный никнейм">
+                <div class="error-message" id="usernameError"></div>
+            </div>
+            
+            <button class="btn" id="registerBtn">Зарегистрироваться</button>
+            <button class="btn btn-secondary" id="changeAccountBtn">Сменить аккаунт</button>
         </div>
 
-        <!-- Search -->
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="+777 Search numbers..." id="search-input">
-        </div>
+        <!-- Основной экран приложения -->
+        <div class="card hidden" id="mainScreen">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">Пользователь</div>
+                    <div class="user-username" id="userUsername">@username</div>
+                </div>
+                <button class="btn btn-secondary" id="logoutBtn" style="width: auto; padding: 8px 15px;">Выйти</button>
+            </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('market')">Marketplace</button>
-            <button class="tab" onclick="switchTab('profile')">My Numbers</button>
-        </div>
-
-        <div class="content">
-            <!-- Market Tab -->
-            <div id="market-tab" class="tab-content active">
-                <div class="numbers-list" id="numbers-list">
-                    <div class="loading">Loading numbers...</div>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Поиск пользователей по никнейму">
+                <div class="search-results hidden" id="searchResults">
+                    <!-- Результаты поиска будут здесь -->
                 </div>
             </div>
 
-            <!-- Profile Tab -->
-            <div id="profile-tab" class="tab-content">
-                <div class="profile-section">
-                    <div class="profile-header">
-                        <div class="profile-avatar" id="profile-avatar">U</div>
-                        <div class="profile-username" id="profile-username">User</div>
-                        <div class="profile-join-date" id="profile-join-date">Joined recently</div>
-                    </div>
-
-                    <div class="owned-section">
-                        <div class="section-title">My Collection</div>
-                        <div class="section-subtitle">
-                            Collectible virtual numbers for anonymous social accounts
-                        </div>
-                        <div id="owned-numbers-list">
-                            <div class="empty-state">
-                                <div class="empty-icon">📱</div>
-                                <div class="empty-text">No numbers purchased</div>
-                                <div class="empty-subtext">Get your first number in marketplace</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="chat-container">
+                <div class="chat-header" id="chatHeader">Выберите пользователя для общения</div>
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Сообщения будут здесь -->
                 </div>
-            </div>
-        </div>
-
-        <!-- Purchase Modal -->
-        <div class="modal-overlay" id="purchase-modal">
-            <div class="modal">
-                <div class="modal-title">Purchase Number</div>
-                <div class="modal-number" id="modal-number">+777 00 000 000</div>
-                <div class="modal-price">650 STARS</div>
-                <div class="modal-buttons">
-                    <button class="modal-button cancel" onclick="closeModal()">Cancel</button>
-                    <button class="modal-button buy" onclick="confirmPurchase()">Buy Now</button>
+                <div class="chat-input-container hidden" id="chatInputContainer">
+                    <input type="text" class="chat-input" id="messageInput" placeholder="Введите сообщение...">
+                    <button class="send-button" id="sendMessageBtn">➤</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        class FragmentNumbersApp {
-            #tg = window.Telegram.WebApp;
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.BackButton.hide();
+
+        // Элементы DOM
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const authScreen = document.getElementById('authScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const startBtn = document.getElementById('startBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const changeAccountBtn = document.getElementById('changeAccountBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const usernameInput = document.getElementById('usernameInput');
+        const usernameError = document.getElementById('usernameError');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatHeader = document.getElementById('chatHeader');
+        const chatInputContainer = document.getElementById('chatInputContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const authAvatar = document.getElementById('authAvatar');
+        const authName = document.getElementById('authName');
+        const authUsername = document.getElementById('authUsername');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userUsername = document.getElementById('userUsername');
+
+        // Данные приложения
+        let currentUser = null;
+        let currentChat = null;
+        let users = JSON.parse(localStorage.getItem('messenger_users') || '{}');
+        let messages = JSON.parse(localStorage.getItem('messenger_messages') || '{}');
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Получаем данные пользователя Telegram
+            const tgUser = tg.initDataUnsafe.user;
             
-            state = {
-                balance: 650,
-                purchasedNumbers: [],
-                userId: null,
-                username: 'User',
-                joinDate: null,
-                numbers: [],
-                selectedNumber: null,
-                filteredNumbers: []
-            };
-
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                this.#tg.expand();
-                this.#tg.enableClosingConfirmation();
-                this.setupUser();
-                this.loadState();
-                this.generateNumbers();
-                this.setupSearch();
-                this.updateUI();
-            }
-
-            setupUser() {
-                const user = this.#tg.initDataUnsafe.user;
-                this.state.userId = user?.id || Math.floor(Math.random() * 1000000000);
-                this.state.username = user?.first_name || `User${this.state.userId.toString().slice(-4)}`;
+            if (tgUser) {
+                // Показываем данные пользователя в форме авторизации
+                authAvatar.textContent = tgUser.first_name ? tgUser.first_name[0].toUpperCase() : 'U';
+                authName.textContent = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Пользователь Telegram';
+                authUsername.textContent = `@${tgUser.username || 'user'}`;
                 
-                if (!this.state.joinDate) {
-                    this.state.joinDate = new Date().toISOString();
-                }
-            }
-
-            generateNumbers() {
-                const numbers = [];
-                
-                // Generate 1000 random +777 numbers
-                for (let i = 0; i < 1000; i++) {
-                    const part1 = Math.floor(Math.random() * 100).toString().padStart(2, '0');
-                    const part2 = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                    const part3 = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                    numbers.push(`+777 ${part1} ${part2} ${part3}`);
-                }
-                
-                // Sort numbers for better display
-                numbers.sort();
-                this.state.numbers = numbers;
-                this.state.filteredNumbers = numbers;
-            }
-
-            setupSearch() {
-                const searchInput = document.getElementById('search-input');
-                searchInput.addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase();
-                    if (query.trim() === '') {
-                        this.state.filteredNumbers = this.state.numbers;
-                    } else {
-                        this.state.filteredNumbers = this.state.numbers.filter(number => 
-                            number.toLowerCase().includes(query)
-                        );
-                    }
-                    this.updateNumbersList();
-                });
-            }
-
-            loadState() {
-                const userKey = `fragmentNumbers_${this.state.userId}`;
-                const saved = localStorage.getItem(userKey);
-                
-                if (saved) {
-                    try {
-                        const parsed = JSON.parse(saved);
-                        this.state.balance = parsed.balance !== undefined ? parsed.balance : 650;
-                        this.state.purchasedNumbers = parsed.purchasedNumbers || [];
-                        this.state.joinDate = parsed.joinDate || this.state.joinDate;
-                    } catch (error) {
-                        console.error('Error loading state:', error);
-                    }
-                }
-                
-                this.saveState();
-            }
-
-            saveState() {
-                const userKey = `fragmentNumbers_${this.state.userId}`;
-                localStorage.setItem(userKey, JSON.stringify(this.state));
-            }
-
-            switchTab(tabName) {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-                event.target.classList.add('active');
-                document.getElementById(`${tabName}-tab`).classList.add('active');
-                
-                if (tabName === 'profile') {
-                    this.updateProfile();
-                }
-            }
-
-            showPurchaseModal(number) {
-                // Check if already sold globally
-                const globalSoldNumbers = JSON.parse(localStorage.getItem('globalSoldNumbers') || '[]');
-                if (globalSoldNumbers.includes(number)) {
-                    this.#tg.showPopup({
-                        title: 'Number Sold',
-                        message: 'This number has already been purchased by another user.',
-                        buttons: [{ type: 'ok' }]
-                    });
-                    return;
-                }
-
-                if (this.state.purchasedNumbers.includes(number)) {
-                    this.#tg.showPopup({
-                        title: 'Already Owned',
-                        message: 'You already own this number.',
-                        buttons: [{ type: 'ok' }]
-                    });
-                    return;
-                }
-
-                this.state.selectedNumber = number;
-                document.getElementById('modal-number').textContent = number;
-                document.getElementById('purchase-modal').classList.add('active');
-            }
-
-            closePurchaseModal() {
-                document.getElementById('purchase-modal').classList.remove('active');
-                this.state.selectedNumber = null;
-            }
-
-            async confirmPurchase() {
-                const number = this.state.selectedNumber;
-                const price = 650;
-
-                // Check global availability
-                const globalSoldNumbers = JSON.parse(localStorage.getItem('globalSoldNumbers') || '[]');
-                if (globalSoldNumbers.includes(number)) {
-                    this.#tg.showPopup({
-                        title: 'Number Sold',
-                        message: 'This number was just purchased by another user.',
-                        buttons: [{ type: 'ok' }]
-                    });
-                    this.closePurchaseModal();
-                    this.updateNumbersList();
-                    return;
-                }
-
-                if (this.state.balance < price) {
-                    this.#tg.showPopup({
-                        title: 'Insufficient Stars',
-                        message: `You need ${price} Telegram Stars to purchase this number.`,
-                        buttons: [{ type: 'ok' }]
-                    });
-                    return;
-                }
-
-                // Simulate Telegram Stars transfer
-                const confirmed = await new Promise((resolve) => {
-                    this.#tg.showPopup({
-                        title: 'Transfer Stars',
-                        message: `Transfer ${price} Telegram Stars to purchase ${number}?`,
-                        buttons: [
-                            {
-                                type: 'default',
-                                text: 'Transfer Stars',
-                            },
-                            {
-                                type: 'cancel',
-                                text: 'Cancel'
-                            }
-                        ]
-                    });
-                    
-                    setTimeout(() => resolve(true), 100);
-                });
-
-                if (!confirmed) return;
-
-                // Process purchase
-                this.state.balance -= price;
-                this.state.purchasedNumbers.push(number);
-                
-                // Mark as sold globally
-                globalSoldNumbers.push(number);
-                localStorage.setItem('globalSoldNumbers', JSON.stringify(globalSoldNumbers));
-                
-                this.#tg.HapticFeedback.impactOccurred('heavy');
-                
-                this.#tg.showPopup({
-                    title: 'Purchase Complete',
-                    message: `You purchased ${number} for ${price} Stars.`,
-                    buttons: [{ type: 'ok' }]
-                });
-
-                this.saveState();
-                this.closePurchaseModal();
-                this.updateUI();
-                this.updateProfile();
-            }
-
-            updateUI() {
-                // Update balance
-                document.getElementById('user-balance').textContent = `${this.state.balance} STARS`;
-                this.updateNumbersList();
-            }
-
-            updateNumbersList() {
-                const numbersList = document.getElementById('numbers-list');
-                const globalSoldNumbers = JSON.parse(localStorage.getItem('globalSoldNumbers') || '[]');
-                
-                if (this.state.filteredNumbers.length === 0) {
-                    numbersList.innerHTML = '<div class="loading">No numbers found</div>';
-                    return;
-                }
-
-                numbersList.innerHTML = this.state.filteredNumbers.map(number => {
-                    const isSold = globalSoldNumbers.includes(number);
-                    const isOwned = this.state.purchasedNumbers.includes(number);
-                    
-                    return `
-                        <div class="number-item ${isSold ? 'sold' : ''}" 
-                             onclick="${isSold ? '' : `app.showPurchaseModal('${number}')`}">
-                            <div class="number-info">
-                                <div class="number-value">${number}</div>
-                                <div class="number-status">Virtual Number</div>
-                            </div>
-                            <div class="number-price">
-                                ${isSold ? 
-                                    '<div class="sold-badge">SOLD</div>' : 
-                                    '<div class="price-amount">650 STARS</div><div class="price-label">Fixed price</div>'
-                                }
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            updateProfile() {
-                // Update profile info
-                document.getElementById('profile-avatar').textContent = this.state.username.charAt(0).toUpperCase();
-                document.getElementById('profile-username').textContent = this.state.username;
-                
-                const joinDate = new Date(this.state.joinDate);
-                document.getElementById('profile-join-date').textContent = 
-                    `Joined ${joinDate.toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    })}`;
-                
-                // Update owned numbers
-                const ownedList = document.getElementById('owned-numbers-list');
-                if (this.state.purchasedNumbers.length === 0) {
-                    ownedList.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">📱</div>
-                            <div class="empty-text">No numbers purchased</div>
-                            <div class="empty-subtext">Get your first number in marketplace</div>
-                        </div>
-                    `;
+                // Проверяем, есть ли пользователь в нашей базе
+                const userId = tgUser.id.toString();
+                if (users[userId]) {
+                    // Пользователь уже зарегистрирован - авторизуем автоматически
+                    currentUser = users[userId];
+                    showMainScreen();
                 } else {
-                    ownedList.innerHTML = this.state.purchasedNumbers.map(number => `
-                        <div class="number-item">
-                            <div class="number-info">
-                                <div class="number-value">${number}</div>
-                                <div class="number-status">Owned • Virtual Number</div>
-                            </div>
-                            <div class="number-price">
-                                <div class="owned-badge">OWNED</div>
-                            </div>
-                        </div>
-                    `).join('');
+                    // Пользователь новый - показываем экран регистрации
+                    showAuthScreen();
                 }
+            } else {
+                // Пользователь не авторизован в Telegram
+                showAuthScreen();
             }
-        }
-
-        // Global functions
-        function switchTab(tabName) {
-            app.switchTab(tabName);
-        }
-
-        function closeModal() {
-            app.closePurchaseModal();
-        }
-
-        function confirmPurchase() {
-            app.confirmPurchase();
-        }
-
-        // Initialize app
-        let app;
-        document.addEventListener('DOMContentLoaded', () => {
-            app = new FragmentNumbersApp();
         });
+
+        // Обработчики событий
+        startBtn.addEventListener('click', function() {
+            welcomeScreen.classList.add('hidden');
+            const tgUser = tg.initDataUnsafe.user;
+            
+            if (tgUser) {
+                const userId = tgUser.id.toString();
+                if (users[userId]) {
+                    currentUser = users[userId];
+                    showMainScreen();
+                } else {
+                    showAuthScreen();
+                }
+            } else {
+                showAuthScreen();
+            }
+        });
+
+        registerBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            
+            if (!username) {
+                usernameError.textContent = 'Введите никнейм';
+                return;
+            }
+            
+            // Проверяем, не занят ли никнейм
+            const isUsernameTaken = Object.values(users).some(user => 
+                user.username.toLowerCase() === username.toLowerCase()
+            );
+            
+            if (isUsernameTaken) {
+                usernameError.textContent = 'Этот никнейм уже занят';
+                return;
+            }
+            
+            // Регистрируем пользователя
+            const tgUser = tg.initDataUnsafe.user;
+            const userId = tgUser.id.toString();
+            
+            currentUser = {
+                id: userId,
+                firstName: tgUser.first_name || '',
+                lastName: tgUser.last_name || '',
+                username: username,
+                telegramUsername: tgUser.username || ''
+            };
+            
+            users[userId] = currentUser;
+            localStorage.setItem('messenger_users', JSON.stringify(users));
+            
+            showMainScreen();
+        });
+
+        changeAccountBtn.addEventListener('click', function() {
+            // Очищаем данные текущего пользователя
+            currentUser = null;
+            showAuthScreen();
+        });
+
+        logoutBtn.addEventListener('click', function() {
+            currentUser = null;
+            showAuthScreen();
+        });
+
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.trim().toLowerCase();
+            
+            if (query.length < 2) {
+                searchResults.classList.add('hidden');
+                return;
+            }
+            
+            // Ищем пользователей по никнейму
+            const results = Object.values(users).filter(user => 
+                user.username.toLowerCase().includes(query) && user.id !== currentUser.id
+            );
+            
+            displaySearchResults(results);
+        });
+
+        sendMessageBtn.addEventListener('click', function() {
+            sendMessage();
+        });
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Функции отображения экранов
+        function showAuthScreen() {
+            welcomeScreen.classList.add('hidden');
+            authScreen.classList.remove('hidden');
+            mainScreen.classList.add('hidden');
+            
+            // Очищаем поля
+            usernameInput.value = '';
+            usernameError.textContent = '';
+        }
+
+        function showMainScreen() {
+            welcomeScreen.classList.add('hidden');
+            authScreen.classList.add('hidden');
+            mainScreen.classList.remove('hidden');
+            
+            // Обновляем информацию о пользователе
+            userAvatar.textContent = currentUser.firstName ? currentUser.firstName[0].toUpperCase() : currentUser.username[0].toUpperCase();
+            userName.textContent = `${currentUser.firstName} ${currentUser.lastName}`.trim() || currentUser.username;
+            userUsername.textContent = `@${currentUser.username}`;
+            
+            // Очищаем поиск и чат
+            searchInput.value = '';
+            searchResults.classList.add('hidden');
+            chatMessages.innerHTML = '';
+            chatHeader.textContent = 'Выберите пользователя для общения';
+            chatInputContainer.classList.add('hidden');
+        }
+
+        // Функция отображения результатов поиска
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'user-result';
+                noResults.textContent = 'Пользователи не найдены';
+                searchResults.appendChild(noResults);
+            } else {
+                results.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.className = 'user-result';
+                    userElement.innerHTML = `
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                            display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 10px;">
+                            ${user.firstName ? user.firstName[0].toUpperCase() : user.username[0].toUpperCase()}
+                        </div>
+                        <div>
+                            <div style="font-weight: bold;">${user.firstName} ${user.lastName}</div>
+                            <div style="color: #777; font-size: 14px;">@${user.username}</div>
+                        </div>
+                    `;
+                    
+                    userElement.addEventListener('click', function() {
+                        openChat(user);
+                    });
+                    
+                    searchResults.appendChild(userElement);
+                });
+            }
+            
+            searchResults.classList.remove('hidden');
+        }
+
+        // Функция открытия чата с пользователем
+        function openChat(user) {
+            currentChat = user;
+            chatHeader.textContent = `Чат с @${user.username}`;
+            chatInputContainer.classList.remove('hidden');
+            
+            // Загружаем историю сообщений
+            loadChatHistory();
+            
+            // Скрываем результаты поиска
+            searchResults.classList.add('hidden');
+            searchInput.value = '';
+        }
+
+        // Функция загрузки истории чата
+        function loadChatHistory() {
+            chatMessages.innerHTML = '';
+            
+            const chatId = getChatId(currentUser.id, currentChat.id);
+            const chatMessagesList = messages[chatId] || [];
+            
+            if (chatMessagesList.length === 0) {
+                const noMessages = document.createElement('div');
+                noMessages.style.textAlign = 'center';
+                noMessages.style.color: '#777';
+                noMessages.style.padding = '20px';
+                noMessages.textContent = 'Нет сообщений. Начните общение!';
+                chatMessages.appendChild(noMessages);
+            } else {
+                chatMessagesList.forEach(msg => {
+                    displayMessage(msg);
+                });
+            }
+            
+            // Прокручиваем вниз
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Функция отправки сообщения
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            
+            if (!text || !currentChat) {
+                return;
+            }
+            
+            const message = {
+                id: Date.now(),
+                senderId: currentUser.id,
+                receiverId: currentChat.id,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Сохраняем сообщение
+            const chatId = getChatId(currentUser.id, currentChat.id);
+            if (!messages[chatId]) {
+                messages[chatId] = [];
+            }
+            messages[chatId].push(message);
+            localStorage.setItem('messenger_messages', JSON.stringify(messages));
+            
+            // Отображаем сообщение
+            displayMessage(message);
+            
+            // Очищаем поле ввода
+            messageInput.value = '';
+            
+            // Прокручиваем вниз
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Функция отображения сообщения
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            const isSent = message.senderId === currentUser.id;
+            
+            messageElement.className = `message ${isSent ? 'message-sent' : 'message-received'}`;
+            
+            if (!isSent) {
+                const senderElement = document.createElement('div');
+                senderElement.className = 'message-sender';
+                senderElement.textContent = `@${currentChat.username}`;
+                messageElement.appendChild(senderElement);
+            }
+            
+            const textElement = document.createElement('div');
+            textElement.textContent = message.text;
+            messageElement.appendChild(textElement);
+            
+            chatMessages.appendChild(messageElement);
+        }
+
+        // Вспомогательная функция для получения ID чата
+        function getChatId(user1, user2) {
+            return [user1, user2].sort().join('_');
+        }
     </script>
 </body>
 </html>
