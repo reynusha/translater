@@ -21,6 +21,7 @@
             --text-tertiary: #48484a;
             --accent-blue: #2ea6ff;
             --accent-green: #34c759;
+            --accent-red: #ff453a;
             --border-color: #38383a;
             --message-out: #2b5278;
             --message-in: #1e2c3a;
@@ -102,6 +103,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: opacity 0.2s ease;
+            margin-bottom: 12px;
         }
 
         .auth-button:active {
@@ -111,6 +113,22 @@
         .auth-button:disabled {
             background: var(--text-tertiary);
             cursor: not-allowed;
+        }
+
+        .auth-switch {
+            color: var(--accent-blue);
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: var(--accent-red);
+            font-size: 14px;
+            margin-bottom: 12px;
+            max-width: 300px;
         }
 
         /* Main App */
@@ -400,12 +418,6 @@
             margin-bottom: 8px;
         }
 
-        .profile-phone {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-
         .profile-input {
             width: 100%;
             padding: 12px 16px;
@@ -441,92 +453,17 @@
             color: var(--accent-blue);
         }
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--bg-secondary);
-            border-radius: 14px;
-            padding: 24px;
-            max-width: 320px;
-            width: 100%;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .modal-message {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .modal-code {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: 8px;
-            color: var(--accent-blue);
-        }
-
-        .modal-input {
+        .logout-button {
             width: 100%;
             padding: 12px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 16px;
-            text-align: center;
-            margin-bottom: 16px;
-            outline: none;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .modal-button {
-            flex: 1;
-            padding: 12px;
+            background: var(--accent-red);
+            color: white;
             border: none;
             border-radius: 8px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-        }
-
-        .modal-button.cancel {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .modal-button.confirm {
-            background: var(--accent-blue);
-            color: white;
+            margin-top: 8px;
         }
 
         /* Loading */
@@ -553,11 +490,30 @@
     <!-- Auth Screen -->
     <div class="auth-screen" id="auth-screen">
         <div class="auth-logo">DREVO</div>
-        <div class="auth-title">Welcome to DREVO</div>
-        <div class="auth-subtitle">The future of messaging</div>
         
-        <input type="tel" class="auth-input" id="phone-input" placeholder="Phone number" maxlength="15">
-        <button class="auth-button" onclick="sendVerificationCode()" id="send-code-btn">Send Code</button>
+        <!-- Register Form -->
+        <div id="register-form">
+            <div class="auth-title">Create Account</div>
+            <div class="auth-subtitle">Choose your unique username</div>
+            
+            <input type="text" class="auth-input" id="register-username" placeholder="Username (4-10 letters)" maxlength="10">
+            <input type="password" class="auth-input" id="register-password" placeholder="Password">
+            <div class="error-message" id="register-error"></div>
+            <button class="auth-button" onclick="register()">Create Account</button>
+            <button class="auth-switch" onclick="showLogin()">Already have an account?</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" style="display: none;">
+            <div class="auth-title">Welcome Back</div>
+            <div class="auth-subtitle">Sign in to your account</div>
+            
+            <input type="text" class="auth-input" id="login-username" placeholder="Username" maxlength="10">
+            <input type="password" class="auth-input" id="login-password" placeholder="Password">
+            <div class="error-message" id="login-error"></div>
+            <button class="auth-button" onclick="login()">Sign In</button>
+            <button class="auth-switch" onclick="showRegister()">Create new account?</button>
+        </div>
     </div>
 
     <!-- Main App -->
@@ -601,10 +557,11 @@
                     <div class="profile-section">
                         <div class="profile-avatar-large" onclick="changeAvatar()" id="profile-avatar-large">U</div>
                         <div class="profile-username" id="profile-username-display">@username</div>
-                        <div class="profile-phone" id="profile-phone">+7 XXX XXX XX XX</div>
                         
                         <input type="text" class="profile-input" id="username-input" placeholder="New username (4-10 letters)" maxlength="10">
-                        <button class="profile-save" onclick="updateUsername()">Save Changes</button>
+                        <input type="password" class="profile-input" id="password-input" placeholder="New password">
+                        <button class="profile-save" onclick="updateProfile()">Save Changes</button>
+                        <button class="logout-button" onclick="logout()">Logout</button>
                         
                         <div class="info-box">
                             Coming soon: Usernames will become collectible and can be sold for real currency. 4-letter usernames (like feed, boul, crow) will be available soon.
@@ -638,20 +595,6 @@
         </div>
     </div>
 
-    <!-- Verification Modal -->
-    <div class="modal-overlay" id="verification-modal">
-        <div class="modal">
-            <div class="modal-title">Verification Code</div>
-            <div class="modal-message">Enter the code sent to your phone</div>
-            <div class="modal-code" id="verification-code">1234</div>
-            <input type="text" class="modal-input" id="code-input" placeholder="Enter code" maxlength="4">
-            <div class="modal-buttons">
-                <button class="modal-button cancel" onclick="closeVerificationModal()">Cancel</button>
-                <button class="modal-button confirm" onclick="verifyCode()">Verify</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         class DREVOMessenger {
             constructor() {
@@ -659,7 +602,6 @@
                 this.users = new Map();
                 this.chats = new Map();
                 this.currentChat = null;
-                this.verificationCode = null;
                 
                 this.init();
             }
@@ -672,18 +614,15 @@
             }
 
             setupEventListeners() {
-                // Search functionality
                 document.getElementById('user-search').addEventListener('input', (e) => {
                     this.searchUsers(e.target.value);
                 });
 
-                // Message input auto-resize
                 document.getElementById('message-input').addEventListener('input', (e) => {
                     e.target.style.height = 'auto';
                     e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
                 });
 
-                // Enter key to send message
                 document.getElementById('message-input').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -697,10 +636,10 @@
                 if (savedUsers) {
                     this.users = new Map(JSON.parse(savedUsers));
                 } else {
-                    // Add some demo users
-                    this.addUser('john', '+1234567890');
-                    this.addUser('emma', '+1234567891');
-                    this.addUser('alex', '+1234567892');
+                    // Add demo users
+                    this.addUser('john', 'password123');
+                    this.addUser('emma', 'password123');
+                    this.addUser('alex', 'password123');
                     this.saveUsers();
                 }
             }
@@ -710,7 +649,7 @@
                 if (savedChats) {
                     this.chats = new Map(JSON.parse(savedChats));
                 this.updateChatsList();
-                this.updateChatWindow();
+                    this.updateChatWindow();
                 this.updateProfile();
             }
 
@@ -722,11 +661,11 @@
                 }
             }
 
-            addUser(username, phone) {
+            addUser(username, password) {
                 if (this.isUsernameValid(username) && !this.users.has(username)) {
                     this.users.set(username, {
                         username: username,
-                        phone: phone,
+                        password: password,
                         avatar: username.charAt(0).toUpperCase(),
                         createdAt: new Date().toISOString()
                     });
@@ -748,48 +687,64 @@
                 localStorage.setItem('drevo_chats', JSON.stringify([...this.chats]));
             }
 
-            sendVerificationCode() {
-                const phone = document.getElementById('phone-input').value.trim();
-                if (!phone) {
-                    alert('Please enter your phone number');
-                    return;
+            register(username, password) {
+                if (!this.isUsernameValid(username)) {
+                    return { success: false, error: 'Username must be 4-10 English letters only' };
                 }
 
-                // Generate random 4-digit code
-                this.verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
-                
-                // Show verification modal
-                document.getElementById('verification-code').textContent = this.verificationCode;
-                document.getElementById('verification-modal').classList.add('active');
-            }
-
-            verifyCode() {
-                const enteredCode = document.getElementById('code-input').value.trim();
-                
-                if (enteredCode === this.verificationCode) {
-                    this.completeRegistration();
-                } else {
-                    alert('Invalid verification code');
-                }
-            }
-
-            completeRegistration() {
-                const phone = document.getElementById('phone-input').value.trim();
-                
-                // Generate temporary username
-                let username = 'user' + Math.floor(1000 + Math.random() * 9000);
-                while (this.users.has(username)) {
-                    username = 'user' + Math.floor(1000 + Math.random() * 9000);
+                if (this.users.has(username)) {
+                    return { success: false, error: 'Username already taken' };
                 }
 
-                // Create user
-                this.addUser(username, phone);
+                if (!password || password.length < 4) {
+                    return { success: false, error: 'Password must be at least 4 characters' };
+                }
+
+                this.addUser(username, password);
                 this.currentUser = this.users.get(username);
                 localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
-                
-                this.closeVerificationModal();
-                this.showMainApp();
                 this.saveUsers();
+
+                return { success: true };
+            }
+
+            login(username, password) {
+                const user = this.users.get(username);
+                
+                if (!user) {
+                    return { success: false, error: 'User not found' };
+                }
+
+                if (user.password !== password) {
+                    return { success: false, error: 'Invalid password' };
+                }
+
+                this.currentUser = user;
+                localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
+                
+                return { success: true };
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('drevo_current_user');
+                this.showAuthScreen();
+            }
+
+            showAuthScreen() {
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('chat-window').style.display = 'none';
+                document.getElementById('register-form').style.display = 'block';
+                document.getElementById('login-form').style.display = 'none';
+                
+                // Clear forms
+                document.getElementById('register-username').value = '';
+                document.getElementById('register-password').value = '';
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                document.getElementById('register-error').textContent = '';
+                document.getElementById('login-error').textContent = '';
             }
 
             showMainApp() {
@@ -798,20 +753,13 @@
                 this.updateProfile();
             }
 
-            closeVerificationModal() {
-                document.getElementById('verification-modal').classList.remove('active');
-                document.getElementById('code-input').value = '';
-            }
-
             switchTab(tabName) {
-                // Update tabs
                 document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                 
                 event.target.classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
 
-                // Update header title
                 const titles = {
                     'chats': 'Chats',
                     'profile': 'Profile'
@@ -860,11 +808,9 @@
 
                 this.currentChat = username;
                 
-                // Hide chats list, show chat window
                 document.getElementById('chats-tab').style.display = 'none';
                 document.getElementById('chat-window').style.display = 'flex';
                 
-                // Update chat header
                 const user = this.users.get(username);
                 document.getElementById('chat-header-avatar').textContent = user.avatar;
                 document.getElementById('chat-header-username').textContent = '@' + username;
@@ -913,7 +859,6 @@
                     </div>
                 `).join('');
 
-                // Scroll to bottom
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
@@ -942,8 +887,7 @@
             }
 
             updateChatsList() {
-                // This would update the chats list with recent conversations
-                // For now, it's handled by search
+                // Handled by search
             }
 
             updateProfile() {
@@ -951,41 +895,49 @@
 
                 document.getElementById('profile-avatar-large').textContent = this.currentUser.avatar;
                 document.getElementById('profile-username-display').textContent = '@' + this.currentUser.username;
-                document.getElementById('profile-phone').textContent = this.currentUser.phone;
                 document.getElementById('username-input').value = this.currentUser.username;
+                document.getElementById('password-input').value = '';
             }
 
-            updateUsername() {
+            updateProfile() {
                 const newUsername = document.getElementById('username-input').value.trim();
+                const newPassword = document.getElementById('password-input').value;
                 
                 if (!this.isUsernameValid(newUsername)) {
                     alert('Username must be 4-10 English letters only');
                     return;
                 }
 
-                if (this.users.has(newUsername) && newUsername !== this.currentUser.username) {
-                    alert('Username already taken');
-                    return;
+                // If username changed, check availability
+                if (newUsername !== this.currentUser.username) {
+                    if (this.users.has(newUsername)) {
+                        alert('Username already taken');
+                        return;
+                    }
+
+                    // Update username - §ã§ä§Ñ§â§í§Û §ß§Ú§Ü §à§ã§Ó§à§Ò§à§Ø§Õ§Ñ§Ö§ä§ã§ñ!
+                    const oldUsername = this.currentUser.username;
+                    this.users.delete(oldUsername);
+                    
+                    this.currentUser.username = newUsername;
+                    this.currentUser.avatar = newUsername.charAt(0).toUpperCase();
                 }
 
-                // Update username
-                const oldUsername = this.currentUser.username;
-                this.users.delete(oldUsername);
-                
-                this.currentUser.username = newUsername;
-                this.currentUser.avatar = newUsername.charAt(0).toUpperCase();
-                this.users.set(newUsername, this.currentUser);
-                
+                // Update password if provided
+                if (newPassword && newPassword.length >= 4) {
+                    this.currentUser.password = newPassword;
+                }
+
+                this.users.set(this.currentUser.username, this.currentUser);
                 localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
                 this.saveUsers();
                 
                 this.updateProfile();
                 
-                alert('Username updated successfully! Soon usernames will become collectible and can be sold for real currency. 4-letter usernames will be available soon.');
+                alert('Profile updated successfully! Old username is now available for others.\n\nComing soon: Usernames will become collectible NFTs!');
             }
 
             changeAvatar() {
-                // Simple avatar change - cycle through colors
                 const avatars = ['U', 'A', 'B', 'C', 'D'];
                 const currentAvatar = document.getElementById('profile-avatar-large').textContent;
                 const currentIndex = avatars.indexOf(currentAvatar);
@@ -1005,24 +957,54 @@
         }
 
         // Global functions
+        function showLogin() {
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        }
+
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+
+        function register() {
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value;
+            const errorElement = document.getElementById('register-error');
+            
+            const result = messenger.register(username, password);
+            
+            if (result.success) {
+                messenger.showMainApp();
+            } else {
+                errorElement.textContent = result.error;
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            const result = messenger.login(username, password);
+            
+            if (result.success) {
+                messenger.showMainApp();
+            } else {
+                errorElement.textContent = result.error;
+            }
+        }
+
+        function logout() {
+            messenger.logout();
+        }
+
         function switchTab(tabName) {
             messenger.switchTab(tabName);
         }
 
-        function sendVerificationCode() {
-            messenger.sendVerificationCode();
-        }
-
-        function verifyCode() {
-            messenger.verifyCode();
-        }
-
-        function closeVerificationModal() {
-            messenger.closeVerificationModal();
-        }
-
-        function updateUsername() {
-            messenger.updateUsername();
+        function updateProfile() {
+            messenger.updateProfile();
         }
 
         function changeAvatar() {
@@ -1036,7 +1018,7 @@
         // Initialize messenger
         const messenger = new DREVOMessenger();
 
-        // Add back button functionality for chat window
+        // Back button for chat window
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('header-icon') && messenger.currentChat) {
                 messenger.closeChat();
