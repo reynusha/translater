@@ -1,10 +1,9 @@
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qentrum - Real Global Chat</title>
+    <title>Qentrum</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -135,8 +134,6 @@
             left: 8px;
             top: 8px;
         }
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
 .start-button {
             background: var(--accent-blue);
             color: white;
@@ -297,8 +294,6 @@
         .profile-view-item:active {
             background-color: var(--bg-secondary);
         }
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
 .chat-avatar {
             width: 48px;
             height: 48px;
@@ -453,8 +448,6 @@
             word-wrap: break-word;
             animation: messageAppear 0.3s ease-out;
         }
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
 @keyframes messageAppear {
             from {
                 opacity: 0;
@@ -607,7 +600,7 @@
             background-position: center;
         }
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
 .profile-avatar-large:active {
             transform: scale(0.95);
         }
@@ -766,8 +759,6 @@
         .slide-in {
             animation: slideIn 0.3s ease-out;
         }
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
 @keyframes slideIn {
             from { transform: translateX(100%); }
             to { transform: translateX(0); }
@@ -789,17 +780,9 @@
                 <div class="feature-item">Live online status and read receipts</div>
                 <div class="feature-item">Global chat - talk to anyone, anywhere</div>
             </div>
-
-            <div style="margin-bottom: 20px; width: 100%; max-width: 300px;">
-                <input type="text" id="user-id-input" placeholder="Enter your unique ID" 
-                       style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); text-align: center;">
-                <div style="font-size: 12px; color: var(--text-tertiary); margin-top: 5px;">
-                    Use different IDs to test multi-user chat
-                </div>
-            </div>
             
             <button class="start-button" id="start-button">
-                Connect to Global Chat
+                Start Messaging
             </button>
             
             <div class="legal-text">
@@ -810,7 +793,7 @@
 
     <div class="main-app" id="main-app">
         <div class="header">
-            <div class="header-title" id="header-title">Global Chat</div>
+            <div class="header-title" id="header-title">Chats</div>
             <div class="header-actions">
                 <div class="header-icon" id="search-button">
                     <i class="fas fa-search"></i>
@@ -831,8 +814,8 @@
                     </div>
                     <div id="chats-container">
                         <div class="empty-state">
-                            <div class="empty-title">No users online</div>
-                            <div class="empty-subtitle">Wait for other users to connect</div>
+                            <div class="empty-title">No conversations yet</div>
+                            <div class="empty-subtitle">Search for users to start chatting</div>
                         </div>
                     </div>
                 </div>
@@ -849,16 +832,15 @@
                                 <i class="fas fa-camera"></i>
                             </button>
                             <input type="file" id="avatar-upload" class="hidden-input" accept="image/*">
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-</div>
+                        </div>
                         <div class="profile-name" id="profile-name">Loading...</div>
                         <div class="profile-username" id="profile-username">No username set</div>
                         <div class="profile-bio" id="profile-bio">No bio yet</div>
                         
                         <input type="text" class="profile-input" id="username-input" placeholder="Set your username (4-10 letters)" maxlength="10">
                         <textarea class="profile-textarea" id="bio-input" placeholder="Write something about yourself... (max 150 characters)" maxlength="150"></textarea>
-                        <button class="profile-save" onclick="updateProfile()">Save Profile</button>
+                        
+<button class="profile-save" onclick="updateProfile()">Save Profile</button>
                         
                         <div class="info-box">
                             You're connected to global chat! Other users can find and message you.
@@ -927,9 +909,8 @@
                 <div class="profile-name" id="profile-view-display-name">Loading...</div>
                 <div class="profile-username" id="profile-view-display-username">No username</div>
                 <div class="profile-bio" id="profile-view-bio">No bio yet</div>
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-<button class="profile-action-button" onclick="messenger.openChatFromProfile()">
+                
+                <button class="profile-action-button" onclick="messenger.openChatFromProfile()">
                     Send Message
                 </button>
                 
@@ -947,7 +928,7 @@
 
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        class QentrumMessenger {
+class QentrumMessenger {
             constructor() {
                 this.currentUser = null;
                 this.users = new Map();
@@ -1014,12 +995,13 @@
 
             async startMessenger() {
                 const user = this.tg?.initDataUnsafe?.user;
-                const customUserId = document.getElementById('user-id-input').value.trim() || 'user_' + Math.random().toString(36).substr(2, 8);
                 
                 if (user) {
                     await this.handleTelegramUser(user);
                 } else {
-                    await this.handleCustomUser(customUserId);
+                    // Создаем случайного пользователя
+                    const randomId = 'user_' + Math.random().toString(36).substr(2, 8);
+                    await this.handleCustomUser(randomId);
                 }
                 
                 document.getElementById('welcome-screen').style.display = 'none';
@@ -1029,8 +1011,7 @@
                 this.startRealtimeListeners();
             }
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-async handleCustomUser(userId) {
+            async handleCustomUser(userId) {
                 // Пробуем загрузить существующего пользователя
                 const { data: existingUser, error: fetchError } = await supabase
                     .from('users')
@@ -1044,11 +1025,11 @@ async handleCustomUser(userId) {
                     userData = existingUser;
                 } else {
                     // Создаем нового пользователя
-                    userData = {
+userData = {
                         id: userId,
-                        first_name: 'User_' + userId,
+                        first_name: 'User_' + userId.substr(0, 4),
                         last_name: '',
-                        username: 'user_' + userId,
+                        username: 'user_' + userId.substr(0, 4),
                         avatar_url: '',
                         bio: '',
                         is_online: true
@@ -1134,9 +1115,7 @@ async handleCustomUser(userId) {
                 // Слушаем новых пользователей
                 this.usersSubscription = supabase
                     .channel('online-users')
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-.on('postgres_changes', 
+                    .on('postgres_changes', 
                         { event: '*', schema: 'public', table: 'users' },
                         (payload) => {
                             if (payload.new.id !== this.currentUser?.id) {
@@ -1156,7 +1135,8 @@ async handleCustomUser(userId) {
             async updateOnlineStatus() {
                 if (!this.currentUser) return;
 
-                const { error } = await supabase
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+const { error } = await supabase
                     .from('users')
                     .update({ 
                         is_online: true,
@@ -1195,7 +1175,7 @@ async handleCustomUser(userId) {
                 document.getElementById(${tabName}-tab).classList.add('active');
 
                 const titles = {
-                    'chats': 'Global Chat',
+                    'chats': 'Chats',
                     'profile': 'Profile'
                 };
                 document.getElementById('header-title').textContent = titles[tabName];
@@ -1217,16 +1197,14 @@ async handleCustomUser(userId) {
                 const chatItems = Array.from(this.users.values()).map(user => {
                     return 
                         <div class="chat-item" onclick="messenger.openChat('${user.id}')">
-                            <div class="chat-avatar" style="${user.avatar_url ? background-image: url(${user.avatar_url})` : ''}">
+                            <div class="chat-avatar" style="${user.avatar_url ? background-image: url(${user.avatar_url}) : ''}">
                                 ${user.avatar_url ? '' : (user.first_name?.charAt(0) || 'U')}
                                 <div class="online-status ${user.is_online ? 'online' : 'offline'}"></div>
                             </div>
                             <div class="chat-info">
                                 <div class="chat-name">${user.first_name} ${user.last_name}</div>
-
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-${user.username ? <div class="chat-username">@${user.username}</div> : ''}
-                                <div class="chat-last-message">Click to view profile or chat</div>
+                                ${user.username ? <div class="chat-username">@${user.username}</div> : ''}
+                                <div class="chat-last-message">${user.bio || 'Click to chat'}</div>
                             </div>
                             <div class="header-icon" onclick="event.stopPropagation(); messenger.viewProfile('${user.id}')">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -1246,7 +1224,8 @@ ${user.username ? <div class="chat-username">@${user.username}</div> : ''}
                     return;
                 }
 
-                const searchTerm = query.toLowerCase();
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+const searchTerm = query.toLowerCase();
                 const results = Array.from(this.users.values())
                     .filter(user => {
                         const nameMatch = user.first_name.toLowerCase().includes(searchTerm) ||
@@ -1254,7 +1233,7 @@ ${user.username ? <div class="chat-username">@${user.username}</div> : ''}
                         const usernameMatch = user.username && user.username.toLowerCase().includes(searchTerm);
                         const bioMatch = user.bio && user.bio.toLowerCase().includes(searchTerm);
                         
-                        return nameMatch || usernameMatch || bioMatch;
+                        return nameMatch  usernameMatch  bioMatch;
                     });
 
                 if (results.length === 0) {
@@ -1276,13 +1255,13 @@ ${user.username ? <div class="chat-username">@${user.username}</div> : ''}
                         <div class="chat-info">
                             <div class="chat-name">${user.first_name} ${user.last_name}</div>
                             ${user.username ? <div class="chat-username">@${user.username}</div> : ''}
-                            ${user.bio ? <div class="chat-last-message">${user.bio}</div> : '<div class="chat-last-message">No bio</div>'}
+                            <div class="chat-last-message">${user.bio || 'Available to chat'}</div>
                         </div>
                         <div class="header-icon" onclick="event.stopPropagation(); messenger.viewProfile('${user.id}')">
                             <i class="fas fa-ellipsis-v"></i>
                         </div>
                     </div>
-                `).join('');
+                ).join('');
             }
 
             async openChat(userId) {
@@ -1306,8 +1285,7 @@ ${user.username ? <div class="chat-username">@${user.username}</div> : ''}
             async loadMessages() {
                 if (!this.currentChat || !this.currentUser) return;
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-const chatId = this.getChatKey(this.currentUser.id, this.currentChat);
+                const chatId = this.getChatKey(this.currentUser.id, this.currentChat);
                 
                 try {
                     const { data: messages, error } = await supabase
@@ -1326,7 +1304,9 @@ const chatId = this.getChatKey(this.currentUser.id, this.currentChat);
                     }
                     
                     this.messageSubscription = supabase
-                        .channel(messages:${chatId})
+
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+.channel(messages:${chatId})
                         .on('postgres_changes', 
                             { event: 'INSERT', schema: 'public', table: 'messages', filter: chat_id=eq.${chatId} },
                             (payload) => {
@@ -1393,8 +1373,7 @@ const chatId = this.getChatKey(this.currentUser.id, this.currentChat);
             async sendMessage() {
                 if (!this.currentChat || !this.currentUser) return;
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-const messageInput = document.getElementById('message-input');
+                const messageInput = document.getElementById('message-input');
                 const text = messageInput.value.trim();
 
                 if (!text) return;
@@ -1416,7 +1395,8 @@ const messageInput = document.getElementById('message-input');
 
                     if (error) throw error;
 
-                    messageInput.value = '';
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+messageInput.value = '';
                     this.autoResizeTextarea(messageInput);
                     this.updateSendButton();
 
@@ -1491,15 +1471,15 @@ const messageInput = document.getElementById('message-input');
                 document.getElementById('profile-view').style.display = 'flex';
                 document.getElementById('profile-view').classList.add('slide-in');
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-// Обновляем данные профиля
+                // Обновляем данные профиля
                 const avatarElement = document.getElementById('profile-view-avatar');
                 const nameElement = document.getElementById('profile-view-display-name');
                 const usernameElement = document.getElementById('profile-view-display-username');
                 const bioElement = document.getElementById('profile-view-bio');
                 const statusElement = document.getElementById('profile-view-status');
 
-                if (user.avatar_url) {
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+if (user.avatar_url) {
                     avatarElement.style.backgroundImage = url(${user.avatar_url});
                     document.getElementById('profile-view-avatar-icon').style.display = 'none';
                 } else {
@@ -1579,13 +1559,13 @@ const messageInput = document.getElementById('message-input');
             async handleImageUpload(file) {
                 if (!file  !this.currentChat  !this.currentUser) return;
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-const reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = async (e) => {
                     const imageUrl = e.target.result;
                     const chatId = this.getChatKey(this.currentUser.id, this.currentChat);
-                    
-                    const newMessage = {
+
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+const newMessage = {
                         chat_id: chatId,
                         sender_id: this.currentUser.id,
                         text: '',
@@ -1677,8 +1657,7 @@ const reader = new FileReader();
                     usernameInput.value = '';
                 }
 
-† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:23]
-if (this.currentUser.bio) {
+                if (this.currentUser.bio) {
                     profileBio.textContent = this.currentUser.bio;
                     bioInput.value = this.currentUser.bio;
                 } else {
@@ -1686,7 +1665,8 @@ if (this.currentUser.bio) {
                     bioInput.value = '';
                 }
 
-                if (this.currentUser.avatar_url) {
+† ᴄʟᴀɴꜰꜰʏs, [06.10.2025 1:48]
+if (this.currentUser.avatar_url) {
                     avatarLarge.style.backgroundImage = url(${this.currentUser.avatar_url});
                     document.getElementById('profile-avatar-icon').style.display = 'none';
                 } else {
