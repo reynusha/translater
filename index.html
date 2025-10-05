@@ -48,7 +48,7 @@
 
         /* Welcome Screen */
         .welcome-screen {
-            display: none;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -849,8 +849,10 @@
 
             init() {
                 this.tg = window.Telegram.WebApp;
-                this.tg.expand();
-                this.tg.enableClosingConfirmation();
+                if (this.tg) {
+                    this.tg.expand();
+                    this.tg.enableClosingConfirmation();
+                }
                 
                 this.loadUsers();
                 this.loadChats();
@@ -859,12 +861,10 @@
             }
 
             setupEventListeners() {
-                // Search functionality
                 document.getElementById('user-search').addEventListener('input', (e) => {
                     this.searchUsers(e.target.value);
                 });
 
-                // Message input auto-resize and send on Enter
                 const messageInput = document.getElementById('message-input');
                 messageInput.addEventListener('input', (e) => {
                     this.autoResizeTextarea(e.target);
@@ -878,37 +878,22 @@
                     }
                 });
 
-                // Start button
                 document.getElementById('start-button').addEventListener('click', () => {
                     this.startMessenger();
                 });
 
-                // Avatar upload
                 document.getElementById('avatar-upload').addEventListener('change', (e) => {
                     this.handleAvatarUpload(e.target.files[0]);
                 });
 
-                // Image upload for messages
                 document.getElementById('image-upload').addEventListener('change', (e) => {
                     this.handleImageUpload(e.target.files[0]);
                 });
             }
 
             checkFirstTimeUser() {
-                const hasVisited = localStorage.getItem('qentrum_has_visited');
-                const user = this.tg.initDataUnsafe?.user;
-                
-                if (user) {
-                    this.handleTelegramUser(user);
-                    if (!hasVisited) {
-                        this.showWelcomeScreen();
-                        localStorage.setItem('qentrum_has_visited', 'true');
-                    } else {
-                        this.showMainApp();
-                    }
-                } else {
-                    this.showWelcomeScreen();
-                }
+                // ����֧ԧէ� ���ܧѧ٧��ӧѧ֧� Welcome Screen ���� �٧ѧԧ��٧ܧ�
+                this.showWelcomeScreen();
             }
 
             showWelcomeScreen() {
@@ -918,7 +903,7 @@
             }
 
             startMessenger() {
-                const user = this.tg.initDataUnsafe?.user;
+                const user = this.tg?.initDataUnsafe?.user;
                 if (user) {
                     this.handleTelegramUser(user);
                 } else {
@@ -928,7 +913,6 @@
                 document.getElementById('welcome-screen').style.display = 'none';
                 document.getElementById('main-app').style.display = 'flex';
                 document.getElementById('main-app').classList.add('fade-in');
-                localStorage.setItem('qentrum_has_visited', 'true');
             }
 
             createDemoUser() {
@@ -969,8 +953,6 @@
                 this.onlineUsers.add(userId);
                 this.saveUsers();
                 this.updateProfile();
-                
-                // Create some demo contacts
                 this.createDemoContacts();
             }
 
@@ -1052,10 +1034,13 @@
             saveUsers() {
                 try {
                     localStorage.setItem('qentrum_users', JSON.stringify([...this.users]));
-                this.updateChatsList();
-                this.updateProfile();
-                if (this.currentChat) {
-                    this.updateChatHeader();
+                    this.updateChatsList();
+                    this.updateProfile();
+                    if (this.currentChat) {
+                        this.updateChatHeader();
+                    }
+                } catch (error) {
+                    console.log('Error saving users:', error);
                 }
             }
 
@@ -1094,9 +1079,8 @@
 
             updateChatsList() {
                 const chatsContainer = document.getElementById('chats-container');
-                
-                // Get all users we have chats with
                 const chatPartners = new Set();
+                
                 this.chats.forEach((messages, chatKey) => {
                     const [user1, user2] = chatKey.split('_');
                     if (user1 === this.currentUser?.id) {
@@ -1124,7 +1108,7 @@
                     const messages = this.chats.get(chatKey) || [];
                     const lastMessage = messages[messages.length - 1];
                     const lastMessageText = lastMessage ? 
-                        (lastMessage.imageUrl ? '📷 Photo' : lastMessage.text) : 
+                        (lastMessage.imageUrl ? '�9�1 Photo' : lastMessage.text) : 
                         'No messages yet';
 
                     return `
@@ -1193,27 +1177,22 @@
 
             openChat(userId) {
                 if (!this.users.has(userId) || !this.currentUser) return;
+
                 const user = this.users.get(userId);
                 this.currentChat = userId;
 
-                // Создаем чат, если его нет
                 const chatKey = this.getChatKey(this.currentUser.id, userId);
                 if (!this.chats.has(chatKey)) {
                     this.chats.set(chatKey, []);
                 }
 
-                // Обновляем интерфейс
                 document.getElementById('main-app').style.display = 'none';
                 document.getElementById('chat-window').style.display = 'flex';
                 document.getElementById('chat-window').classList.add('slide-in');
 
-                // Обновляем заголовок чата
                 this.updateChatHeader();
-                
-                // Показываем сообщения
                 this.updateChatWindow();
 
-                // Фокусируемся на поле ввода
                 setTimeout(() => {
                     document.getElementById('message-input').focus();
                 }, 300);
@@ -1224,12 +1203,10 @@
                 document.getElementById('main-app').style.display = 'flex';
                 this.currentChat = null;
                 
-                // Очищаем поле ввода
                 document.getElementById('message-input').value = '';
                 this.autoResizeTextarea(document.getElementById('message-input'));
                 this.updateSendButton();
                 
-                // Обновляем список чатов
                 this.updateChatsList();
             }
 
@@ -1244,7 +1221,6 @@
                 const statusElement = document.getElementById('chat-header-status');
                 const onlineStatusElement = document.getElementById('chat-online-status');
 
-                // Устанавливаем аватар
                 if (user.avatarUrl) {
                     avatarElement.style.backgroundImage = `url(${user.avatarUrl})`;
                     avatarElement.innerHTML = '';
@@ -1253,10 +1229,8 @@
                     avatarElement.innerHTML = user.avatar;
                 }
 
-                // Устанавливаем имя
                 nameElement.textContent = `${user.firstName} ${user.lastName}`.trim();
 
-                // Устанавливаем статус
                 if (user.isOnline) {
                     statusElement.textContent = 'Online';
                     onlineStatusElement.className = 'online-status online';
@@ -1308,7 +1282,6 @@
                     `;
                 }).join('');
 
-                // Прокручиваем вниз
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
@@ -1335,18 +1308,12 @@
                 this.chats.set(chatKey, messages);
                 this.saveChats();
 
-                // Очищаем поле ввода
                 messageInput.value = '';
                 this.autoResizeTextarea(messageInput);
                 this.updateSendButton();
 
-                // Обновляем окно чата
                 this.updateChatWindow();
-                
-                // Обновляем список чатов
                 this.updateChatsList();
-
-                // УБРАЛ СИМУЛЯЦИЮ ОТВЕТА - теперь только реальные сообщения
             }
 
             handleImageUpload(file) {
@@ -1373,7 +1340,6 @@
                     this.updateChatWindow();
                     this.updateChatsList();
 
-                    // Очищаем input
                     document.getElementById('image-upload').value = '';
                 };
 
@@ -1388,12 +1354,10 @@
                     this.currentUser.avatarUrl = e.target.result;
                     this.saveUsers();
                     
-                    // Обновляем аватар в профиле
                     const avatarLarge = document.getElementById('profile-avatar-large');
                     avatarLarge.style.backgroundImage = `url(${this.currentUser.avatarUrl})`;
                     avatarLarge.innerHTML = '';
                     
-                    // Обновляем аватар в чатах если нужно
                     this.updateChatsList();
                 };
 
@@ -1416,7 +1380,6 @@
                     return;
                 }
 
-                // Проверяем, что username содержит только буквы и цифры
                 if (!/^[a-zA-Z0-9]+$/.test(username)) {
                     alert('Username can only contain letters and numbers');
                     return;
@@ -1424,8 +1387,6 @@
 
                 this.currentUser.username = username;
                 this.saveUsers();
-
-                // Показываем подтверждение
                 alert('Username updated successfully!');
             }
 
@@ -1447,7 +1408,6 @@
                     usernameInput.value = '';
                 }
 
-                // Обновляем аватар
                 if (this.currentUser.avatarUrl) {
                     avatarLarge.style.backgroundImage = `url(${this.currentUser.avatarUrl})`;
                     avatarLarge.innerHTML = '';
@@ -1468,7 +1428,6 @@
             }
 
             openImage(imageUrl) {
-                // Простой просмотр изображения
                 const imageView = document.createElement('div');
                 imageView.style.cssText = `
                     position: fixed;
@@ -1494,7 +1453,7 @@
                         color: white;
                         font-size: 24px;
                         cursor: pointer;
-                    ">×</button>
+                    ">��</button>
                 `;
                 
                 imageView.addEventListener('click', (e) => {
@@ -1507,7 +1466,6 @@
             }
         }
 
-        // Глобальные функции для вызова из HTML
         function switchTab(tabName) {
             messenger.switchTab(tabName);
         }
@@ -1524,15 +1482,12 @@
             messenger.updateUsername();
         }
 
-        // Инициализация приложения
         const messenger = new QentrumMessenger();
 
-        // Периодическое обновление онлайн статуса
         setInterval(() => {
             messenger.updateOnlineStatus();
         }, 30000);
 
-        // Инициализация онлайн статуса
         setTimeout(() => {
             messenger.updateOnlineStatus();
         }, 1000);
