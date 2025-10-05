@@ -4,40 +4,64 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ZERKONTO</title>
-<!-- Стиль в стиле Telegram -->
+<!-- Стиль в стиле Telegram с градиентами и цветами -->
 <style>
   body {
     margin: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #ffffff;
+    background-color: #f0f0f0;
     color: #222;
+  }
+  /* Заголовок и вкладки */
+  .tabs {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    height: 100vh;
+    background: linear-gradient(90deg, #0088cc, #006fa1);
   }
-  header {
-    width: 100%;
-    padding: 20px;
-    background-color: #0088cc;
+  .tab {
+    flex: 1;
+    padding: 14px;
+    cursor: pointer;
+    text-align: center;
     color: #fff;
-    text-align: center;
-    font-size: 24px;
     font-weight: bold;
+    transition: background 0.3s;
   }
-  section {
+  .tab:hover, .tab.active {
+    background-color: rgba(0, 136, 204, 0.8);
+  }
+  /* Контент вкладок */
+  .content {
+    display: none;
     padding: 20px;
-    max-width: 400px;
-    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
   }
+  .content.active {
+    display: block;
+  }
+  /* Оформление текста */
   h1 {
-    margin: 0 0 10px 0;
+    font-size: 24px;
+    margin-bottom: 10px;
   }
   p {
     font-size: 16px;
-    line-height: 1.4;
+    line-height: 1.5;
   }
+  /* Постер */
+  .poster {
+    margin: 20px 0;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 100%;
+  }
+  .poster img {
+    width: 100%;
+    display: block;
+  }
+  /* Кнопка */
   .button {
     display: inline-block;
     margin-top: 20px;
@@ -45,24 +69,3 @@
     background-color: #0088cc;
     color: #fff;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-  .button:hover {
-    background-color: #006fa1;
-  }
-</style>
-</head>
-<body>
-
-<header>ZERKONTO</header>
-
-<section>
-  <h1>Премиум аккаунты Telegram</h1>
-  <p>Более года мы продаем Telegram аккаунты с номерами из разных стран. Быстро, надежно и безопасно.</p>
-  <a class="button" href="https://t.me/clanffys" target="_blank">Купить</a>
-</section>
-
-</body>
-</html>
