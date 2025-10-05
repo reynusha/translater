@@ -48,7 +48,7 @@
 
         /* Welcome Screen */
         .welcome-screen {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -160,11 +160,6 @@
             color: var(--text-tertiary);
             max-width: 300px;
             line-height: 1.4;
-        }
-
-        .legal-link {
-            color: var(--accent-blue);
-            text-decoration: none;
         }
 
         /* Main App */
@@ -306,6 +301,8 @@
             font-size: 18px;
             flex-shrink: 0;
             position: relative;
+            background-size: cover;
+            background-position: center;
         }
 
         .online-status {
@@ -395,6 +392,8 @@
             color: white;
             flex-shrink: 0;
             position: relative;
+            background-size: cover;
+            background-position: center;
         }
 
         .chat-header-info {
@@ -461,6 +460,12 @@
             border-bottom-left-radius: 4px;
         }
 
+        .message-image {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+
         .message-time {
             font-size: 11px;
             color: var(--text-secondary);
@@ -472,9 +477,24 @@
             padding: 12px 16px;
             border-top: 1px solid var(--border-color);
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: flex-end;
             background: var(--bg-primary);
+        }
+
+        .attachment-button {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .attachment-button:active {
+            background-color: var(--bg-secondary);
         }
 
         .message-input {
@@ -539,6 +559,12 @@
             border: 1px solid var(--border-color);
         }
 
+        .profile-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto 20px;
+        }
+
         .profile-avatar-large {
             width: 100px;
             height: 100px;
@@ -550,15 +576,33 @@
             font-size: 36px;
             font-weight: 600;
             color: white;
-            margin: 0 auto 20px;
             cursor: pointer;
             border: 4px solid var(--bg-primary);
             transition: transform 0.2s ease;
             flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
         }
 
         .profile-avatar-large:active {
             transform: scale(0.95);
+        }
+
+        .avatar-upload-button {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .profile-name {
@@ -641,6 +685,11 @@
             opacity: 0.7;
         }
 
+        /* Hidden file input */
+        .hidden-input {
+            display: none;
+        }
+
         /* Transition animations */
         .fade-in {
             animation: fadeIn 0.3s ease-out;
@@ -697,9 +746,6 @@
                 <div class="header-icon" id="search-button">
                     <i class="fas fa-search"></i>
                 </div>
-                <div class="header-icon" id="new-chat-button">
-                    <i class="fas fa-edit"></i>
-                </div>
             </div>
         </div>
 
@@ -730,11 +776,17 @@
             <div id="profile-tab" class="tab-content">
                 <div class="profile-content">
                     <div class="profile-section">
-                        <div class="profile-avatar-large" id="profile-avatar-large">
-                            <i class="fas fa-user"></i>
+                        <div class="profile-avatar-container">
+                            <div class="profile-avatar-large" id="profile-avatar-large">
+                                <i class="fas fa-user" id="profile-avatar-icon"></i>
+                            </div>
+                            <button class="avatar-upload-button" onclick="document.getElementById('avatar-upload').click()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <input type="file" id="avatar-upload" class="hidden-input" accept="image/*">
                         </div>
                         <div class="profile-name" id="profile-name">Loading...</div>
-                        <div class="profile-username" id="profile-username">@username</div>
+                        <div class="profile-username" id="profile-username">No username set</div>
                         
                         <input type="text" class="profile-input" id="username-input" placeholder="Set your username (4-10 letters)" maxlength="10">
                         <button class="profile-save" onclick="updateUsername()">Save Username</button>
@@ -771,6 +823,10 @@
         </div>
         
         <div class="message-input-container">
+            <button class="attachment-button" onclick="document.getElementById('image-upload').click()">
+                <i class="fas fa-image"></i>
+            </button>
+            <input type="file" id="image-upload" class="hidden-input" accept="image/*">
             <textarea class="message-input" placeholder="Type a message..." id="message-input" rows="1"></textarea>
             <button class="send-button" id="send-button" onclick="sendMessage()">
                 <i class="fas fa-paper-plane"></i>
@@ -799,12 +855,7 @@
                 this.loadUsers();
                 this.loadChats();
                 this.setupEventListeners();
-                this.showWelcomeScreen();
-                
-                // Simulate some users being online
-                setInterval(() => {
-                    this.updateOnlineStatus();
-                }, 30000);
+                this.checkFirstTimeUser();
             }
 
             setupEventListeners() {
@@ -832,10 +883,32 @@
                     this.startMessenger();
                 });
 
-                // Profile avatar click
-                document.getElementById('profile-avatar-large').addEventListener('click', () => {
-                    this.changeAvatar();
+                // Avatar upload
+                document.getElementById('avatar-upload').addEventListener('change', (e) => {
+                    this.handleAvatarUpload(e.target.files[0]);
                 });
+
+                // Image upload for messages
+                document.getElementById('image-upload').addEventListener('change', (e) => {
+                    this.handleImageUpload(e.target.files[0]);
+                });
+            }
+
+            checkFirstTimeUser() {
+                const hasVisited = localStorage.getItem('qentrum_has_visited');
+                const user = this.tg.initDataUnsafe?.user;
+                
+                if (user) {
+                    this.handleTelegramUser(user);
+                    if (!hasVisited) {
+                        this.showWelcomeScreen();
+                        localStorage.setItem('qentrum_has_visited', 'true');
+                    } else {
+                        this.showMainApp();
+                    }
+                } else {
+                    this.showWelcomeScreen();
+                }
             }
 
             showWelcomeScreen() {
@@ -849,22 +922,23 @@
                 if (user) {
                     this.handleTelegramUser(user);
                 } else {
-                    // Create demo user for testing outside Telegram
                     this.createDemoUser();
                 }
                 
                 document.getElementById('welcome-screen').style.display = 'none';
                 document.getElementById('main-app').style.display = 'flex';
                 document.getElementById('main-app').classList.add('fade-in');
+                localStorage.setItem('qentrum_has_visited', 'true');
             }
 
             createDemoUser() {
                 const demoUser = {
                     id: 'demo_user',
-                    firstName: 'Telegram',
-                    lastName: 'User',
-                    username: 'telegramuser',
-                    avatar: 'T',
+                    firstName: 'User',
+                    lastName: '',
+                    username: '',
+                    avatar: 'U',
+                    avatarUrl: '',
                     isOnline: true
                 };
                 this.handleTelegramUser(demoUser);
@@ -875,10 +949,11 @@
                 
                 const userData = {
                     id: userId,
-                    firstName: tgUser.first_name || 'Telegram',
-                    lastName: tgUser.last_name || 'User',
+                    firstName: tgUser.first_name || 'User',
+                    lastName: tgUser.last_name || '',
                     username: tgUser.username || '',
-                    avatar: (tgUser.first_name?.charAt(0) || 'T').toUpperCase(),
+                    avatar: (tgUser.first_name?.charAt(0) || 'U').toUpperCase(),
+                    avatarUrl: '',
                     isOnline: true,
                     lastSeen: Date.now()
                 };
@@ -901,17 +976,18 @@
 
             createDemoContacts() {
                 const contacts = [
-                    { id: 'user1', firstName: 'Alex', lastName: 'Johnson', username: 'alexj', avatar: 'A', isOnline: true },
-                    { id: 'user2', firstName: 'Sarah', lastName: 'Miller', username: 'sarahm', avatar: 'S', isOnline: false },
-                    { id: 'user3', firstName: 'Mike', lastName: 'Davis', username: 'miked', avatar: 'M', isOnline: true },
-                    { id: 'user4', firstName: 'Emma', lastName: 'Wilson', username: 'emmaw', avatar: 'E', isOnline: true }
+                    { id: 'user1', firstName: 'Alex', lastName: '', username: 'alexj', avatar: 'A', isOnline: true },
+                    { id: 'user2', firstName: 'Sarah', lastName: '', username: 'sarahm', avatar: 'S', isOnline: false },
+                    { id: 'user3', firstName: 'Mike', lastName: '', username: 'miked', avatar: 'M', isOnline: true },
+                    { id: 'user4', firstName: 'Emma', lastName: '', username: 'emmaw', avatar: 'E', isOnline: true }
                 ];
 
                 contacts.forEach(contact => {
                     if (!this.users.has(contact.id)) {
                         this.users.set(contact.id, {
                             ...contact,
-                            lastSeen: Date.now() - (contact.isOnline ? 0 : 3600000) // 1 hour ago if offline
+                            avatarUrl: '',
+                            lastSeen: Date.now() - (contact.isOnline ? 0 : 3600000)
                         });
                     }
                 });
@@ -931,10 +1007,9 @@
             }
 
             updateOnlineStatus() {
-                // Simulate online status changes
                 this.users.forEach((user, userId) => {
                     if (userId !== this.currentUser?.id) {
-                        const shouldBeOnline = Math.random() > 0.3; // 70% chance to be online
+                        const shouldBeOnline = Math.random() > 0.3;
                         user.isOnline = shouldBeOnline;
                         user.lastSeen = Date.now();
                     }
@@ -943,6 +1018,7 @@
                 if (this.currentChat) {
                     this.updateChatHeader();
                 }
+                this.updateChatsList();
             }
 
             loadUsers() {
@@ -976,17 +1052,30 @@
             saveUsers() {
                 try {
                     localStorage.setItem('qentrum_users', JSON.stringify([...this.users]));
-                } catch (error) {
-                    console.log('Error saving users:', error);
+                this.updateChatsList();
+                this.updateProfile();
+                if (this.currentChat) {
+                    this.updateChatHeader();
                 }
             }
 
             saveChats() {
                 try {
                     localStorage.setItem('qentrum_chats', JSON.stringify([...this.chats]));
+                    this.updateChatsList();
+                    if (this.currentChat) {
+                        this.updateChatWindow();
+                    }
                 } catch (error) {
                     console.log('Error saving chats:', error);
                 }
+            }
+
+            showMainApp() {
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                this.updateProfile();
+                this.updateChatsList();
             }
 
             switchTab(tabName) {
@@ -1003,16 +1092,64 @@
                 document.getElementById('header-title').textContent = titles[tabName];
             }
 
-            searchUsers(query) {
+            updateChatsList() {
                 const chatsContainer = document.getElementById('chats-container');
                 
-                if (!query) {
+                // Get all users we have chats with
+                const chatPartners = new Set();
+                this.chats.forEach((messages, chatKey) => {
+                    const [user1, user2] = chatKey.split('_');
+                    if (user1 === this.currentUser?.id) {
+                        chatPartners.add(user2);
+                    } else if (user2 === this.currentUser?.id) {
+                        chatPartners.add(user1);
+                    }
+                });
+
+                if (chatPartners.size === 0) {
                     chatsContainer.innerHTML = `
                         <div class="empty-state">
                             <div class="empty-title">No conversations yet</div>
                             <div class="empty-subtitle">Search for users to start chatting</div>
                         </div>
                     `;
+                    return;
+                }
+
+                const chatItems = Array.from(chatPartners).map(userId => {
+                    const user = this.users.get(userId);
+                    if (!user) return '';
+                    
+                    const chatKey = this.getChatKey(this.currentUser.id, userId);
+                    const messages = this.chats.get(chatKey) || [];
+                    const lastMessage = messages[messages.length - 1];
+                    const lastMessageText = lastMessage ? 
+                        (lastMessage.imageUrl ? '📷 Photo' : lastMessage.text) : 
+                        'No messages yet';
+
+                    return `
+                        <div class="chat-item" onclick="messenger.openChat('${userId}')">
+                            <div class="chat-avatar" style="${user.avatarUrl ? `background-image: url(${user.avatarUrl})` : ''}">
+                                ${user.avatarUrl ? '' : user.avatar}
+                                <div class="online-status ${user.isOnline ? 'online' : 'offline'}"></div>
+                            </div>
+                            <div class="chat-info">
+                                <div class="chat-name">${user.firstName} ${user.lastName}</div>
+                                ${user.username ? `<div class="chat-username">@${user.username}</div>` : ''}
+                                <div class="chat-last-message">${lastMessageText}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                chatsContainer.innerHTML = chatItems;
+            }
+
+            searchUsers(query) {
+                const chatsContainer = document.getElementById('chats-container');
+                
+                if (!query) {
+                    this.updateChatsList();
                     return;
                 }
 
@@ -1041,8 +1178,8 @@
 
                 chatsContainer.innerHTML = results.map(([id, user]) => `
                     <div class="chat-item" onclick="messenger.openChat('${id}')">
-                        <div class="chat-avatar">
-                            ${user.avatar}
+                        <div class="chat-avatar" style="${user.avatarUrl ? `background-image: url(${user.avatarUrl})` : ''}">
+                            ${user.avatarUrl ? '' : user.avatar}
                             <div class="online-status ${user.isOnline ? 'online' : 'offline'}"></div>
                         </div>
                         <div class="chat-info">
@@ -1056,70 +1193,93 @@
 
             openChat(userId) {
                 if (!this.users.has(userId) || !this.currentUser) return;
-
+                const user = this.users.get(userId);
                 this.currentChat = userId;
-                
-                document.getElementById('chats-tab').style.display = 'none';
+
+                // Создаем чат, если его нет
+                const chatKey = this.getChatKey(this.currentUser.id, userId);
+                if (!this.chats.has(chatKey)) {
+                    this.chats.set(chatKey, []);
+                }
+
+                // Обновляем интерфейс
+                document.getElementById('main-app').style.display = 'none';
                 document.getElementById('chat-window').style.display = 'flex';
                 document.getElementById('chat-window').classList.add('slide-in');
-                
+
+                // Обновляем заголовок чата
                 this.updateChatHeader();
-                this.updateChatWindow();
                 
-                // Focus message input
+                // Показываем сообщения
+                this.updateChatWindow();
+
+                // Фокусируемся на поле ввода
                 setTimeout(() => {
                     document.getElementById('message-input').focus();
                 }, 300);
+            }
+
+            closeChat() {
+                document.getElementById('chat-window').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                this.currentChat = null;
+                
+                // Очищаем поле ввода
+                document.getElementById('message-input').value = '';
+                this.autoResizeTextarea(document.getElementById('message-input'));
+                this.updateSendButton();
+                
+                // Обновляем список чатов
+                this.updateChatsList();
             }
 
             updateChatHeader() {
                 if (!this.currentChat) return;
 
                 const user = this.users.get(this.currentChat);
-                document.getElementById('chat-header-avatar').textContent = user.avatar;
-                document.getElementById('chat-header-avatar').innerHTML = user.avatar + 
-                    `<div class="online-status ${user.isOnline ? 'online' : 'offline'}" id="chat-online-status"></div>`;
-                document.getElementById('chat-header-name').textContent = `${user.firstName} ${user.lastName}`.trim();
-                
-                const status = user.isOnline ? 'Online' : this.formatLastSeen(user.lastSeen);
-                document.getElementById('chat-header-status').textContent = status;
-            }
+                if (!user) return;
 
-            formatLastSeen(timestamp) {
-                const now = Date.now();
-                const diff = now - timestamp;
-                const minutes = Math.floor(diff / 60000);
-                const hours = Math.floor(diff / 3600000);
-                const days = Math.floor(diff / 86400000);
+                const avatarElement = document.getElementById('chat-header-avatar');
+                const nameElement = document.getElementById('chat-header-name');
+                const statusElement = document.getElementById('chat-header-status');
+                const onlineStatusElement = document.getElementById('chat-online-status');
 
-                if (minutes < 1) return 'Just now';
-                if (minutes < 60) return `Last seen ${minutes} min ago`;
-                if (hours < 24) return `Last seen ${hours} hour${hours > 1 ? 's' : ''} ago`;
-                return `Last seen ${days} day${days > 1 ? 's' : ''} ago`;
-            }
+                // Устанавливаем аватар
+                if (user.avatarUrl) {
+                    avatarElement.style.backgroundImage = `url(${user.avatarUrl})`;
+                    avatarElement.innerHTML = '';
+                } else {
+                    avatarElement.style.backgroundImage = '';
+                    avatarElement.innerHTML = user.avatar;
+                }
 
-            closeChat() {
-                document.getElementById('chats-tab').style.display = 'flex';
-                document.getElementById('chat-window').style.display = 'none';
-                this.currentChat = null;
-                document.getElementById('header-title').textContent = 'Chats';
-                document.getElementById('user-search').value = '';
-                this.searchUsers('');
+                // Устанавливаем имя
+                nameElement.textContent = `${user.firstName} ${user.lastName}`.trim();
+
+                // Устанавливаем статус
+                if (user.isOnline) {
+                    statusElement.textContent = 'Online';
+                    onlineStatusElement.className = 'online-status online';
+                } else {
+                    const lastSeen = new Date(user.lastSeen);
+                    const now = new Date();
+                    const diffMinutes = Math.floor((now - lastSeen) / 60000);
+                    
+                    if (diffMinutes < 1) {
+                        statusElement.textContent = 'last seen just now';
+                    } else if (diffMinutes < 60) {
+                        statusElement.textContent = `last seen ${diffMinutes} min ago`;
+                    } else {
+                        statusElement.textContent = `last seen ${Math.floor(diffMinutes / 60)} hours ago`;
+                    }
+                    onlineStatusElement.className = 'online-status offline';
+                }
             }
 
             updateChatWindow() {
-                const messagesContainer = document.getElementById('messages-container');
-                
-                if (!this.currentChat) {
-                    messagesContainer.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-title">No messages yet</div>
-                            <div class="empty-subtitle">Send a message to start the conversation</div>
-                        </div>
-                    `;
-                    return;
-                }
+                if (!this.currentChat || !this.currentUser) return;
 
+                const messagesContainer = document.getElementById('messages-container');
                 const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
                 const messages = this.chats.get(chatKey) || [];
 
@@ -1133,140 +1293,172 @@
                     return;
                 }
 
-                messagesContainer.innerHTML = messages.map(msg => `
-                    <div class="message ${msg.sender === this.currentUser.id ? 'outgoing' : 'incoming'}">
-                        ${this.escapeHtml(msg.text)}
-                        <div class="message-time">${this.formatTime(msg.timestamp)}</div>
-                    </div>
-                `).join('');
+                messagesContainer.innerHTML = messages.map(message => {
+                    const isOutgoing = message.senderId === this.currentUser.id;
+                    const time = new Date(message.timestamp).toLocaleTimeString([], { 
+                        hour: '2-digit', minute: '2-digit' 
+                    });
 
+                    return `
+                        <div class="message ${isOutgoing ? 'outgoing' : 'incoming'}">
+                            ${message.text ? `<div class="message-text">${this.escapeHtml(message.text)}</div>` : ''}
+                            ${message.imageUrl ? `<img src="${message.imageUrl}" class="message-image" onclick="messenger.openImage('${message.imageUrl}')">` : ''}
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Прокручиваем вниз
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
             sendMessage() {
-                const input = document.getElementById('message-input');
-                const text = input.value.trim();
-                
-                if (!text || !this.currentChat || !this.currentUser) return;
+                if (!this.currentChat || !this.currentUser) return;
+
+                const messageInput = document.getElementById('message-input');
+                const text = messageInput.value.trim();
+
+                if (!text) return;
 
                 const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
                 const messages = this.chats.get(chatKey) || [];
 
                 const newMessage = {
+                    id: Date.now().toString(),
+                    senderId: this.currentUser.id,
                     text: text,
-                    sender: this.currentUser.id,
-                    timestamp: new Date().toISOString()
+                    timestamp: Date.now(),
+                    imageUrl: null
                 };
 
                 messages.push(newMessage);
                 this.chats.set(chatKey, messages);
                 this.saveChats();
-                
-                input.value = '';
-                this.autoResizeTextarea(input);
+
+                // Очищаем поле ввода
+                messageInput.value = '';
+                this.autoResizeTextarea(messageInput);
                 this.updateSendButton();
+
+                // Обновляем окно чата
                 this.updateChatWindow();
                 
-                // Simulate reply after 1-3 seconds
-                setTimeout(() => {
-                    this.simulateReply();
-                }, 1000 + Math.random() * 2000);
+                // Обновляем список чатов
+                this.updateChatsList();
+
+                // УБРАЛ СИМУЛЯЦИЮ ОТВЕТА - теперь только реальные сообщения
             }
 
-            simulateReply() {
-                if (!this.currentChat || !this.currentUser) return;
+            handleImageUpload(file) {
+                if (!file || !this.currentChat || !this.currentUser) return;
 
-                const replies = [
-                    "Hey! How are you doing?",
-                    "Thanks for your message!",
-                    "That's interesting, tell me more",
-                    "I was thinking the same thing",
-                    "Let me check and get back to you",
-                    "Sounds good to me!",
-                    "What do you think about this?",
-                    "I'll be available in a few minutes"
-                ];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
+                    const messages = this.chats.get(chatKey) || [];
 
-                const randomReply = replies[Math.floor(Math.random() * replies.length)];
-                const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
-                const messages = this.chats.get(chatKey) || [];
+                    const newMessage = {
+                        id: Date.now().toString(),
+                        senderId: this.currentUser.id,
+                        text: '',
+                        timestamp: Date.now(),
+                        imageUrl: imageUrl
+                    };
 
-                messages.push({
-                    text: randomReply,
-                    sender: this.currentChat,
-                    timestamp: new Date().toISOString()
-                });
+                    messages.push(newMessage);
+                    this.chats.set(chatKey, messages);
+                    this.saveChats();
 
-                this.chats.set(chatKey, messages);
-                this.saveChats();
-                this.updateChatWindow();
+                    this.updateChatWindow();
+                    this.updateChatsList();
+
+                    // Очищаем input
+                    document.getElementById('image-upload').value = '';
+                };
+
+                reader.readAsDataURL(file);
             }
 
-            updateProfile() {
-                if (!this.currentUser) return;
+            handleAvatarUpload(file) {
+                if (!file || !this.currentUser) return;
 
-                document.getElementById('profile-avatar-large').innerHTML = '<i class="fas fa-user"></i>';
-                document.getElementById('profile-name').textContent = `${this.currentUser.firstName} ${this.currentUser.lastName}`.trim();
-                document.getElementById('profile-username').textContent = this.currentUser.username ? `@${this.currentUser.username}` : 'No username set';
-                document.getElementById('username-input').value = this.currentUser.username || '';
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.currentUser.avatarUrl = e.target.result;
+                    this.saveUsers();
+                    
+                    // Обновляем аватар в профиле
+                    const avatarLarge = document.getElementById('profile-avatar-large');
+                    avatarLarge.style.backgroundImage = `url(${this.currentUser.avatarUrl})`;
+                    avatarLarge.innerHTML = '';
+                    
+                    // Обновляем аватар в чатах если нужно
+                    this.updateChatsList();
+                };
+
+                reader.readAsDataURL(file);
             }
 
             updateUsername() {
                 if (!this.currentUser) return;
 
-                const newUsername = document.getElementById('username-input').value.trim();
-                
-                if (newUsername && !this.isUsernameValid(newUsername)) {
-                    alert('Username must be 4-10 English letters only');
+                const usernameInput = document.getElementById('username-input');
+                const username = usernameInput.value.trim();
+
+                if (username.length < 4) {
+                    alert('Username must be at least 4 characters long');
                     return;
                 }
 
-                // Check if username is taken by other users
-                if (newUsername) {
-                    const isTaken = Array.from(this.users.values()).some(user => 
-                        user.username === newUsername && user.id !== this.currentUser.id
-                    );
-
-                    if (isTaken) {
-                        alert('Username already taken');
-                        return;
-                    }
+                if (username.length > 10) {
+                    alert('Username must be at most 10 characters long');
+                    return;
                 }
 
-                this.currentUser.username = newUsername || '';
-                this.users.set(this.currentUser.id, this.currentUser);
+                // Проверяем, что username содержит только буквы и цифры
+                if (!/^[a-zA-Z0-9]+$/.test(username)) {
+                    alert('Username can only contain letters and numbers');
+                    return;
+                }
+
+                this.currentUser.username = username;
                 this.saveUsers();
-                
-                this.updateProfile();
-                
-                if (newUsername) {
-                    alert('Username updated successfully!');
-                } else {
-                    alert('Username removed successfully!');
-                }
+
+                // Показываем подтверждение
+                alert('Username updated successfully!');
             }
 
-            changeAvatar() {
+            updateProfile() {
                 if (!this.currentUser) return;
 
-                const avatars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-                const currentAvatar = this.currentUser.avatar;
-                const currentIndex = avatars.indexOf(currentAvatar);
-                const newAvatar = avatars[(currentIndex + 1) % avatars.length];
+                const profileName = document.getElementById('profile-name');
+                const profileUsername = document.getElementById('profile-username');
+                const usernameInput = document.getElementById('username-input');
+                const avatarLarge = document.getElementById('profile-avatar-large');
+
+                profileName.textContent = `${this.currentUser.firstName} ${this.currentUser.lastName}`.trim();
                 
-                this.currentUser.avatar = newAvatar;
-                this.users.set(this.currentUser.id, this.currentUser);
-                this.saveUsers();
-                this.updateProfile();
+                if (this.currentUser.username) {
+                    profileUsername.textContent = `@${this.currentUser.username}`;
+                    usernameInput.value = this.currentUser.username;
+                } else {
+                    profileUsername.textContent = 'No username set';
+                    usernameInput.value = '';
+                }
+
+                // Обновляем аватар
+                if (this.currentUser.avatarUrl) {
+                    avatarLarge.style.backgroundImage = `url(${this.currentUser.avatarUrl})`;
+                    avatarLarge.innerHTML = '';
+                } else {
+                    avatarLarge.style.backgroundImage = '';
+                    avatarLarge.innerHTML = '<i class="fas fa-user" id="profile-avatar-icon"></i>';
+                }
             }
 
             getChatKey(user1, user2) {
                 return [user1, user2].sort().join('_');
-            }
-
-            isUsernameValid(username) {
-                const regex = /^[a-zA-Z]{4,10}$/;
-                return regex.test(username);
             }
 
             escapeHtml(text) {
@@ -1275,36 +1467,75 @@
                 return div.innerHTML;
             }
 
-            formatTime(timestamp) {
-                const date = new Date(timestamp);
-                return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            openImage(imageUrl) {
+                // Простой просмотр изображения
+                const imageView = document.createElement('div');
+                imageView.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                `;
+                
+                imageView.innerHTML = `
+                    <img src="${imageUrl}" style="max-width: 90%; max-height: 90%; border-radius: 8px;">
+                    <button onclick="this.parentElement.remove()" style="
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 24px;
+                        cursor: pointer;
+                    ">×</button>
+                `;
+                
+                imageView.addEventListener('click', (e) => {
+                    if (e.target === imageView) {
+                        imageView.remove();
+                    }
+                });
+
+                document.body.appendChild(imageView);
             }
         }
 
-        // Global functions
+        // Глобальные функции для вызова из HTML
         function switchTab(tabName) {
             messenger.switchTab(tabName);
-        }
-
-        function updateUsername() {
-            messenger.updateUsername();
-        }
-
-        function sendMessage() {
-            messenger.sendMessage();
         }
 
         function closeChat() {
             messenger.closeChat();
         }
 
-        // Initialize messenger
+        function sendMessage() {
+            messenger.sendMessage();
+        }
+
+        function updateUsername() {
+            messenger.updateUsername();
+        }
+
+        // Инициализация приложения
         const messenger = new QentrumMessenger();
 
-        // Update send button state on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            messenger.updateSendButton();
-        });
+        // Периодическое обновление онлайн статуса
+        setInterval(() => {
+            messenger.updateOnlineStatus();
+        }, 30000);
+
+        // Инициализация онлайн статуса
+        setTimeout(() => {
+            messenger.updateOnlineStatus();
+        }, 1000);
     </script>
 </body>
 </html>
