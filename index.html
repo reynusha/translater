@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DREVO Messenger</title>
+    <title>Qentrum</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,7 +22,7 @@
             --text-tertiary: #48484a;
             --accent-blue: #2ea6ff;
             --accent-green: #34c759;
-            --accent-red: #ff453a;
+            --accent-purple: #bf5af2;
             --border-color: #38383a;
             --message-out: #2b5278;
             --message-in: #1e2c3a;
@@ -42,8 +43,8 @@
             flex-direction: column;
         }
 
-        /* Auth Screens */
-        .auth-screen {
+        /* Welcome Screen */
+        .welcome-screen {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -51,84 +52,116 @@
             height: 100vh;
             padding: 20px;
             text-align: center;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        .auth-logo {
-            font-size: 48px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .welcome-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(191, 90, 242, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(46, 166, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .welcome-logo {
+            font-size: 52px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #bf5af2 0%, #2ea6ff 50%, #34c759 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .auth-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .auth-subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-
-        .auth-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 14px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 16px;
             margin-bottom: 16px;
-            outline: none;
+            position: relative;
+            z-index: 2;
         }
 
-        .auth-input:focus {
-            border-color: var(--accent-blue);
+        .welcome-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
         }
 
-        .auth-button {
-            width: 100%;
-            max-width: 300px;
-            padding: 14px;
+        .welcome-content {
+            max-width: 400px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #bf5af2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-list {
+            text-align: left;
+            margin-bottom: 40px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .feature-item {
+            margin-bottom: 16px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .feature-item:before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            position: absolute;
+            left: 8px;
+            top: 8px;
+        }
+
+        .telegram-button {
             background: var(--accent-blue);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s ease;
-            margin-bottom: 12px;
-        }
-
-        .auth-button:active {
-            opacity: 0.8;
-        }
-
-        .auth-button:disabled {
-            background: var(--text-tertiary);
-            cursor: not-allowed;
-        }
-
-        .auth-switch {
-            color: var(--accent-blue);
-            background: none;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .error-message {
-            color: var(--accent-red);
-            font-size: 14px;
-            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            width: 100%;
             max-width: 300px;
+        }
+
+        .telegram-button:active {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        .legal-text {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            max-width: 300px;
+            line-height: 1.4;
+        }
+
+        .legal-link {
+            color: var(--accent-blue);
+            text-decoration: none;
         }
 
         /* Main App */
@@ -159,8 +192,15 @@
         }
 
         .header-icon {
-            font-size: 20px;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .header-icon:active {
+            opacity: 1;
         }
 
         /* Tabs */
@@ -251,34 +291,51 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #bf5af2 0%, #2ea6ff 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             color: white;
             font-size: 18px;
+            flex-shrink: 0;
         }
 
         .chat-info {
             flex: 1;
+            min-width: 0;
         }
 
-        .chat-username {
+        .chat-name {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-username {
+            font-size: 14px;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-last-message {
             font-size: 14px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Chat Window */
         .chat-window {
             flex: 1;
-            display: flex;
+            display: none;
             flex-direction: column;
             background: var(--bg-primary);
         }
@@ -295,21 +352,34 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #bf5af2 0%, #2ea6ff 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             color: white;
+            flex-shrink: 0;
         }
 
         .chat-header-info {
             flex: 1;
+            min-width: 0;
+        }
+
+        .chat-header-name {
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-header-username {
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 14px;
+            color: var(--accent-blue);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .messages-container {
@@ -328,6 +398,7 @@
             font-size: 15px;
             line-height: 1.4;
             position: relative;
+            word-wrap: break-word;
         }
 
         .message.outgoing {
@@ -347,7 +418,7 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             gap: 12px;
-            align-items: center;
+            align-items: flex-end;
         }
 
         .message-input {
@@ -361,6 +432,8 @@
             outline: none;
             resize: none;
             max-height: 120px;
+            min-height: 44px;
+            font-family: inherit;
         }
 
         .send-button {
@@ -375,6 +448,8 @@
             justify-content: center;
             cursor: pointer;
             transition: opacity 0.2s ease;
+            flex-shrink: 0;
+            font-size: 16px;
         }
 
         .send-button:active {
@@ -397,25 +472,41 @@
         }
 
         .profile-avatar-large {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #bf5af2 0%, #2ea6ff 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 600;
             color: white;
-            margin: 0 auto 16px;
+            margin: 0 auto 20px;
             cursor: pointer;
+            border: 4px solid var(--bg-primary);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar-large:active {
+            transform: scale(0.95);
+        }
+
+        .profile-name {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            word-break: break-word;
         }
 
         .profile-username {
             text-align: center;
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent-blue);
             margin-bottom: 8px;
+            word-break: break-word;
         }
 
         .profile-input {
@@ -428,6 +519,7 @@
             font-size: 15px;
             margin-bottom: 12px;
             outline: none;
+            font-family: inherit;
         }
 
         .profile-save {
@@ -440,33 +532,25 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .profile-save:active {
+            opacity: 0.8;
         }
 
         .info-box {
-            background: rgba(46, 166, 255, 0.1);
-            border: 1px solid var(--accent-blue);
+            background: rgba(191, 90, 242, 0.1);
+            border: 1px solid var(--accent-purple);
             border-radius: 8px;
             padding: 16px;
             margin-top: 16px;
             font-size: 14px;
             line-height: 1.4;
-            color: var(--accent-blue);
+            color: var(--accent-purple);
         }
 
-        .logout-button {
-            width: 100%;
-            padding: 12px;
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        /* Loading */
+        /* Loading and States */
         .loading {
             text-align: center;
             padding: 40px;
@@ -479,40 +563,51 @@
             color: var(--text-secondary);
         }
 
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
+        .empty-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-subtitle {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Back Button */
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
-    <!-- Auth Screen -->
-    <div class="auth-screen" id="auth-screen">
-        <div class="auth-logo">DREVO</div>
-        
-        <!-- Register Form -->
-        <div id="register-form">
-            <div class="auth-title">Create Account</div>
-            <div class="auth-subtitle">Choose your unique username</div>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcome-screen">
+        <div class="welcome-background"></div>
+        <div class="welcome-content">
+            <div class="welcome-logo">Qentrum</div>
+            <div class="welcome-subtitle">Next Level Communication</div>
             
-            <input type="text" class="auth-input" id="register-username" placeholder="Username (4-10 letters)" maxlength="10">
-            <input type="password" class="auth-input" id="register-password" placeholder="Password">
-            <div class="error-message" id="register-error"></div>
-            <button class="auth-button" onclick="register()">Create Account</button>
-            <button class="auth-switch" onclick="showLogin()">Already have an account?</button>
-        </div>
-
-        <!-- Login Form -->
-        <div id="login-form" style="display: none;">
-            <div class="auth-title">Welcome Back</div>
-            <div class="auth-subtitle">Sign in to your account</div>
+            <div class="welcome-title">Welcome to Qentrum</div>
             
-            <input type="text" class="auth-input" id="login-username" placeholder="Username" maxlength="10">
-            <input type="password" class="auth-input" id="login-password" placeholder="Password">
-            <div class="error-message" id="login-error"></div>
-            <button class="auth-button" onclick="login()">Sign In</button>
-            <button class="auth-switch" onclick="showRegister()">Create new account?</button>
+            <div class="feature-list">
+                <div class="feature-item">Your digital identity. You enter and you are already in the system. Your nickname is your real name from Telegram.</div>
+                <div class="feature-item">Freedom of expression. Change your avatar whenever you want, create a unique username - here you control your image.</div>
+                <div class="feature-item">Entanglement without borders. We use quantum principles... just kidding. Your messages are delivered instantly and reliably.</div>
+            </div>
+            
+            <button class="telegram-button" id="telegram-auth-button">
+                Continue with Telegram
+            </button>
+            
+            <div class="legal-text">
+                By clicking "Continue", you agree that we have everything figured out. You can review our Terms and Privacy Policy <a href="#" class="legal-link">here</a>.
+            </div>
         </div>
     </div>
 
@@ -522,8 +617,8 @@
         <div class="header">
             <div class="header-title" id="header-title">Chats</div>
             <div class="header-actions">
-                <div class="header-icon">🔍</div>
-                <div class="header-icon">➕</div>
+                <div class="header-icon" id="search-button">S</div>
+                <div class="header-icon" id="new-chat-button">+</div>
             </div>
         </div>
 
@@ -543,9 +638,8 @@
                     </div>
                     <div id="chats-container">
                         <div class="empty-state">
-                            <div class="empty-icon">💬</div>
-                            <div>No chats yet</div>
-                            <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">Search for users to start chatting</div>
+                            <div class="empty-title">No chats yet</div>
+                            <div class="empty-subtitle">Search for users to start chatting</div>
                         </div>
                     </div>
                 </div>
@@ -555,16 +649,15 @@
             <div id="profile-tab" class="tab-content">
                 <div class="profile-content">
                     <div class="profile-section">
-                        <div class="profile-avatar-large" onclick="changeAvatar()" id="profile-avatar-large">U</div>
-                        <div class="profile-username" id="profile-username-display">@username</div>
+                        <div class="profile-avatar-large" id="profile-avatar-large">U</div>
+                        <div class="profile-name" id="profile-name">User Name</div>
+                        <div class="profile-username" id="profile-username">No username set</div>
                         
-                        <input type="text" class="profile-input" id="username-input" placeholder="New username (4-10 letters)" maxlength="10">
-                        <input type="password" class="profile-input" id="password-input" placeholder="New password">
-                        <button class="profile-save" onclick="updateProfile()">Save Changes</button>
-                        <button class="logout-button" onclick="logout()">Logout</button>
+                        <input type="text" class="profile-input" id="username-input" placeholder="Set your username (4-10 letters)" maxlength="10">
+                        <button class="profile-save" onclick="updateUsername()">Save Username</button>
                         
                         <div class="info-box">
-                            Coming soon: Usernames will become collectible and can be sold for real currency. 4-letter usernames (like feed, boul, crow) will be available soon.
+                            Coming soon: Usernames will become collectible and can be sold for real currency. 4-letter usernames will be available soon.
                         </div>
                     </div>
                 </div>
@@ -573,182 +666,172 @@
     </div>
 
     <!-- Chat Window -->
-    <div class="chat-window" id="chat-window" style="display: none;">
+    <div class="chat-window" id="chat-window">
         <div class="chat-header">
+            <button class="back-button" onclick="closeChat()">←</button>
             <div class="chat-header-avatar" id="chat-header-avatar">U</div>
             <div class="chat-header-info">
-                <div class="chat-header-username" id="chat-header-username">@username</div>
+                <div class="chat-header-name" id="chat-header-name">User Name</div>
+                <div class="chat-header-username" id="chat-header-username"></div>
             </div>
         </div>
         
         <div class="messages-container" id="messages-container">
             <div class="empty-state">
-                <div class="empty-icon">💭</div>
-                <div>No messages yet</div>
-                <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">Send a message to start the conversation</div>
+                <div class="empty-title">No messages yet</div>
+                <div class="empty-subtitle">Send a message to start the conversation</div>
             </div>
         </div>
         
         <div class="message-input-container">
-            <textarea class="message-input" placeholder="Message" id="message-input" rows="1"></textarea>
-            <button class="send-button" onclick="sendMessage()">➤</button>
+            <textarea class="message-input" placeholder="Type a message..." id="message-input" rows="1"></textarea>
+            <button class="send-button" onclick="sendMessage()">→</button>
         </div>
     </div>
 
     <script>
-        class DREVOMessenger {
+        class QentrumMessenger {
             constructor() {
                 this.currentUser = null;
                 this.users = new Map();
                 this.chats = new Map();
                 this.currentChat = null;
+                this.tg = null;
                 
                 this.init();
             }
 
             init() {
+                this.tg = window.Telegram.WebApp;
+                this.tg.expand();
+                
                 this.loadUsers();
                 this.loadChats();
-                this.checkAuth();
                 this.setupEventListeners();
+                this.checkAuth();
             }
 
             setupEventListeners() {
+                // Search functionality
                 document.getElementById('user-search').addEventListener('input', (e) => {
                     this.searchUsers(e.target.value);
                 });
 
+                // Message input auto-resize
                 document.getElementById('message-input').addEventListener('input', (e) => {
-                    e.target.style.height = 'auto';
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                    this.autoResizeTextarea(e.target);
                 });
 
+                // Enter key to send message
                 document.getElementById('message-input').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         this.sendMessage();
                     }
                 });
+
+                // Telegram auth button
+                document.getElementById('telegram-auth-button').addEventListener('click', () => {
+                    this.handleTelegramAuth();
+                });
+            }
+
+            autoResizeTextarea(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            }
+
+            checkAuth() {
+                const user = this.tg.initDataUnsafe?.user;
+                if (user) {
+                    this.handleTelegramUser(user);
+                } else {
+                    // Show welcome screen for non-Telegram users
+                    document.getElementById('welcome-screen').style.display = 'flex';
+                }
+            }
+
+            handleTelegramAuth() {
+                const user = this.tg.initDataUnsafe?.user;
+                if (user) {
+                    this.handleTelegramUser(user);
+                } else {
+                    // In real Mini App, user should be available
+                    console.log('Telegram user data not available');
+                }
+            }
+
+            handleTelegramUser(tgUser) {
+                const userId = tgUser.id.toString();
+                
+                const userData = {
+                    id: userId,
+                    firstName: tgUser.first_name || 'User',
+                    lastName: tgUser.last_name || '',
+                    username: tgUser.username || '',
+                    avatar: (tgUser.first_name?.charAt(0) || 'U').toUpperCase(),
+                    isBot: tgUser.is_bot || false,
+                    languageCode: tgUser.language_code || 'en'
+                };
+
+                let existingUser = this.users.get(userId);
+                if (existingUser) {
+                    Object.assign(existingUser, userData);
+                } else {
+                    this.users.set(userId, userData);
+                }
+
+                this.currentUser = this.users.get(userId);
+                this.saveUsers();
+                this.showMainApp();
             }
 
             loadUsers() {
-                const savedUsers = localStorage.getItem('drevo_users');
-                if (savedUsers) {
-                    this.users = new Map(JSON.parse(savedUsers));
-                } else {
-                    // Add demo users
-                    this.addUser('john', 'password123');
-                    this.addUser('emma', 'password123');
-                    this.addUser('alex', 'password123');
-                    this.saveUsers();
+                try {
+                    const savedUsers = localStorage.getItem('qentrum_users');
+                    if (savedUsers) {
+                        const usersArray = JSON.parse(savedUsers);
+                        this.users = new Map(usersArray);
+                    }
+                } catch (error) {
+                    console.log('Error loading users:', error);
+                    this.users = new Map();
                 }
             }
 
             loadChats() {
-                const savedChats = localStorage.getItem('drevo_chats');
-                if (savedChats) {
-                    this.chats = new Map(JSON.parse(savedChats));
-                this.updateChatsList();
-                    this.updateChatWindow();
-                this.updateProfile();
-            }
-
-            checkAuth() {
-                const currentUser = localStorage.getItem('drevo_current_user');
-                if (currentUser) {
-                    this.currentUser = JSON.parse(currentUser);
-                    this.showMainApp();
+                try {
+                    const savedChats = localStorage.getItem('qentrum_chats');
+                    if (savedChats) {
+                        const chatsArray = JSON.parse(savedChats);
+                        this.chats = new Map(chatsArray);
+                    } else {
+                        this.chats = new Map();
+                    }
+                } catch (error) {
+                    console.log('Error loading chats:', error);
+                    this.chats = new Map();
                 }
-            }
-
-            addUser(username, password) {
-                if (this.isUsernameValid(username) && !this.users.has(username)) {
-                    this.users.set(username, {
-                        username: username,
-                        password: password,
-                        avatar: username.charAt(0).toUpperCase(),
-                        createdAt: new Date().toISOString()
-                    });
-                    return true;
-                }
-                return false;
-            }
-
-            isUsernameValid(username) {
-                const regex = /^[a-zA-Z]{4,10}$/;
-                return regex.test(username);
             }
 
             saveUsers() {
-                localStorage.setItem('drevo_users', JSON.stringify([...this.users]));
+                try {
+                    localStorage.setItem('qentrum_users', JSON.stringify([...this.users]));
+                } catch (error) {
+                    console.log('Error saving users:', error);
+                }
             }
 
             saveChats() {
-                localStorage.setItem('drevo_chats', JSON.stringify([...this.chats]));
-            }
-
-            register(username, password) {
-                if (!this.isUsernameValid(username)) {
-                    return { success: false, error: 'Username must be 4-10 English letters only' };
+                try {
+                    localStorage.setItem('qentrum_chats', JSON.stringify([...this.chats]));
+                } catch (error) {
+                    console.log('Error saving chats:', error);
                 }
-
-                if (this.users.has(username)) {
-                    return { success: false, error: 'Username already taken' };
-                }
-
-                if (!password || password.length < 4) {
-                    return { success: false, error: 'Password must be at least 4 characters' };
-                }
-
-                this.addUser(username, password);
-                this.currentUser = this.users.get(username);
-                localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
-                this.saveUsers();
-
-                return { success: true };
-            }
-
-            login(username, password) {
-                const user = this.users.get(username);
-                
-                if (!user) {
-                    return { success: false, error: 'User not found' };
-                }
-
-                if (user.password !== password) {
-                    return { success: false, error: 'Invalid password' };
-                }
-
-                this.currentUser = user;
-                localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
-                
-                return { success: true };
-            }
-
-            logout() {
-                this.currentUser = null;
-                localStorage.removeItem('drevo_current_user');
-                this.showAuthScreen();
-            }
-
-            showAuthScreen() {
-                document.getElementById('auth-screen').style.display = 'flex';
-                document.getElementById('main-app').style.display = 'none';
-                document.getElementById('chat-window').style.display = 'none';
-                document.getElementById('register-form').style.display = 'block';
-                document.getElementById('login-form').style.display = 'none';
-                
-                // Clear forms
-                document.getElementById('register-username').value = '';
-                document.getElementById('register-password').value = '';
-                document.getElementById('login-username').value = '';
-                document.getElementById('login-password').value = '';
-                document.getElementById('register-error').textContent = '';
-                document.getElementById('login-error').textContent = '';
             }
 
             showMainApp() {
-                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('welcome-screen').style.display = 'none';
                 document.getElementById('main-app').style.display = 'flex';
                 this.updateProfile();
             }
@@ -770,51 +853,64 @@
             searchUsers(query) {
                 const chatsContainer = document.getElementById('chats-container');
                 
-                if (!query.startsWith('@')) {
-                    query = '@' + query;
-                }
-
-                const searchTerm = query.slice(1).toLowerCase();
-                const results = Array.from(this.users.entries())
-                    .filter(([username, user]) => 
-                        username.toLowerCase().includes(searchTerm) && 
-                        username !== this.currentUser.username
-                    )
-                    .slice(0, 10);
-
-                if (results.length === 0) {
+                if (!query) {
                     chatsContainer.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">🔍</div>
-                            <div>No users found</div>
+                            <div class="empty-title">No chats yet</div>
+                            <div class="empty-subtitle">Search for users to start chatting</div>
                         </div>
                     `;
                     return;
                 }
 
-                chatsContainer.innerHTML = results.map(([username, user]) => `
-                    <div class="chat-item" onclick="messenger.openChat('${username}')">
+                const searchTerm = query.toLowerCase().replace('@', '');
+                const results = Array.from(this.users.entries())
+                    .filter(([id, user]) => {
+                        if (id === this.currentUser?.id) return false;
+                        
+                        const nameMatch = user.firstName.toLowerCase().includes(searchTerm) ||
+                                         user.lastName.toLowerCase().includes(searchTerm);
+                        const usernameMatch = user.username && user.username.toLowerCase().includes(searchTerm);
+                        
+                        return nameMatch || usernameMatch;
+                    })
+                    .slice(0, 10);
+
+                if (results.length === 0) {
+                    chatsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-title">No users found</div>
+                            <div class="empty-subtitle">Try a different search term</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                chatsContainer.innerHTML = results.map(([id, user]) => `
+                    <div class="chat-item" onclick="messenger.openChat('${id}')">
                         <div class="chat-avatar">${user.avatar}</div>
                         <div class="chat-info">
-                            <div class="chat-username">@${username}</div>
+                            <div class="chat-name">${user.firstName} ${user.lastName}</div>
+                            ${user.username ? `<div class="chat-username">@${user.username}</div>` : ''}
                             <div class="chat-last-message">Tap to start chatting</div>
                         </div>
                     </div>
                 `).join('');
             }
 
-            openChat(username) {
-                if (!this.users.has(username)) return;
+            openChat(userId) {
+                if (!this.users.has(userId) || !this.currentUser) return;
 
-                this.currentChat = username;
+                this.currentChat = userId;
                 
                 document.getElementById('chats-tab').style.display = 'none';
                 document.getElementById('chat-window').style.display = 'flex';
                 
-                const user = this.users.get(username);
+                const user = this.users.get(userId);
                 document.getElementById('chat-header-avatar').textContent = user.avatar;
-                document.getElementById('chat-header-username').textContent = '@' + username;
-                document.getElementById('header-title').textContent = '@' + username;
+                document.getElementById('chat-header-name').textContent = `${user.firstName} ${user.lastName}`.trim();
+                document.getElementById('chat-header-username').textContent = user.username ? `@${user.username}` : '';
+                document.getElementById('header-title').textContent = user.firstName;
                 
                 this.updateChatWindow();
             }
@@ -824,6 +920,8 @@
                 document.getElementById('chat-window').style.display = 'none';
                 this.currentChat = null;
                 document.getElementById('header-title').textContent = 'Chats';
+                document.getElementById('user-search').value = '';
+                this.searchUsers('');
             }
 
             updateChatWindow() {
@@ -832,30 +930,29 @@
                 if (!this.currentChat) {
                     messagesContainer.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">💭</div>
-                            <div>No messages yet</div>
+                            <div class="empty-title">No messages yet</div>
+                            <div class="empty-subtitle">Send a message to start the conversation</div>
                         </div>
                     `;
                     return;
                 }
 
-                const chatKey = this.getChatKey(this.currentUser.username, this.currentChat);
+                const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
                 const messages = this.chats.get(chatKey) || [];
 
                 if (messages.length === 0) {
                     messagesContainer.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">💭</div>
-                            <div>No messages yet</div>
-                            <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">Send a message to start the conversation</div>
+                            <div class="empty-title">No messages yet</div>
+                            <div class="empty-subtitle">Send a message to start the conversation</div>
                         </div>
                     `;
                     return;
                 }
 
                 messagesContainer.innerHTML = messages.map(msg => `
-                    <div class="message ${msg.sender === this.currentUser.username ? 'outgoing' : 'incoming'}">
-                        ${msg.text}
+                    <div class="message ${msg.sender === this.currentUser.id ? 'outgoing' : 'incoming'}">
+                        ${this.escapeHtml(msg.text)}
                     </div>
                 `).join('');
 
@@ -866,14 +963,14 @@
                 const input = document.getElementById('message-input');
                 const text = input.value.trim();
                 
-                if (!text || !this.currentChat) return;
+                if (!text || !this.currentChat || !this.currentUser) return;
 
-                const chatKey = this.getChatKey(this.currentUser.username, this.currentChat);
+                const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
                 const messages = this.chats.get(chatKey) || [];
 
                 messages.push({
                     text: text,
-                    sender: this.currentUser.username,
+                    sender: this.currentUser.id,
                     timestamp: new Date().toISOString()
                 });
 
@@ -881,130 +978,92 @@
                 this.saveChats();
                 
                 input.value = '';
-                input.style.height = 'auto';
+                this.autoResizeTextarea(input);
                 this.updateChatWindow();
-                this.updateChatsList();
-            }
-
-            updateChatsList() {
-                // Handled by search
             }
 
             updateProfile() {
                 if (!this.currentUser) return;
 
                 document.getElementById('profile-avatar-large').textContent = this.currentUser.avatar;
-                document.getElementById('profile-username-display').textContent = '@' + this.currentUser.username;
-                document.getElementById('username-input').value = this.currentUser.username;
-                document.getElementById('password-input').value = '';
+                document.getElementById('profile-name').textContent = `${this.currentUser.firstName} ${this.currentUser.lastName}`.trim();
+                document.getElementById('profile-username').textContent = this.currentUser.username ? `@${this.currentUser.username}` : 'No username set';
+                document.getElementById('username-input').value = this.currentUser.username || '';
             }
 
-            updateProfile() {
+            updateUsername() {
+                if (!this.currentUser) return;
+
                 const newUsername = document.getElementById('username-input').value.trim();
-                const newPassword = document.getElementById('password-input').value;
                 
-                if (!this.isUsernameValid(newUsername)) {
+                if (newUsername && !this.isUsernameValid(newUsername)) {
                     alert('Username must be 4-10 English letters only');
                     return;
                 }
 
-                // If username changed, check availability
-                if (newUsername !== this.currentUser.username) {
-                    if (this.users.has(newUsername)) {
+                // Check if username is taken by other users
+                if (newUsername) {
+                    const isTaken = Array.from(this.users.values()).some(user => 
+                        user.username === newUsername && user.id !== this.currentUser.id
+                    );
+
+                    if (isTaken) {
                         alert('Username already taken');
                         return;
                     }
-
-                    // Update username - старый ник освобождается!
-                    const oldUsername = this.currentUser.username;
-                    this.users.delete(oldUsername);
-                    
-                    this.currentUser.username = newUsername;
-                    this.currentUser.avatar = newUsername.charAt(0).toUpperCase();
                 }
 
-                // Update password if provided
-                if (newPassword && newPassword.length >= 4) {
-                    this.currentUser.password = newPassword;
-                }
-
-                this.users.set(this.currentUser.username, this.currentUser);
-                localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
+                this.currentUser.username = newUsername || '';
+                this.users.set(this.currentUser.id, this.currentUser);
                 this.saveUsers();
                 
                 this.updateProfile();
                 
-                alert('Profile updated successfully! Old username is now available for others.\n\nComing soon: Usernames will become collectible NFTs!');
+                if (newUsername) {
+                    alert('Username updated successfully!');
+                } else {
+                    alert('Username removed successfully!');
+                }
             }
 
             changeAvatar() {
-                const avatars = ['U', 'A', 'B', 'C', 'D'];
+                if (!this.currentUser) return;
+
+                const avatars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                 const currentAvatar = document.getElementById('profile-avatar-large').textContent;
                 const currentIndex = avatars.indexOf(currentAvatar);
                 const newAvatar = avatars[(currentIndex + 1) % avatars.length];
                 
                 document.getElementById('profile-avatar-large').textContent = newAvatar;
                 this.currentUser.avatar = newAvatar;
-                this.users.set(this.currentUser.username, this.currentUser);
+                this.users.set(this.currentUser.id, this.currentUser);
                 
-                localStorage.setItem('drevo_current_user', JSON.stringify(this.currentUser));
                 this.saveUsers();
             }
 
             getChatKey(user1, user2) {
                 return [user1, user2].sort().join('_');
             }
+
+            isUsernameValid(username) {
+                const regex = /^[a-zA-Z]{4,10}$/;
+                return regex.test(username);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
         }
 
         // Global functions
-        function showLogin() {
-            document.getElementById('register-form').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-        }
-
-        function showRegister() {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('register-form').style.display = 'block';
-        }
-
-        function register() {
-            const username = document.getElementById('register-username').value.trim();
-            const password = document.getElementById('register-password').value;
-            const errorElement = document.getElementById('register-error');
-            
-            const result = messenger.register(username, password);
-            
-            if (result.success) {
-                messenger.showMainApp();
-            } else {
-                errorElement.textContent = result.error;
-            }
-        }
-
-        function login() {
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            const errorElement = document.getElementById('login-error');
-            
-            const result = messenger.login(username, password);
-            
-            if (result.success) {
-                messenger.showMainApp();
-            } else {
-                errorElement.textContent = result.error;
-            }
-        }
-
-        function logout() {
-            messenger.logout();
-        }
-
         function switchTab(tabName) {
             messenger.switchTab(tabName);
         }
 
-        function updateProfile() {
-            messenger.updateProfile();
+        function updateUsername() {
+            messenger.updateUsername();
         }
 
         function changeAvatar() {
@@ -1015,15 +1074,15 @@
             messenger.sendMessage();
         }
 
-        // Initialize messenger
-        const messenger = new DREVOMessenger();
+        function closeChat() {
+            messenger.closeChat();
+        }
 
-        // Back button for chat window
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('header-icon') && messenger.currentChat) {
-                messenger.closeChat();
-            }
-        });
+        // Initialize messenger
+        const messenger = new QentrumMessenger();
+
+        // Profile avatar click
+        document.getElementById('profile-avatar-large').addEventListener('click', changeAvatar);
     </script>
 </body>
 </html>
