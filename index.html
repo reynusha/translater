@@ -40,6 +40,32 @@
             height: 100vh;
         }
 
+        /* Loading Screen */
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Sidebar */
         .sidebar {
             width: 350px;
@@ -302,6 +328,33 @@
             justify-content: center;
         }
 
+        /* Welcome Screen */
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen h2 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .welcome-screen p {
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 30px;
+        }
+
         /* Modals */
         .modal {
             display: none;
@@ -394,7 +447,7 @@
             object-fit: cover;
         }
 
-        .login-screen {
+        .error-screen {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -404,37 +457,22 @@
             text-align: center;
         }
 
-        .login-screen h1 {
+        .error-screen h1 {
             margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        .login-screen p {
-            margin-bottom: 30px;
-            color: var(--tg-theme-hint-color);
-        }
-
-        .login-btn {
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
+            color: #ff4444;
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <div class="login-screen" id="loginScreen">
-            <h1>Telegram Messenger</h1>
-            <p>Войдите через Telegram Mini App для начала общения</p>
-            <button class="login-btn" onclick="initTelegramAuth()">
-                <i class="fab fa-telegram"></i> Войти через Telegram
-            </button>
+        <!-- Loading Screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <h2>Telegram Messenger</h2>
+            <p>Загрузка...</p>
         </div>
 
+        <!-- Main App -->
         <div class="app" id="mainApp" style="display: none;">
             <!-- Sidebar -->
             <div class="sidebar">
@@ -472,43 +510,65 @@
 
             <!-- Main Chat Area -->
             <div class="chat-area">
-                <div class="chat-header-main">
-                    <div class="chat-user">
-                        <div class="avatar" id="currentChatAvatar">
-                            <div class="online-status online" id="currentChatStatus"></div>
-                        </div>
-                        <div>
-                            <h3 id="currentChatName"></h3>
-                            <span id="currentChatStatusText">online</span>
-                        </div>
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-icon">
+                        <i class="fab fa-telegram"></i>
                     </div>
-                    <div class="chat-actions">
-                        <button class="icon-btn">
-                            <i class="fas fa-phone"></i>
-                        </button>
-                        <button class="icon-btn">
-                            <i class="fas fa-video"></i>
-                        </button>
-                        <button class="icon-btn">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                    </div>
+                    <h2>Добро пожаловать!</h2>
+                    <p>Выберите чат для начала общения или создайте новый</p>
+                    <button class="btn btn-primary" onclick="toggleNewChat()">
+                        <i class="fas fa-edit"></i> Начать новый чат
+                    </button>
                 </div>
 
-                <div class="messages-container" id="messagesContainer">
-                    <!-- Messages will be loaded here -->
-                </div>
+                <div id="activeChat" style="display: none; flex-direction: column; height: 100%;">
+                    <div class="chat-header-main">
+                        <div class="chat-user">
+                            <div class="avatar" id="currentChatAvatar">
+                                <div class="online-status online" id="currentChatStatus"></div>
+                            </div>
+                            <div>
+                                <h3 id="currentChatName"></h3>
+                                <span id="currentChatStatusText">online</span>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="icon-btn">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="icon-btn">
+                                <i class="fas fa-video"></i>
+                            </button>
+                            <button class="icon-btn">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="message-input-container">
-                    <button class="icon-btn">
-                        <i class="fas fa-paperclip"></i>
-                    </button>
-                    <textarea class="message-input" id="messageInput" placeholder="Введите сообщение..." rows="1"></textarea>
-                    <button class="send-btn" onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                    <div class="messages-container" id="messagesContainer">
+                        <!-- Messages will be loaded here -->
+                    </div>
+
+                    <div class="message-input-container">
+                        <button class="icon-btn">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <textarea class="message-input" id="messageInput" placeholder="Введите сообщение..." rows="1"></textarea>
+                        <button class="send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Error Screen -->
+        <div class="error-screen" id="errorScreen" style="display: none;">
+            <h1>Ошибка</h1>
+            <p id="errorMessage">Не удалось загрузить приложение</p>
+            <button class="btn btn-primary" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Перезагрузить
+            </button>
         </div>
     </div>
 
@@ -563,36 +623,50 @@
         let currentChat = null;
         let telegramUser = null;
 
-        // Initialize Telegram Web App
-        function initTelegramAuth() {
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.ready();
-                telegramUser = Telegram.WebApp.initDataUnsafe?.user;
+        // Initialize Telegram Web App automatically
+        async function initTelegramAuth() {
+            try {
+                console.log('Initializing Telegram auth...');
                 
-                if (telegramUser) {
-                    authenticateUser(telegramUser);
+                // Check if we're in Telegram
+                if (window.Telegram && Telegram.WebApp) {
+                    console.log('Telegram Web App detected');
+                    Telegram.WebApp.ready();
+                    Telegram.WebApp.expand();
+                    
+                    telegramUser = Telegram.WebApp.initDataUnsafe?.user;
+                    
+                    if (telegramUser) {
+                        console.log('Telegram user found:', telegramUser);
+                        await authenticateUser(telegramUser);
+                    } else {
+                        console.log('No Telegram user data, using demo mode');
+                        await demoAuth();
+                    }
                 } else {
-                    alert('Telegram Mini App не доступен. Используется демо-режим.');
-                    // Demo mode for testing
-                    demoAuth();
+                    console.log('Not in Telegram, using demo mode');
+                    await demoAuth();
                 }
-            } else {
-                alert('Telegram Web App не доступен. Используется демо-режим.');
-                demoAuth();
+            } catch (error) {
+                console.error('Init error:', error);
+                showError('Ошибка инициализации: ' + error.message);
             }
         }
 
         async function demoAuth() {
+            // Create a demo user for testing outside Telegram
             telegramUser = {
                 id: Math.floor(Math.random() * 1000000),
-                first_name: 'Demo',
-                username: 'demo_user'
+                first_name: 'Demo User',
+                username: 'demo_user_' + Math.floor(Math.random() * 1000)
             };
             await authenticateUser(telegramUser);
         }
 
         async function authenticateUser(tgUser) {
             try {
+                console.log('Authenticating user:', tgUser);
+                
                 // Check if user exists
                 const { data: existingUser, error } = await supabase
                     .from('users')
@@ -602,6 +676,7 @@
 
                 if (error && error.code === 'PGRST116') {
                     // User doesn't exist, create new
+                    console.log('Creating new user...');
                     const userData = {
                         telegram_id: tgUser.id,
                         username: tgUser.username || `user_${tgUser.id}`,
@@ -619,10 +694,12 @@
 
                     if (createError) throw createError;
                     currentUser = newUser;
+                    console.log('New user created:', newUser);
                 } else if (error) {
                     throw error;
                 } else {
                     // User exists, update online status
+                    console.log('Existing user found:', existingUser);
                     currentUser = existingUser;
                     await updateUserStatus(true);
                 }
@@ -633,24 +710,28 @@
 
             } catch (error) {
                 console.error('Auth error:', error);
-                alert('Ошибка авторизации: ' + error.message);
+                showError('Ошибка авторизации: ' + error.message);
             }
         }
 
         function showMainApp() {
-            document.getElementById('loginScreen').style.display = 'none';
+            console.log('Showing main app...');
+            document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'flex';
             
             // Update user info in sidebar
             document.getElementById('userName').innerHTML = 
                 `${currentUser.display_name} ${currentUser.username === '@clanffys' ? '<i class="fas fa-check-circle verified-badge" title="Создатель проекта"></i>' : ''}`;
             
-            if (currentUser.avatar_url) {
-                document.getElementById('userAvatar').innerHTML = 
-                    `<img src="${currentUser.avatar_url}" alt="Avatar"><div class="online-status online" id="userStatus"></div>`;
+            updateUserAvatar('userAvatar', currentUser);
+        }
+
+        function updateUserAvatar(elementId, user) {
+            const element = document.getElementById(elementId);
+            if (user.avatar_url) {
+                element.innerHTML = `<img src="${user.avatar_url}" alt="Avatar"><div class="online-status online"></div>`;
             } else {
-                document.getElementById('userAvatar').innerHTML = 
-                    `${currentUser.display_name.charAt(0).toUpperCase()}<div class="online-status online" id="userStatus"></div>`;
+                element.innerHTML = `${user.display_name.charAt(0).toUpperCase()}<div class="online-status online"></div>`;
             }
         }
 
@@ -686,6 +767,19 @@
 
                 const chatsList = document.getElementById('chatsList');
                 chatsList.innerHTML = '';
+
+                if (chats.length === 0) {
+                    chatsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: var(--tg-theme-hint-color);">
+                            <i class="fas fa-comments" style="font-size: 40px; margin-bottom: 15px;"></i>
+                            <p>У вас пока нет чатов</p>
+                            <button class="btn btn-primary" onclick="toggleNewChat()" style="margin-top: 15px;">
+                                Начать первый чат
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
 
                 chats.forEach(chat => {
                     const otherUser = chat.user1_id === currentUser.id ? chat.user2 : chat.user1;
@@ -728,19 +822,17 @@
         async function openChat(chat, otherUser) {
             currentChat = chat;
             
+            // Hide welcome screen, show active chat
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('activeChat').style.display = 'flex';
+            
             // Update chat header
             document.getElementById('currentChatName').innerHTML = 
                 `${otherUser.display_name} ${otherUser.username === '@clanffys' ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}`;
             document.getElementById('currentChatStatusText').textContent = 
                 otherUser.is_online ? 'online' : formatLastSeen(otherUser.last_seen);
             
-            if (otherUser.avatar_url) {
-                document.getElementById('currentChatAvatar').innerHTML = 
-                    `<img src="${otherUser.avatar_url}" alt="Avatar"><div class="online-status ${otherUser.is_online ? 'online' : 'offline'}"></div>`;
-            } else {
-                document.getElementById('currentChatAvatar').innerHTML = 
-                    `${otherUser.display_name.charAt(0).toUpperCase()}<div class="online-status ${otherUser.is_online ? 'online' : 'offline'}"></div>`;
-            }
+            updateUserAvatar('currentChatAvatar', otherUser);
 
             await loadMessages(chat.id);
         }
@@ -908,6 +1000,11 @@
 
                 if (error) throw error;
 
+                if (otherUser.id === currentUser.id) {
+                    alert('Нельзя создать чат с самим собой!');
+                    return;
+                }
+
                 // Check if chat already exists
                 const { data: existingChat, error: chatError } = await supabase
                     .from('chats')
@@ -997,6 +1094,13 @@
             return `${Math.floor(diffMinutes / 1440)} дн назад`;
         }
 
+        function showError(message) {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('errorScreen').style.display = 'flex';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
         // Handle Enter key for sending messages
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -1022,8 +1126,8 @@
 
         // Initialize when page loads
         window.addEventListener('load', function() {
-            // Try to init Telegram auth automatically
-            setTimeout(initTelegramAuth, 100);
+            console.log('Page loaded, starting auth...');
+            initTelegramAuth();
         });
     </script>
 </body>
