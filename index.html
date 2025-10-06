@@ -101,12 +101,29 @@
             font-weight: 600;
             cursor: pointer;
             margin-bottom: 16px;
+            transition: opacity 0.2s ease;
+        }
+
+        .auth-button:hover {
+            opacity: 0.9;
+        }
+
+        .auth-button:disabled {
+            background: var(--text-tertiary);
+            cursor: not-allowed;
         }
 
         .auth-note {
             font-size: 12px;
             color: var(--text-tertiary);
             line-height: 1.4;
+        }
+
+        .error-message {
+            color: var(--accent-offline);
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
         }
 
         /* Main App */
@@ -721,6 +738,11 @@
             display: none;
         }
 
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
         /* Animations */
         .fade-in {
             animation: fadeIn 0.3s ease-out;
@@ -747,6 +769,7 @@
         <div class="auth-container">
             <div class="auth-logo">Quertum</div>
             <div class="auth-form">
+                <div class="error-message" id="errorMessage"></div>
                 <input type="text" class="auth-input" id="usernameInput" placeholder="Придумайте username" maxlength="15">
                 <input type="password" class="auth-input" id="passwordInput" placeholder="Придумайте пароль">
                 <button class="auth-button" id="registerButton">Зарегистрироваться</button>
@@ -912,7 +935,8 @@
         const SUPABASE_URL = 'https://kmjaujtiukrovsaqevpo.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttamF1anRpdWtyb3ZzYXFldnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NDAxNjgsImV4cCI6MjA3NTIxNjE2OH0.Bd0AZ2QX80fq7o7NDZpAkAk3DGhxiHnBXE64HFFuXZg';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Создаем клиент Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         class QuertumMessenger {
             constructor() {
@@ -932,23 +956,28 @@
             }
 
             async checkAuth() {
-                const savedUser = localStorage.getItem('quertum_user');
-                if (savedUser) {
-                    const userData = JSON.parse(savedUser);
-                    const { data: user } = await supabase
-                        .from('users')
-                        .select('*')
-                        .eq('username', userData.username)
-                        .eq('password', userData.password)
-                        .single();
+                try {
+                    const savedUser = localStorage.getItem('quertum_user');
+                    if (savedUser) {
+                        const userData = JSON.parse(savedUser);
+                        const { data: user, error } = await supabase
+                            .from('users')
+                            .select('*')
+                            .eq('username', userData.username)
+                            .eq('password', userData.password)
+                            .single();
 
-                    if (user) {
-                        this.currentUser = user;
-                        this.showMainApp();
-                        return;
+                        if (user && !error) {
+                            this.currentUser = user;
+                            this.showMainApp();
+                            return;
+                        }
                     }
+                    this.showAuth();
+                } catch (error) {
+                    console.error('Auth check error:', error);
+                    this.showAuth();
                 }
-                this.showAuth();
             }
 
             setupEventListeners() {
@@ -990,54 +1019,78 @@
             async register() {
                 const username = document.getElementById('usernameInput').value.trim();
                 const password = document.getElementById('passwordInput').value.trim();
+                const errorElement = document.getElementById('errorMessage');
+                const registerButton = document.getElementById('registerButton');
+
+                // Сбрасываем ошибки
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
 
                 if (username.length < 5 || username.length > 15) {
-                    alert('Username должен быть от 5 до 15 символов');
+                    errorElement.textContent = 'Username должен быть от 5 до 15 символов';
+                    errorElement.style.display = 'block';
                     return;
                 }
 
                 if (!password) {
-                    alert('Введите пароль');
+                    errorElement.textContent = 'Введите пароль';
+                    errorElement.style.display = 'block';
                     return;
                 }
 
-                // Проверяем, свободен ли username
-                const { data: existingUser } = await supabase
-                    .from('users')
-                    .select('username')
-                    .eq('username', username)
-                    .single();
+                // Блокируем кнопку
+                registerButton.disabled = true;
+                registerButton.textContent = 'Регистрация...';
 
-                if (existingUser) {
-                    alert('Этот username уже занят');
-                    return;
+                try {
+                    // Проверяем, свободен ли username
+                    const { data: existingUser, error: checkError } = await supabase
+                        .from('users')
+                        .select('username')
+                        .eq('username', username)
+                        .single();
+
+                    if (existingUser && !checkError) {
+                        errorElement.textContent = 'Этот username уже занят';
+                        errorElement.style.display = 'block';
+                        registerButton.disabled = false;
+                        registerButton.textContent = 'Зарегистрироваться';
+                        return;
+                    }
+
+                    // Создаем пользователя
+                    const userData = {
+                        username: username,
+                        password: password,
+                        display_name: username,
+                        bio: '',
+                        avatar_url: '',
+                        is_online: true,
+                        last_seen: new Date().toISOString()
+                    };
+
+                    const { data: user, error } = await supabase
+                        .from('users')
+                        .insert([userData])
+                        .select()
+                        .single();
+
+                    if (error) {
+                        throw new Error(error.message);
+                    }
+
+                    this.currentUser = user;
+                    localStorage.setItem('quertum_user', JSON.stringify({ username, password }));
+                    this.showMainApp();
+
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    errorElement.textContent = 'Ошибка регистрации: ' + error.message;
+                    errorElement.style.display = 'block';
+                } finally {
+                    registerButton.disabled = false;
+                    registerButton.textContent = 'Зарегистрироваться';
                 }
-
-                // Создаем пользователя
-                const userData = {
-                    username: username,
-                    password: password,
-                    display_name: username,
-                    bio: '',
-                    avatar_url: '',
-                    is_online: true,
-                    last_seen: new Date().toISOString()
-                };
-
-                const { data: user, error } = await supabase
-                    .from('users')
-                    .insert([userData])
-                    .select()
-                    .single();
-
-                if (error) {
-                    alert('Ошибка регистрации: ' + error.message);
-                    return;
-                }
-
-                this.currentUser = user;
-                localStorage.setItem('quertum_user', JSON.stringify({ username, password }));
-                this.showMainApp();
             }
 
             showAuth() {
