@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qentrum</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -127,6 +126,7 @@
             font-weight: 500;
             cursor: pointer;
             border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .tab.active {
@@ -144,10 +144,13 @@
             flex: 1;
             display: none;
             flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .tab-content.active {
             display: flex;
+            opacity: 1;
         }
 
         .chats-list {
@@ -170,6 +173,11 @@
             color: var(--text-primary);
             font-size: 15px;
             outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
         }
 
         .chat-item {
@@ -179,10 +187,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            transition: all 0.2s ease;
         }
 
         .chat-item:active {
             background-color: var(--bg-secondary);
+            transform: scale(0.98);
         }
 
         .chat-avatar {
@@ -196,6 +206,7 @@
             font-weight: 600;
             color: white;
             font-size: 18px;
+            transition: all 0.3s ease;
         }
 
         .chat-info {
@@ -206,6 +217,20 @@
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .verified-badge {
+            color: var(--accent-blue);
+            font-size: 14px;
+        }
+
+        .creator-badge {
+            font-size: 12px;
+            color: var(--accent-purple);
+            font-style: italic;
         }
 
         .chat-username {
@@ -224,6 +249,13 @@
             display: none;
             flex-direction: column;
             background: var(--bg-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .chat-window.active {
+            display: flex;
+            opacity: 1;
         }
 
         .chat-header {
@@ -244,6 +276,7 @@
             justify-content: center;
             font-weight: 600;
             color: white;
+            transition: all 0.3s ease;
         }
 
         .chat-header-info {
@@ -253,6 +286,9 @@
         .chat-header-name {
             font-size: 16px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .messages-container {
@@ -270,6 +306,19 @@
             border-radius: 12px;
             font-size: 15px;
             line-height: 1.4;
+            transition: all 0.3s ease;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message.outgoing {
@@ -282,6 +331,23 @@
             background: var(--message-in);
         }
 
+        .sticker-message {
+            background: transparent !important;
+            padding: 8px;
+        }
+
+        .sticker {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .sticker:hover {
+            transform: scale(1.05);
+        }
+
         .message-input-container {
             padding: 12px 16px;
             border-top: 1px solid var(--border-color);
@@ -290,8 +356,13 @@
             align-items: flex-end;
         }
 
-        .message-input {
+        .message-input-wrapper {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-input {
             padding: 12px 16px;
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
@@ -300,6 +371,26 @@
             font-size: 15px;
             outline: none;
             resize: none;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .sticker-button {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .sticker-button:active {
+            background: var(--bg-secondary);
         }
 
         .send-button {
@@ -313,6 +404,76 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .sticker-picker {
+            display: none;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .sticker-picker.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sticker-pack {
+            margin-bottom: 16px;
+        }
+
+        .sticker-pack-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding: 0 8px;
+        }
+
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 0 8px;
+        }
+
+        .sticker-item {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sticker-item:active {
+            transform: scale(0.9);
+            background: var(--bg-tertiary);
+        }
+
+        .sticker-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
         }
 
         .profile-content {
@@ -325,6 +486,7 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 16px;
+            transition: all 0.3s ease;
         }
 
         .profile-avatar-large {
@@ -340,6 +502,12 @@
             color: white;
             margin: 0 auto 20px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            border: 4px solid var(--bg-primary);
+        }
+
+        .profile-avatar-large:active {
+            transform: scale(0.95);
         }
 
         .profile-name {
@@ -347,6 +515,10 @@
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .profile-username {
@@ -366,6 +538,11 @@
             font-size: 15px;
             margin-bottom: 12px;
             outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .profile-input:focus {
+            border-color: var(--accent-blue);
         }
 
         .profile-save {
@@ -378,6 +555,11 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-save:active {
+            transform: scale(0.98);
         }
 
         .back-button {
@@ -388,6 +570,11 @@
             cursor: pointer;
             padding: 8px;
             margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:active {
+            transform: scale(0.9);
         }
 
         .loading {
@@ -399,7 +586,7 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--text-secondary);
+            color: var(--text-secondary;
         }
 
         .error-message {
@@ -409,6 +596,7 @@
             margin: 10px;
             border-radius: 8px;
             text-align: center;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -461,11 +649,15 @@
 
     <div class="chat-window" id="chat-window">
         <div class="chat-header">
-            <button class="back-button" onclick="closeChat()">��</button>
+            <button class="back-button" onclick="closeChat()">←</button>
             <div class="chat-header-avatar" id="chat-header-avatar">U</div>
             <div class="chat-header-info">
-                <div class="chat-header-name" id="chat-header-name">User Name</div>
+                <div class="chat-header-name" id="chat-header-name">
+                    User Name
+                    <span class="verified-badge" id="verified-badge" style="display: none;">✓</span>
+                </div>
                 <div class="chat-header-username" id="chat-header-username"></div>
+                <div class="creator-badge" id="creator-badge" style="display: none;">Project Creator</div>
             </div>
         </div>
         
@@ -473,14 +665,58 @@
             <div class="loading">Loading messages...</div>
         </div>
         
+        <div class="sticker-picker" id="sticker-picker">
+            <div class="sticker-pack">
+                <div class="sticker-pack-title">Cute Animals</div>
+                <div class="sticker-grid">
+                    <div class="sticker-item" onclick="sendSticker('🐶')">🐶</div>
+                    <div class="sticker-item" onclick="sendSticker('🐱')">🐱</div>
+                    <div class="sticker-item" onclick="sendSticker('🐰')">🐰</div>
+                    <div class="sticker-item" onclick="sendSticker('🐻')">🐻</div>
+                    <div class="sticker-item" onclick="sendSticker('🐼')">🐼</div>
+                    <div class="sticker-item" onclick="sendSticker('🦊')">🦊</div>
+                    <div class="sticker-item" onclick="sendSticker('🐯')">🐯</div>
+                    <div class="sticker-item" onclick="sendSticker('🦁')">🦁</div>
+                </div>
+            </div>
+            <div class="sticker-pack">
+                <div class="sticker-pack-title">Emotions</div>
+                <div class="sticker-grid">
+                    <div class="sticker-item" onclick="sendSticker('😊')">😊</div>
+                    <div class="sticker-item" onclick="sendSticker('😂')">😂</div>
+                    <div class="sticker-item" onclick="sendSticker('🥺')">🥺</div>
+                    <div class="sticker-item" onclick="sendSticker('😎')">😎</div>
+                    <div class="sticker-item" onclick="sendSticker('🤔')">🤔</div>
+                    <div class="sticker-item" onclick="sendSticker('😍')">😍</div>
+                    <div class="sticker-item" onclick="sendSticker('🥰')">🥰</div>
+                    <div class="sticker-item" onclick="sendSticker('😭')">😭</div>
+                </div>
+            </div>
+            <div class="sticker-pack">
+                <div class="sticker-pack-title">Actions</div>
+                <div class="sticker-grid">
+                    <div class="sticker-item" onclick="sendSticker('👍')">👍</div>
+                    <div class="sticker-item" onclick="sendSticker('❤️')">❤️</div>
+                    <div class="sticker-item" onclick="sendSticker('🎉')">🎉</div>
+                    <div class="sticker-item" onclick="sendSticker('🔥')">🔥</div>
+                    <div class="sticker-item" onclick="sendSticker('⭐')">⭐</div>
+                    <div class="sticker-item" onclick="sendSticker('💯')">💯</div>
+                    <div class="sticker-item" onclick="sendSticker('🚀')">🚀</div>
+                    <div class="sticker-item" onclick="sendSticker('🎯')">🎯</div>
+                </div>
+            </div>
+        </div>
+        
         <div class="message-input-container">
-            <textarea class="message-input" placeholder="Type a message..." id="message-input" rows="1"></textarea>
-            <button class="send-button" onclick="sendMessage()">��</button>
+            <button class="sticker-button" onclick="toggleStickerPicker()">😊</button>
+            <div class="message-input-wrapper">
+                <textarea class="message-input" placeholder="Type a message..." id="message-input" rows="1"></textarea>
+            </div>
+            <button class="send-button" onclick="sendMessage()">→</button>
         </div>
     </div>
 
     <script>
-        // �������ѧ� �ӧ֧��ڧ� �ҧ֧� Supabase �էݧ� �ߧѧ�ѧݧ�
         class SimpleMessenger {
             constructor() {
                 this.currentUser = null;
@@ -488,6 +724,7 @@
                 this.chats = new Map();
                 this.currentChat = null;
                 this.tg = null;
+                this.isStickerPickerOpen = false;
                 
                 this.init();
             }
@@ -518,14 +755,19 @@
                 document.getElementById('telegram-auth-button').addEventListener('click', () => {
                     this.handleTelegramAuth();
                 });
+
+                // Закрытие стикерпака при клике вне его
+                document.addEventListener('click', (e) => {
+                    if (this.isStickerPickerOpen && !e.target.closest('.sticker-picker') && !e.target.closest('.sticker-button')) {
+                        this.toggleStickerPicker();
+                    }
+                });
             }
 
             checkAuth() {
-                // ���ݧ� ��֧��ڧ��ӧѧߧڧ� �ҧ֧� Telegram
                 if (this.tg?.initDataUnsafe?.user) {
                     this.handleTelegramUser(this.tg.initDataUnsafe.user);
                 } else {
-                    // ���֧ާ�-��֧اڧ� �էݧ� ��֧��ڧ��ӧѧߧڧ�
                     this.showWelcomeScreen();
                 }
             }
@@ -540,7 +782,6 @@
             }
 
             enableDemoMode() {
-                // ����٧էѧ֧� �է֧ާ�-���ݧ�٧�ӧѧ�֧ݧ�
                 const demoUser = {
                     id: 'demo_user',
                     firstName: 'Demo',
@@ -602,6 +843,7 @@
             showWelcomeScreen() {
                 document.getElementById('welcome-screen').style.display = 'flex';
                 document.getElementById('main-app').style.display = 'none';
+                document.getElementById('chat-window').classList.remove('active');
             }
 
             showMainApp() {
@@ -621,10 +863,21 @@
             }
 
             switchTab(tabName) {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                    tab.style.transform = 'scale(1)';
+                });
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
                 
                 event.target.classList.add('active');
+                event.target.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    event.target.style.transform = 'scale(1)';
+                }, 150);
+                
                 document.getElementById(`${tabName}-tab`).classList.add('active');
                 document.getElementById('header-title').textContent = tabName === 'chats' ? 'Chats' : 'Profile';
             }
@@ -637,8 +890,16 @@
                     return;
                 }
 
-                // ����٧էѧ֧� �է֧ާ�-���ݧ�٧�ӧѧ�֧ݧ֧� �էݧ� ���ڧ�ܧ�
                 const demoUsers = [
+                    { 
+                        id: 'clanffys', 
+                        firstName: 'Clanffys', 
+                        lastName: '', 
+                        username: 'clanffys', 
+                        avatar: 'C',
+                        isVerified: true,
+                        isCreator: true
+                    },
                     { id: 'user1', firstName: 'John', lastName: 'Doe', username: 'johndoe', avatar: 'J' },
                     { id: 'user2', firstName: 'Alice', lastName: 'Smith', username: 'alice', avatar: 'A' },
                     { id: 'user3', firstName: 'Bob', lastName: 'Johnson', username: 'bobby', avatar: 'B' }
@@ -659,8 +920,12 @@
                     <div class="chat-item" onclick="messenger.openChat('${user.id}')">
                         <div class="chat-avatar">${user.avatar}</div>
                         <div class="chat-info">
-                            <div class="chat-name">${user.firstName} ${user.lastName}</div>
+                            <div class="chat-name">
+                                ${user.firstName} ${user.lastName}
+                                ${user.isVerified ? '<span class="verified-badge">✓</span>' : ''}
+                            </div>
                             <div class="chat-username">@${user.username}</div>
+                            ${user.isCreator ? '<div class="creator-badge">Project Creator</div>' : ''}
                             <div class="chat-last-message">Tap to start chatting</div>
                         </div>
                     </div>
@@ -696,9 +961,13 @@
                             <div class="chat-item" onclick="messenger.openChat('${otherUserId}')">
                                 <div class="chat-avatar">${otherUser.avatar}</div>
                                 <div class="chat-info">
-                                    <div class="chat-name">${otherUser.firstName} ${otherUser.lastName}</div>
+                                    <div class="chat-name">
+                                        ${otherUser.firstName} ${otherUser.lastName}
+                                        ${otherUser.username === 'clanffys' ? '<span class="verified-badge">✓</span>' : ''}
+                                    </div>
                                     ${otherUser.username ? `<div class="chat-username">@${otherUser.username}</div>` : ''}
-                                    <div class="chat-last-message">${lastMessage ? lastMessage.text : 'No messages yet'}</div>
+                                    ${otherUser.username === 'clanffys' ? '<div class="creator-badge">Project Creator</div>' : ''}
+                                    <div class="chat-last-message">${lastMessage ? (lastMessage.isSticker ? 'Sticker' : lastMessage.text) : 'No messages yet'}</div>
                                 </div>
                             </div>
                         `;
@@ -709,9 +978,17 @@
             }
 
             openChat(userId) {
-                // ����٧էѧ֧� ���ݧ�٧�ӧѧ�֧ݧ� �֧�ݧ� �֧ԧ� �ߧ֧�
                 if (!this.users.has(userId)) {
                     const demoUsers = {
+                        'clanffys': { 
+                            id: 'clanffys', 
+                            firstName: 'Clanffys', 
+                            lastName: '', 
+                            username: 'clanffys', 
+                            avatar: 'C',
+                            isVerified: true,
+                            isCreator: true
+                        },
                         'user1': { id: 'user1', firstName: 'John', lastName: 'Doe', username: 'johndoe', avatar: 'J' },
                         'user2': { id: 'user2', firstName: 'Alice', lastName: 'Smith', username: 'alice', avatar: 'A' },
                         'user3': { id: 'user3', firstName: 'Bob', lastName: 'Johnson', username: 'bobby', avatar: 'B' }
@@ -724,13 +1001,17 @@
 
                 this.currentChat = userId;
                 document.getElementById('chats-tab').style.display = 'none';
-                document.getElementById('chat-window').style.display = 'flex';
+                document.getElementById('chat-window').classList.add('active');
                 
                 const user = this.users.get(userId);
                 if (user) {
                     document.getElementById('chat-header-avatar').textContent = user.avatar;
                     document.getElementById('chat-header-name').textContent = `${user.firstName} ${user.lastName}`;
                     document.getElementById('chat-header-username').textContent = user.username ? `@${user.username}` : '';
+                    
+                    // Показываем галочку и бейдж создателя для clanffys
+                    document.getElementById('verified-badge').style.display = user.username === 'clanffys' ? 'inline' : 'none';
+                    document.getElementById('creator-badge').style.display = user.username === 'clanffys' ? 'block' : 'none';
                 }
                 
                 this.updateChatWindow();
@@ -738,9 +1019,10 @@
 
             closeChat() {
                 document.getElementById('chats-tab').style.display = 'flex';
-                document.getElementById('chat-window').style.display = 'none';
+                document.getElementById('chat-window').classList.remove('active');
                 this.currentChat = null;
                 this.loadChatsList();
+                this.toggleStickerPicker(false);
             }
 
             updateChatWindow() {
@@ -764,11 +1046,21 @@
                     return;
                 }
 
-                messagesContainer.innerHTML = messages.map(msg => `
-                    <div class="message ${msg.sender === this.currentUser.id ? 'outgoing' : 'incoming'}">
-                        ${msg.text}
-                    </div>
-                `).join('');
+                messagesContainer.innerHTML = messages.map(msg => {
+                    if (msg.isSticker) {
+                        return `
+                            <div class="message sticker-message ${msg.sender === this.currentUser.id ? 'outgoing' : 'incoming'}">
+                                <div style="font-size: 48px; text-align: center;">${msg.text}</div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="message ${msg.sender === this.currentUser.id ? 'outgoing' : 'incoming'}">
+                                ${msg.text}
+                            </div>
+                        `;
+                    }
+                }).join('');
 
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
@@ -785,7 +1077,8 @@
                 messages.push({
                     text: text,
                     sender: this.currentUser.id,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    isSticker: false
                 });
 
                 this.chats.set(chatKey, messages);
@@ -793,6 +1086,36 @@
                 
                 input.value = '';
                 this.updateChatWindow();
+            }
+
+            sendSticker(sticker) {
+                if (!this.currentChat || !this.currentUser) return;
+
+                const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
+                const messages = this.chats.get(chatKey) || [];
+
+                messages.push({
+                    text: sticker,
+                    sender: this.currentUser.id,
+                    timestamp: new Date().toISOString(),
+                    isSticker: true
+                });
+
+                this.chats.set(chatKey, messages);
+                this.saveToStorage();
+                this.updateChatWindow();
+                this.toggleStickerPicker(false);
+            }
+
+            toggleStickerPicker() {
+                this.isStickerPickerOpen = !this.isStickerPickerOpen;
+                const picker = document.getElementById('sticker-picker');
+                
+                if (this.isStickerPickerOpen) {
+                    picker.classList.add('active');
+                } else {
+                    picker.classList.remove('active');
+                }
             }
 
             updateProfile() {
@@ -844,7 +1167,7 @@
             }
         }
 
-        // ���ݧ�ҧѧݧ�ߧ��� ���ߧܧ�ڧ�
+        // Глобальные функции
         function switchTab(tabName) {
             messenger.switchTab(tabName);
         }
@@ -861,11 +1184,19 @@
             messenger.sendMessage();
         }
 
+        function sendSticker(sticker) {
+            messenger.sendSticker(sticker);
+        }
+
+        function toggleStickerPicker() {
+            messenger.toggleStickerPicker();
+        }
+
         function closeChat() {
             messenger.closeChat();
         }
 
-        // ���ߧڧ�ڧѧݧڧ٧ѧ�ڧ�
+        // Инициализация
         const messenger = new SimpleMessenger();
         document.getElementById('profile-avatar-large').addEventListener('click', changeAvatar);
     </script>
