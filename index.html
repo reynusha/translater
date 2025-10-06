@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qentrum Messenger</title>
+    <title>Quertum</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -38,15 +38,18 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .app {
-            max-width: 100%;
-            margin: 0 auto;
-            height: 100vh;
-            display: flex;
+        .screen {
+            display: none;
             flex-direction: column;
+            height: 100vh;
         }
 
-        .welcome-screen {
+        .screen.active {
+            display: flex;
+        }
+
+        /* Auth Screen */
+        .auth-container {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -57,27 +60,56 @@
             background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
         }
 
-        .welcome-logo {
+        .auth-logo {
             font-size: 52px;
             font-weight: 800;
             background: linear-gradient(135deg, #bf5af2 0%, #2ea6ff 50%, #34c759 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
+            margin-bottom: 40px;
         }
 
-        .start-button {
+        .auth-form {
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .auth-input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 16px;
             background: var(--accent-blue);
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 16px 32px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            margin-bottom: 16px;
         }
 
+        .auth-note {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        /* Main App */
         .main-app {
             display: none;
             flex-direction: column;
@@ -98,46 +130,80 @@
             font-weight: 600;
         }
 
-        .tabs {
+        .header-actions {
             display: flex;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
+            gap: 16px;
         }
 
-        .tab {
-            flex: 1;
-            padding: 16px;
-            text-align: center;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 15px;
-            font-weight: 500;
+        .header-icon {
+            width: 24px;
+            height: 24px;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .tab.active {
-            color: var(--accent-blue);
-            border-bottom-color: var(--accent-blue);
+        .header-icon:hover {
+            opacity: 1;
         }
 
         .content {
             flex: 1;
             overflow: hidden;
             display: flex;
+            flex-direction: column;
         }
 
         .tab-content {
             flex: 1;
             display: none;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .tab-content.active {
             display: flex;
         }
 
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 8px 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Home Tab */
         .chats-list {
             flex: 1;
             overflow-y: auto;
@@ -160,16 +226,21 @@
             outline: none;
         }
 
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
         .chat-item {
             padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
+            transition: background-color 0.2s ease;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .chat-item:active {
+        .chat-item:hover {
             background-color: var(--bg-secondary);
         }
 
@@ -184,7 +255,10 @@
             font-weight: 600;
             color: white;
             font-size: 18px;
+            flex-shrink: 0;
             position: relative;
+            background-size: cover;
+            background-position: center;
         }
 
         .online-status {
@@ -201,21 +275,42 @@
             background: var(--accent-online);
         }
 
+        .online-status.offline {
+            background: var(--accent-offline);
+        }
+
         .chat-info {
             flex: 1;
+            min-width: 0;
         }
 
         .chat-name {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-username {
+            font-size: 14px;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-last-message {
             font-size: 14px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
+        /* Chat Window */
         .chat-window {
             flex: 1;
             display: none;
@@ -237,6 +332,7 @@
             color: var(--accent-blue);
             font-size: 20px;
             cursor: pointer;
+            padding: 4px;
         }
 
         .chat-header-avatar {
@@ -249,21 +345,31 @@
             justify-content: center;
             font-weight: 600;
             color: white;
+            flex-shrink: 0;
             position: relative;
+            background-size: cover;
+            background-position: center;
         }
 
         .chat-header-info {
             flex: 1;
+            min-width: 0;
         }
 
         .chat-header-name {
             font-size: 16px;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-header-status {
             font-size: 13px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .messages-container {
@@ -281,6 +387,20 @@
             border-radius: 12px;
             font-size: 15px;
             line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+            animation: messageAppear 0.3s ease-out;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message.outgoing {
@@ -293,6 +413,12 @@
             align-self: flex-start;
             background: var(--message-in);
             border-bottom-left-radius: 4px;
+        }
+
+        .message-image {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-top: 4px;
         }
 
         .message-time {
@@ -308,6 +434,22 @@
             display: flex;
             gap: 8px;
             align-items: flex-end;
+            background: var(--bg-primary);
+        }
+
+        .attachment-button {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .attachment-button:hover {
+            background-color: var(--bg-secondary);
         }
 
         .message-input {
@@ -320,6 +462,14 @@
             font-size: 15px;
             outline: none;
             resize: none;
+            max-height: 120px;
+            min-height: 44px;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .message-input:focus {
+            border-color: var(--accent-blue);
         }
 
         .send-button {
@@ -333,8 +483,23 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            font-size: 16px;
         }
 
+        .send-button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            background: var(--text-tertiary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Profile Tab */
         .profile-content {
             flex: 1;
             overflow-y: auto;
@@ -346,9 +511,16 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 16px;
+            border: 1px solid var(--border-color);
         }
 
-        .profile-avatar {
+        .profile-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto 20px;
+        }
+
+        .profile-avatar-large {
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -359,7 +531,33 @@
             font-size: 36px;
             font-weight: 600;
             color: white;
-            margin: 0 auto 20px;
+            cursor: pointer;
+            border: 4px solid var(--bg-primary);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-avatar-large:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-upload-button {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .profile-name {
@@ -367,6 +565,24 @@
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .profile-username {
+            text-align: center;
+            font-size: 16px;
+            color: var(--accent-blue);
+            margin-bottom: 16px;
+            word-break: break-word;
+        }
+
+        .profile-bio {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.4;
+            word-break: break-word;
         }
 
         .profile-input {
@@ -379,6 +595,22 @@
             font-size: 15px;
             margin-bottom: 12px;
             outline: none;
+            font-family: inherit;
+        }
+
+        .profile-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 15px;
+            margin-bottom: 12px;
+            outline: none;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
         }
 
         .profile-save {
@@ -391,201 +623,635 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
+            transition: opacity 0.2s ease;
         }
 
+        .profile-save:hover {
+            opacity: 0.9;
+        }
+
+        .info-box {
+            background: rgba(191, 90, 242, 0.1);
+            border: 1px solid var(--accent-purple);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--accent-purple);
+        }
+
+        /* Market Tab */
+        .market-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+        }
+
+        .market-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .market-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .market-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .feature-info {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .feature-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Loading and States */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: var(--text-secondary);
         }
+
+        .empty-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-subtitle {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
-    <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-logo">Qentrum</div>
-        <button class="start-button" id="startButton">Start Messaging</button>
-    </div>
-
-    <div class="main-app" id="mainApp">
-        <div class="header">
-            <div class="header-title" id="headerTitle">Chats</div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab active" data-tab="chats">Chats</button>
-            <button class="tab" data-tab="profile">Profile</button>
-        </div>
-
-        <div class="content">
-            <div id="chats-tab" class="tab-content active">
-                <div class="chats-list">
-                    <div class="search-container">
-                        <input type="text" class="search-input" placeholder="Search users..." id="searchInput">
-                    </div>
-                    <div id="chatsContainer"></div>
-                </div>
-            </div>
-
-            <div id="profile-tab" class="tab-content">
-                <div class="profile-content">
-                    <div class="profile-section">
-                        <div class="profile-avatar" id="profileAvatar">U</div>
-                        <div class="profile-name" id="profileName">User</div>
-                        <input type="text" class="profile-input" id="usernameInput" placeholder="Username">
-                        <textarea class="profile-input" id="bioInput" placeholder="Bio" rows="3"></textarea>
-                        <button class="profile-save" id="saveProfile">Save Profile</button>
-                    </div>
+    <!-- Auth Screen -->
+    <div class="screen active" id="authScreen">
+        <div class="auth-container">
+            <div class="auth-logo">Quertum</div>
+            <div class="auth-form">
+                <input type="text" class="auth-input" id="usernameInput" placeholder="Придумайте username" maxlength="15">
+                <input type="password" class="auth-input" id="passwordInput" placeholder="Придумайте пароль">
+                <button class="auth-button" id="registerButton">Зарегистрироваться</button>
+                <div class="auth-note">
+                    Username должен быть от 5 до 15 символов. Пароль можно установить любой, но помните - безопасность вашего аккаунта зависит от сложности пароля.
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="chat-window" id="chatWindow">
-        <div class="chat-header">
-            <button class="back-button" id="backButton">��</button>
-            <div class="chat-header-avatar" id="chatHeaderAvatar">U</div>
-            <div class="chat-header-info">
-                <div class="chat-header-name" id="chatHeaderName">User</div>
-                <div class="chat-header-status" id="chatHeaderStatus">Online</div>
+    <!-- Main App -->
+    <div class="screen" id="mainApp">
+        <div class="main-app">
+            <div class="header">
+                <div class="header-title" id="headerTitle">Главная</div>
+                <div class="header-actions">
+                    <div class="header-icon" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Home Tab -->
+                <div id="home-tab" class="tab-content active">
+                    <div class="chats-list">
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Поиск по username..." id="searchInput">
+                        </div>
+                        <div id="chatsContainer">
+                            <div class="empty-state">
+                                <div class="empty-title">Нет чатов</div>
+                                <div class="empty-subtitle">Найдите пользователей для общения</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="profile-tab" class="tab-content">
+                    <div class="profile-content">
+                        <div class="profile-section">
+                            <div class="profile-avatar-container">
+                                <div class="profile-avatar-large" id="profileAvatar">
+                                    <i class="fas fa-user" id="profileAvatarIcon"></i>
+                                </div>
+                                <button class="avatar-upload-button" id="avatarUploadButton">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                                <input type="file" id="avatarUpload" class="hidden-input" accept="image/*">
+                            </div>
+                            <div class="profile-name" id="profileName">Загрузка...</div>
+                            <div class="profile-username" id="profileUsername">@username</div>
+                            <div class="profile-bio" id="profileBio">Статус не установлен</div>
+                            
+                            <input type="text" class="profile-input" id="newUsernameInput" placeholder="Новый username (5-15 символов)" maxlength="15">
+                            <textarea class="profile-textarea" id="bioInput" placeholder="Ваш статус..." maxlength="200"></textarea>
+                            <button class="profile-save" id="saveProfile">Сохранить профиль</button>
+                            
+                            <div class="info-box">
+                                В будущем username'ы станут коллекционными цифровыми активами. Короткие username'ы (4 символа) можно будет приобрести за внутриигровую валюту.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Tab -->
+                <div id="market-tab" class="tab-content">
+                    <div class="market-content">
+                        <div class="market-section">
+                            <div class="market-title">Внутриигровая валюта</div>
+                            <div class="market-feature">
+                                <div class="feature-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="feature-info">
+                                    <div class="feature-title">Quertum Coins</div>
+                                    <div class="feature-description">Покупайте и используйте нашу валюту для специальных возможностей</div>
+                                </div>
+                            </div>
+                            <div class="market-feature">
+                                <div class="feature-icon">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <div class="feature-info">
+                                    <div class="feature-title">Подарки</div>
+                                    <div class="feature-description">Отправляйте уникальные подарки друзьям и близким</div>
+                                </div>
+                            </div>
+                            <div class="market-feature">
+                                <div class="feature-icon">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <div class="feature-info">
+                                    <div class="feature-title">Премиум username'ы</div>
+                                    <div class="feature-description">Короткие и эксклюзивные username'ы всего за 4 символа</div>
+                                </div>
+                            </div>
+                            <div class="info-box">
+                                Функционал магазина находится в разработке. В ближайшее время вы сможете приобретать Quertum Coins и дарить подарки!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <button class="nav-item active" data-tab="home">
+                    <i class="nav-icon fas fa-home"></i>
+                    <span class="nav-label">Главная</span>
+                </button>
+                <button class="nav-item" data-tab="market">
+                    <i class="nav-icon fas fa-store"></i>
+                    <span class="nav-label">Маркет</span>
+                </button>
+                <button class="nav-item" data-tab="profile">
+                    <i class="nav-icon fas fa-user"></i>
+                    <span class="nav-label">Профиль</span>
+                </button>
             </div>
         </div>
-        
-        <div class="messages-container" id="messagesContainer"></div>
-        
-        <div class="message-input-container">
-            <textarea class="message-input" placeholder="Type a message..." id="messageInput" rows="1"></textarea>
-            <button class="send-button" id="sendButton">��</button>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="screen" id="chatScreen">
+        <div class="chat-window">
+            <div class="chat-header">
+                <button class="back-button" id="backButton">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="chat-header-avatar" id="chatHeaderAvatar">
+                    <div class="online-status" id="chatOnlineStatus"></div>
+                </div>
+                <div class="chat-header-info">
+                    <div class="chat-header-name" id="chatHeaderName">Пользователь</div>
+                    <div class="chat-header-status" id="chatHeaderStatus">Online</div>
+                </div>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <div class="empty-state">
+                    <div class="empty-title">Нет сообщений</div>
+                    <div class="empty-subtitle">Начните общение первым</div>
+                </div>
+            </div>
+            
+            <div class="message-input-container">
+                <button class="attachment-button" id="attachmentButton">
+                    <i class="fas fa-image"></i>
+                </button>
+                <input type="file" id="imageUpload" class="hidden-input" accept="image/*">
+                <textarea class="message-input" placeholder="Введите сообщение..." id="messageInput" rows="1"></textarea>
+                <button class="send-button" id="sendButton">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
+        // Supabase конфигурация
         const SUPABASE_URL = 'https://kmjaujtiukrovsaqevpo.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttamF1anRpdWtyb3ZzYXFldnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NDAxNjgsImV4cCI6MjA3NTIxNjE2OH0.Bd0AZ2QX80fq7o7NDZpAkAk3DGhxiHnBXE64HFFuXZg';
         
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        class Messenger {
+        class QuertumMessenger {
             constructor() {
                 this.currentUser = null;
                 this.users = new Map();
-                this.chats = new Map();
                 this.currentChat = null;
+                this.messageSubscription = null;
+                this.usersSubscription = null;
+                
                 this.init();
             }
 
             async init() {
+                await this.checkAuth();
                 this.setupEventListeners();
-                await this.loadCurrentUser();
-                this.startRealtime();
+                this.startRealtimeListeners();
+            }
+
+            async checkAuth() {
+                const savedUser = localStorage.getItem('quertum_user');
+                if (savedUser) {
+                    const userData = JSON.parse(savedUser);
+                    const { data: user } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('username', userData.username)
+                        .eq('password', userData.password)
+                        .single();
+
+                    if (user) {
+                        this.currentUser = user;
+                        this.showMainApp();
+                        return;
+                    }
+                }
+                this.showAuth();
             }
 
             setupEventListeners() {
-                // Start button
-                document.getElementById('startButton').addEventListener('click', () => this.startApp());
-                
-                // Tabs
-                document.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+                // Auth
+                document.getElementById('registerButton').addEventListener('click', () => this.register());
+                document.getElementById('usernameInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.register();
+                });
+                document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.register();
+                });
+
+                // Navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => this.switchTab(e.currentTarget.dataset.tab));
                 });
 
                 // Search
                 document.getElementById('searchInput').addEventListener('input', (e) => this.searchUsers(e.target.value));
 
-                // Message input
+                // Profile
+                document.getElementById('saveProfile').addEventListener('click', () => this.updateProfile());
+                document.getElementById('avatarUploadButton').addEventListener('click', () => document.getElementById('avatarUpload').click());
+                document.getElementById('avatarUpload').addEventListener('change', (e) => this.handleAvatarUpload(e.target.files[0]));
+
+                // Chat
+                document.getElementById('backButton').addEventListener('click', () => this.closeChat());
+                document.getElementById('sendButton').addEventListener('click', () => this.sendMessage());
                 document.getElementById('messageInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         this.sendMessage();
                     }
                 });
-
-                // Send button
-                document.getElementById('sendButton').addEventListener('click', () => this.sendMessage());
-
-                // Back button
-                document.getElementById('backButton').addEventListener('click', () => this.closeChat());
-
-                // Profile save
-                document.getElementById('saveProfile').addEventListener('click', () => this.updateProfile());
+                document.getElementById('attachmentButton').addEventListener('click', () => document.getElementById('imageUpload').click());
+                document.getElementById('imageUpload').addEventListener('change', (e) => this.handleImageUpload(e.target.files[0]));
             }
 
-            async startApp() {
-                document.getElementById('welcomeScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'flex';
-                await this.loadUsers();
-                this.updateChatsList();
-            }
+            async register() {
+                const username = document.getElementById('usernameInput').value.trim();
+                const password = document.getElementById('passwordInput').value.trim();
 
-            async loadCurrentUser() {
-                const userId = localStorage.getItem('userId') || 'user_' + Math.random().toString(36).substr(2, 8);
-                localStorage.setItem('userId', userId);
-
-                const { data: user } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-
-                if (user) {
-                    this.currentUser = user;
-                } else {
-                    this.currentUser = {
-                        id: userId,
-                        first_name: 'User',
-                        username: '',
-                        bio: '',
-                        avatar_url: '',
-                        is_online: true
-                    };
-                    await supabase.from('users').upsert(this.currentUser);
+                if (username.length < 5 || username.length > 15) {
+                    alert('Username должен быть от 5 до 15 символов');
+                    return;
                 }
 
-                this.updateProfileDisplay();
+                if (!password) {
+                    alert('Введите пароль');
+                    return;
+                }
+
+                // Проверяем, свободен ли username
+                const { data: existingUser } = await supabase
+                    .from('users')
+                    .select('username')
+                    .eq('username', username)
+                    .single();
+
+                if (existingUser) {
+                    alert('Этот username уже занят');
+                    return;
+                }
+
+                // Создаем пользователя
+                const userData = {
+                    username: username,
+                    password: password,
+                    display_name: username,
+                    bio: '',
+                    avatar_url: '',
+                    is_online: true,
+                    last_seen: new Date().toISOString()
+                };
+
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .insert([userData])
+                    .select()
+                    .single();
+
+                if (error) {
+                    alert('Ошибка регистрации: ' + error.message);
+                    return;
+                }
+
+                this.currentUser = user;
+                localStorage.setItem('quertum_user', JSON.stringify({ username, password }));
+                this.showMainApp();
             }
 
-            async loadUsers() {
-                const { data: users } = await supabase
-                    .from('users')
-                    .select('*')
-                    .neq('id', this.currentUser.id)
-                    .eq('is_online', true);
+            showAuth() {
+                document.getElementById('authScreen').classList.add('active');
+                document.getElementById('mainApp').classList.remove('active');
+                document.getElementById('chatScreen').classList.remove('active');
+            }
 
-                if (users) {
-                    users.forEach(user => this.users.set(user.id, user));
+            showMainApp() {
+                document.getElementById('authScreen').classList.remove('active');
+                document.getElementById('mainApp').classList.add('active');
+                document.getElementById('chatScreen').classList.remove('active');
+                
+                this.updateProfileDisplay();
+                this.loadOnlineUsers();
+            }
+
+            showChat() {
+                document.getElementById('authScreen').classList.remove('active');
+                document.getElementById('mainApp').classList.remove('active');
+                document.getElementById('chatScreen').classList.add('active');
+            }
+
+            switchTab(tabName) {
+                // Обновляем навигацию
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Обновляем контент
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+
+                // Обновляем заголовок
+                const titles = {
+                    'home': 'Главная',
+                    'market': 'Маркет',
+                    'profile': 'Профиль'
+                };
+                document.getElementById('headerTitle').textContent = titles[tabName];
+            }
+
+            async updateProfileDisplay() {
+                if (!this.currentUser) return;
+
+                document.getElementById('profileName').textContent = this.currentUser.display_name;
+                document.getElementById('profileUsername').textContent = '@' + this.currentUser.username;
+                document.getElementById('profileBio').textContent = this.currentUser.bio || 'Статус не установлен';
+                document.getElementById('bioInput').value = this.currentUser.bio || '';
+                document.getElementById('newUsernameInput').value = '';
+
+                // Обновляем аватар
+                const avatarElement = document.getElementById('profileAvatar');
+                if (this.currentUser.avatar_url) {
+                    avatarElement.style.backgroundImage = `url(${this.currentUser.avatar_url})`;
+                    document.getElementById('profileAvatarIcon').style.display = 'none';
+                } else {
+                    avatarElement.style.backgroundImage = '';
+                    document.getElementById('profileAvatarIcon').style.display = 'flex';
+                    avatarElement.textContent = this.currentUser.display_name.charAt(0).toUpperCase();
+                }
+            }
+
+            async updateProfile() {
+                if (!this.currentUser) return;
+
+                const newUsername = document.getElementById('newUsernameInput').value.trim();
+                const newBio = document.getElementById('bioInput').value.trim();
+
+                const updates = {};
+
+                if (newUsername && newUsername !== this.currentUser.username) {
+                    if (newUsername.length < 5 || newUsername.length > 15) {
+                        alert('Username должен быть от 5 до 15 символов');
+                        return;
+                    }
+
+                    // Проверяем, свободен ли новый username
+                    const { data: existingUser } = await supabase
+                        .from('users')
+                        .select('username')
+                        .eq('username', newUsername)
+                        .single();
+
+                    if (existingUser) {
+                        alert('Этот username уже занят');
+                        return;
+                    }
+
+                    updates.username = newUsername;
+                    updates.display_name = newUsername;
+                }
+
+                if (newBio !== this.currentUser.bio) {
+                    updates.bio = newBio;
+                }
+
+                if (Object.keys(updates).length === 0) {
+                    return;
+                }
+
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .update(updates)
+                    .eq('id', this.currentUser.id)
+                    .select()
+                    .single();
+
+                if (error) {
+                    alert('Ошибка обновления профиля: ' + error.message);
+                    return;
+                }
+
+                this.currentUser = user;
+                localStorage.setItem('quertum_user', JSON.stringify({ 
+                    username: user.username, 
+                    password: this.currentUser.password 
+                }));
+                
+                this.updateProfileDisplay();
+                alert('Профиль обновлен!');
+            }
+
+            async handleAvatarUpload(file) {
+                if (!file || !this.currentUser) return;
+
+                // В реальном приложении здесь была бы загрузка в Supabase Storage
+                // Для демонстрации используем Data URL
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const avatarUrl = e.target.result;
+                    
+                    const { data: user, error } = await supabase
+                        .from('users')
+                        .update({ avatar_url: avatarUrl })
+                        .eq('id', this.currentUser.id)
+                        .select()
+                        .single();
+
+                    if (error) {
+                        alert('Ошибка загрузки аватара: ' + error.message);
+                        return;
+                    }
+
+                    this.currentUser = user;
+                    this.updateProfileDisplay();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            async loadOnlineUsers() {
+                try {
+                    const { data: users } = await supabase
+                        .from('users')
+                        .select('*')
+                        .neq('id', this.currentUser.id)
+                        .eq('is_online', true)
+                        .order('last_seen', { ascending: false });
+
+                    if (users) {
+                        this.users.clear();
+                        users.forEach(user => this.users.set(user.id, user));
+                        this.updateChatsList();
+                    }
+                } catch (error) {
+                    console.error('Error loading users:', error);
                 }
             }
 
             async searchUsers(query) {
-                if (!query) {
+                if (!query.trim()) {
                     this.updateChatsList();
                     return;
                 }
 
-                const { data: users } = await supabase
-                    .from('users')
-                    .select('*')
-                    .neq('id', this.currentUser.id)
-                    .or(`first_name.ilike.%${query}%,username.ilike.%${query}%`);
+                try {
+                    const { data: users } = await supabase
+                        .from('users')
+                        .select('*')
+                        .neq('id', this.currentUser.id)
+                        .ilike('username', `%${query}%`);
 
-                this.displayUsers(users || []);
+                    this.displayUsers(users || []);
+                } catch (error) {
+                    console.error('Error searching users:', error);
+                }
             }
 
             displayUsers(users) {
                 const container = document.getElementById('chatsContainer');
+                
                 if (users.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No users found</div>';
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-title">Пользователи не найдены</div>
+                            <div class="empty-subtitle">Попробуйте другой запрос</div>
+                        </div>
+                    `;
                     return;
                 }
 
                 container.innerHTML = users.map(user => `
                     <div class="chat-item" onclick="messenger.openChat('${user.id}')">
-                        <div class="chat-avatar">
-                            ${user.first_name?.charAt(0) || 'U'}
+                        <div class="chat-avatar" style="${user.avatar_url ? `background-image: url(${user.avatar_url})` : ''}">
+                            ${user.avatar_url ? '' : user.display_name.charAt(0).toUpperCase()}
                             <div class="online-status ${user.is_online ? 'online' : 'offline'}"></div>
                         </div>
                         <div class="chat-info">
-                            <div class="chat-name">${user.first_name}</div>
-                            <div class="chat-last-message">${user.bio || 'Available to chat'}</div>
+                            <div class="chat-name">${user.display_name}</div>
+                            <div class="chat-username">@${user.username}</div>
+                            <div class="chat-last-message">${user.bio || 'Доступен для общения'}</div>
                         </div>
                     </div>
                 `).join('');
@@ -596,38 +1262,61 @@
             }
 
             async openChat(userId) {
+                if (!this.users.has(userId)) return;
+
                 this.currentChat = userId;
                 const user = this.users.get(userId);
 
-                document.getElementById('mainApp').style.display = 'none';
-                document.getElementById('chatWindow').style.display = 'flex';
-
-                document.getElementById('chatHeaderName').textContent = user.first_name;
-                document.getElementById('chatHeaderAvatar').textContent = user.first_name?.charAt(0) || 'U';
+                // Обновляем заголовок чата
+                document.getElementById('chatHeaderName').textContent = user.display_name;
+                document.getElementById('chatHeaderAvatar').innerHTML = user.avatar_url ? '' : user.display_name.charAt(0).toUpperCase();
+                if (user.avatar_url) {
+                    document.getElementById('chatHeaderAvatar').style.backgroundImage = `url(${user.avatar_url})`;
+                }
                 document.getElementById('chatHeaderStatus').textContent = user.is_online ? 'Online' : 'Offline';
+                document.getElementById('chatOnlineStatus').className = `online-status ${user.is_online ? 'online' : 'offline'}`;
 
+                this.showChat();
                 await this.loadMessages();
                 this.subscribeToMessages();
             }
 
             async loadMessages() {
+                if (!this.currentChat) return;
+
                 const chatId = [this.currentUser.id, this.currentChat].sort().join('_');
                 
-                const { data: messages } = await supabase
-                    .from('messages')
-                    .select('*')
-                    .eq('chat_id', chatId)
-                    .order('timestamp', { ascending: true });
+                try {
+                    const { data: messages } = await supabase
+                        .from('messages')
+                        .select('*')
+                        .eq('chat_id', chatId)
+                        .order('created_at', { ascending: true });
 
-                this.displayMessages(messages || []);
+                    this.displayMessages(messages || []);
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                }
             }
 
             displayMessages(messages) {
                 const container = document.getElementById('messagesContainer');
-                container.innerHTML = messages.map(msg => `
-                    <div class="message ${msg.sender_id === this.currentUser.id ? 'outgoing' : 'incoming'}">
-                        <div>${msg.text}</div>
-                        <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                
+                if (messages.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-title">Нет сообщений</div>
+                            <div class="empty-subtitle">Начните общение первым</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = messages.map(message => `
+                    <div class="message ${message.sender_id === this.currentUser.id ? 'outgoing' : 'incoming'}">
+                        <div class="message-text">${message.content}</div>
+                        ${message.image_url ? `<img src="${message.image_url}" class="message-image" alt="Изображение">` : ''}
+                        <div class="message-time">${new Date(message.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div>
                     </div>
                 `).join('');
 
@@ -635,81 +1324,75 @@
             }
 
             async sendMessage() {
-                const input = document.getElementById('messageInput');
-                const text = input.value.trim();
-                
-                if (!text || !this.currentChat) return;
+                if (!this.currentChat || !this.currentUser) return;
+
+                const messageInput = document.getElementById('messageInput');
+                const content = messageInput.value.trim();
+
+                if (!content) return;
 
                 const chatId = [this.currentUser.id, this.currentChat].sort().join('_');
                 
-                await supabase.from('messages').insert({
+                const messageData = {
                     chat_id: chatId,
                     sender_id: this.currentUser.id,
-                    text: text,
-                    timestamp: new Date().toISOString()
-                });
+                    receiver_id: this.currentChat,
+                    content: content,
+                    image_url: null,
+                    created_at: new Date().toISOString()
+                };
 
-                input.value = '';
+                const { error } = await supabase
+                    .from('messages')
+                    .insert([messageData]);
+
+                if (error) {
+                    console.error('Error sending message:', error);
+                    return;
+                }
+
+                messageInput.value = '';
                 this.loadMessages();
             }
 
-            closeChat() {
-                document.getElementById('chatWindow').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'flex';
-                this.currentChat = null;
-            }
+            async handleImageUpload(file) {
+                if (!file || !this.currentChat || !this.currentUser) return;
 
-            switchTab(tabName) {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-                document.getElementById(`${tabName}-tab`).classList.add('active');
-                
-                document.getElementById('headerTitle').textContent = tabName === 'chats' ? 'Chats' : 'Profile';
-            }
+                // В реальном приложении здесь была бы загрузка в Supabase Storage
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const imageUrl = e.target.result;
+                    const chatId = [this.currentUser.id, this.currentChat].sort().join('_');
+                    
+                    const messageData = {
+                        chat_id: chatId,
+                        sender_id: this.currentUser.id,
+                        receiver_id: this.currentChat,
+                        content: '',
+                        image_url: imageUrl,
+                        created_at: new Date().toISOString()
+                    };
 
-            async updateProfile() {
-                const username = document.getElementById('usernameInput').value;
-                const bio = document.getElementById('bioInput').value;
+                    const { error } = await supabase
+                        .from('messages')
+                        .insert([messageData]);
 
-                this.currentUser.username = username;
-                this.currentUser.bio = bio;
-
-                await supabase.from('users').upsert(this.currentUser);
-                this.updateProfileDisplay();
-                alert('Profile updated!');
-            }
-
-            updateProfileDisplay() {
-                document.getElementById('profileName').textContent = this.currentUser.first_name;
-                document.getElementById('usernameInput').value = this.currentUser.username || '';
-                document.getElementById('bioInput').value = this.currentUser.bio || '';
-                document.getElementById('profileAvatar').textContent = this.currentUser.first_name?.charAt(0) || 'U';
-            }
-
-            startRealtime() {
-                // Listen for new users
-                supabase.channel('users')
-                    .on('postgres_changes', 
-                        { event: '*', schema: 'public', table: 'users' },
-                        (payload) => {
-                            if (payload.new.id !== this.currentUser.id) {
-                                this.users.set(payload.new.id, payload.new);
-                                this.updateChatsList();
-                            }
-                        }
-                    )
-                    .subscribe();
-
-                // Update online status periodically
-                setInterval(() => {
-                    if (this.currentUser) {
-                        supabase.from('users')
-                            .update({ is_online: true, last_seen: new Date().toISOString() })
-                            .eq('id', this.currentUser.id);
+                    if (error) {
+                        console.error('Error sending image:', error);
+                        return;
                     }
-                }, 30000);
+
+                    this.loadMessages();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            closeChat() {
+                this.currentChat = null;
+                if (this.messageSubscription) {
+                    this.messageSubscription.unsubscribe();
+                }
+                this.showMainApp();
             }
 
             subscribeToMessages() {
@@ -717,19 +1400,51 @@
 
                 const chatId = [this.currentUser.id, this.currentChat].sort().join('_');
                 
-                supabase.channel(`messages:${chatId}`)
+                this.messageSubscription = supabase
+                    .channel('messages')
                     .on('postgres_changes', 
-                        { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${chatId}` },
-                        () => {
+                        { 
+                            event: 'INSERT', 
+                            schema: 'public', 
+                            table: 'messages',
+                            filter: `chat_id=eq.${chatId}`
+                        }, 
+                        (payload) => {
                             this.loadMessages();
+                        }
+                    )
+                    .subscribe();
+            }
+
+            startRealtimeListeners() {
+                // Слушаем изменения пользователей
+                this.usersSubscription = supabase
+                    .channel('users')
+                    .on('postgres_changes', 
+                        { 
+                            event: '*', 
+                            schema: 'public', 
+                            table: 'users' 
+                        }, 
+                        (payload) => {
+                            if (payload.new && payload.new.id !== this.currentUser?.id) {
+                                this.users.set(payload.new.id, payload.new);
+                                this.updateChatsList();
+                            }
                         }
                     )
                     .subscribe();
             }
         }
 
-        // Initialize the messenger
-        const messenger = new Messenger();
+        // Инициализация приложения
+        let messenger;
+        document.addEventListener('DOMContentLoaded', () => {
+            messenger = new QuertumMessenger();
+        });
+
+        // Глобальные функции для onclick
+        window.messenger = messenger;
     </script>
 </body>
 </html>
