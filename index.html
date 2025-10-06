@@ -935,7 +935,6 @@
         const SUPABASE_URL = 'https://kmjaujtiukrovsaqevpo.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttamF1anRpdWtyb3ZzYXFldnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NDAxNjgsImV4cCI6MjA3NTIxNjE2OH0.Bd0AZ2QX80fq7o7NDZpAkAk3DGhxiHnBXE64HFFuXZg';
         
-        // Создаем клиент Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         class QuertumMessenger {
@@ -1058,13 +1057,11 @@
                         return;
                     }
 
-                    // Создаем пользователя
+                    // Создаем пользователя БЕЗ bio
                     const userData = {
                         username: username,
                         password: password,
                         display_name: username,
-                        bio: '',
-                        avatar_url: '',
                         is_online: true,
                         last_seen: new Date().toISOString()
                     };
@@ -1141,8 +1138,16 @@
 
                 document.getElementById('profileName').textContent = this.currentUser.display_name;
                 document.getElementById('profileUsername').textContent = '@' + this.currentUser.username;
-                document.getElementById('profileBio').textContent = this.currentUser.bio || 'Статус не установлен';
-                document.getElementById('bioInput').value = this.currentUser.bio || '';
+                
+                // Проверяем есть ли bio у пользователя
+                if (this.currentUser.bio) {
+                    document.getElementById('profileBio').textContent = this.currentUser.bio;
+                    document.getElementById('bioInput').value = this.currentUser.bio;
+                } else {
+                    document.getElementById('profileBio').textContent = 'Статус не установлен';
+                    document.getElementById('bioInput').value = '';
+                }
+                
                 document.getElementById('newUsernameInput').value = '';
 
                 // Обновляем аватар
@@ -1187,7 +1192,8 @@
                     updates.display_name = newUsername;
                 }
 
-                if (newBio !== this.currentUser.bio) {
+                // Обновляем bio только если пользователь его ввел
+                if (newBio && newBio !== this.currentUser.bio) {
                     updates.bio = newBio;
                 }
 
