@@ -48,7 +48,6 @@
             display: flex;
         }
 
-        /* Auth Screen */
         .auth-container {
             display: flex;
             flex-direction: column;
@@ -126,7 +125,6 @@
             display: none;
         }
 
-        /* Main App */
         .main-app {
             display: none;
             flex-direction: column;
@@ -185,7 +183,6 @@
             display: flex;
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             display: flex;
             background: var(--bg-primary);
@@ -220,7 +217,6 @@
             font-weight: 500;
         }
 
-        /* Home Tab */
         .chats-list {
             flex: 1;
             overflow-y: auto;
@@ -327,7 +323,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Chat Window */
         .chat-window {
             flex: 1;
             display: none;
@@ -516,7 +511,6 @@
             transform: none;
         }
 
-        /* Profile Tab */
         .profile-content {
             flex: 1;
             overflow-y: auto;
@@ -593,15 +587,6 @@
             word-break: break-word;
         }
 
-        .profile-bio {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
         .profile-input {
             width: 100%;
             padding: 12px 16px;
@@ -658,7 +643,6 @@
             color: var(--accent-purple);
         }
 
-        /* Market Tab */
         .market-content {
             flex: 1;
             overflow-y: auto;
@@ -717,7 +701,6 @@
             color: var(--text-secondary);
         }
 
-        /* Loading and States */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -743,7 +726,6 @@
             pointer-events: none;
         }
 
-        /* Animations */
         .fade-in {
             animation: fadeIn 0.3s ease-out;
         }
@@ -764,7 +746,6 @@
     </style>
 </head>
 <body>
-    <!-- Auth Screen -->
     <div class="screen active" id="authScreen">
         <div class="auth-container">
             <div class="auth-logo">Quertum</div>
@@ -780,7 +761,6 @@
         </div>
     </div>
 
-    <!-- Main App -->
     <div class="screen" id="mainApp">
         <div class="main-app">
             <div class="header">
@@ -793,7 +773,6 @@
             </div>
 
             <div class="content">
-                <!-- Home Tab -->
                 <div id="home-tab" class="tab-content active">
                     <div class="chats-list">
                         <div class="search-container">
@@ -808,7 +787,6 @@
                     </div>
                 </div>
 
-                <!-- Profile Tab -->
                 <div id="profile-tab" class="tab-content">
                     <div class="profile-content">
                         <div class="profile-section">
@@ -823,10 +801,8 @@
                             </div>
                             <div class="profile-name" id="profileName">Загрузка...</div>
                             <div class="profile-username" id="profileUsername">@username</div>
-                            <div class="profile-bio" id="profileBio">Статус не установлен</div>
                             
                             <input type="text" class="profile-input" id="newUsernameInput" placeholder="Новый username (5-15 символов)" maxlength="15">
-                            <textarea class="profile-textarea" id="bioInput" placeholder="Ваш статус..." maxlength="200"></textarea>
                             <button class="profile-save" id="saveProfile">Сохранить профиль</button>
                             
                             <div class="info-box">
@@ -836,7 +812,6 @@
                     </div>
                 </div>
 
-                <!-- Market Tab -->
                 <div id="market-tab" class="tab-content">
                     <div class="market-content">
                         <div class="market-section">
@@ -876,7 +851,6 @@
                 </div>
             </div>
 
-            <!-- Bottom Navigation -->
             <div class="bottom-nav">
                 <button class="nav-item active" data-tab="home">
                     <i class="nav-icon fas fa-home"></i>
@@ -894,7 +868,6 @@
         </div>
     </div>
 
-    <!-- Chat Window -->
     <div class="screen" id="chatScreen">
         <div class="chat-window">
             <div class="chat-header">
@@ -931,7 +904,6 @@
     </div>
 
     <script>
-        // Supabase конфигурация
         const SUPABASE_URL = 'https://kmjaujtiukrovsaqevpo.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttamF1anRpdWtyb3ZzYXFldnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NDAxNjgsImV4cCI6MjA3NTIxNjE2OH0.Bd0AZ2QX80fq7o7NDZpAkAk3DGhxiHnBXE64HFFuXZg';
         
@@ -980,7 +952,6 @@
             }
 
             setupEventListeners() {
-                // Auth
                 document.getElementById('registerButton').addEventListener('click', () => this.register());
                 document.getElementById('usernameInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.register();
@@ -989,20 +960,16 @@
                     if (e.key === 'Enter') this.register();
                 });
 
-                // Navigation
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.addEventListener('click', (e) => this.switchTab(e.currentTarget.dataset.tab));
                 });
 
-                // Search
                 document.getElementById('searchInput').addEventListener('input', (e) => this.searchUsers(e.target.value));
 
-                // Profile
                 document.getElementById('saveProfile').addEventListener('click', () => this.updateProfile());
                 document.getElementById('avatarUploadButton').addEventListener('click', () => document.getElementById('avatarUpload').click());
                 document.getElementById('avatarUpload').addEventListener('change', (e) => this.handleAvatarUpload(e.target.files[0]));
 
-                // Chat
                 document.getElementById('backButton').addEventListener('click', () => this.closeChat());
                 document.getElementById('sendButton').addEventListener('click', () => this.sendMessage());
                 document.getElementById('messageInput').addEventListener('keypress', (e) => {
@@ -1021,7 +988,6 @@
                 const errorElement = document.getElementById('errorMessage');
                 const registerButton = document.getElementById('registerButton');
 
-                // Сбрасываем ошибки
                 errorElement.style.display = 'none';
                 errorElement.textContent = '';
 
@@ -1037,12 +1003,10 @@
                     return;
                 }
 
-                // Блокируем кнопку
                 registerButton.disabled = true;
                 registerButton.textContent = 'Регистрация...';
 
                 try {
-                    // Проверяем, свободен ли username
                     const { data: existingUser, error: checkError } = await supabase
                         .from('users')
                         .select('username')
@@ -1057,7 +1021,6 @@
                         return;
                     }
 
-                    // Создаем пользователя БЕЗ bio
                     const userData = {
                         username: username,
                         password: password,
@@ -1112,19 +1075,16 @@
             }
 
             switchTab(tabName) {
-                // Обновляем навигацию
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
-                // Обновляем контент
                 document.querySelectorAll('.tab-content').forEach(tab => {
                     tab.classList.remove('active');
                 });
                 document.getElementById(`${tabName}-tab`).classList.add('active');
 
-                // Обновляем заголовок
                 const titles = {
                     'home': 'Главная',
                     'market': 'Маркет',
@@ -1138,19 +1098,8 @@
 
                 document.getElementById('profileName').textContent = this.currentUser.display_name;
                 document.getElementById('profileUsername').textContent = '@' + this.currentUser.username;
-                
-                // Проверяем есть ли bio у пользователя
-                if (this.currentUser.bio) {
-                    document.getElementById('profileBio').textContent = this.currentUser.bio;
-                    document.getElementById('bioInput').value = this.currentUser.bio;
-                } else {
-                    document.getElementById('profileBio').textContent = 'Статус не установлен';
-                    document.getElementById('bioInput').value = '';
-                }
-                
                 document.getElementById('newUsernameInput').value = '';
 
-                // Обновляем аватар
                 const avatarElement = document.getElementById('profileAvatar');
                 if (this.currentUser.avatar_url) {
                     avatarElement.style.backgroundImage = `url(${this.currentUser.avatar_url})`;
@@ -1166,7 +1115,6 @@
                 if (!this.currentUser) return;
 
                 const newUsername = document.getElementById('newUsernameInput').value.trim();
-                const newBio = document.getElementById('bioInput').value.trim();
 
                 const updates = {};
 
@@ -1176,7 +1124,6 @@
                         return;
                     }
 
-                    // Проверяем, свободен ли новый username
                     const { data: existingUser } = await supabase
                         .from('users')
                         .select('username')
@@ -1190,11 +1137,6 @@
 
                     updates.username = newUsername;
                     updates.display_name = newUsername;
-                }
-
-                // Обновляем bio только если пользователь его ввел
-                if (newBio && newBio !== this.currentUser.bio) {
-                    updates.bio = newBio;
                 }
 
                 if (Object.keys(updates).length === 0) {
@@ -1226,8 +1168,6 @@
             async handleAvatarUpload(file) {
                 if (!file || !this.currentUser) return;
 
-                // В реальном приложении здесь была бы загрузка в Supabase Storage
-                // Для демонстрации используем Data URL
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     const avatarUrl = e.target.result;
@@ -1310,7 +1250,7 @@
                         <div class="chat-info">
                             <div class="chat-name">${user.display_name}</div>
                             <div class="chat-username">@${user.username}</div>
-                            <div class="chat-last-message">${user.bio || 'Доступен для общения'}</div>
+                            <div class="chat-last-message">Доступен для общения</div>
                         </div>
                     </div>
                 `).join('');
@@ -1326,7 +1266,6 @@
                 this.currentChat = userId;
                 const user = this.users.get(userId);
 
-                // Обновляем заголовок чата
                 document.getElementById('chatHeaderName').textContent = user.display_name;
                 document.getElementById('chatHeaderAvatar').innerHTML = user.avatar_url ? '' : user.display_name.charAt(0).toUpperCase();
                 if (user.avatar_url) {
@@ -1417,7 +1356,6 @@
             async handleImageUpload(file) {
                 if (!file || !this.currentChat || !this.currentUser) return;
 
-                // В реальном приложении здесь была бы загрузка в Supabase Storage
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     const imageUrl = e.target.result;
@@ -1476,7 +1414,6 @@
             }
 
             startRealtimeListeners() {
-                // Слушаем изменения пользователей
                 this.usersSubscription = supabase
                     .channel('users')
                     .on('postgres_changes', 
@@ -1496,13 +1433,11 @@
             }
         }
 
-        // Инициализация приложения
         let messenger;
         document.addEventListener('DOMContentLoaded', () => {
             messenger = new QuertumMessenger();
         });
 
-        // Глобальные функции для onclick
         window.messenger = messenger;
     </script>
 </body>
