@@ -718,6 +718,8 @@
             font-weight: 600;
             color: white;
             font-size: 18px;
+            background-size: cover;
+            background-position: center;
         }
 
         .channel-info {
@@ -730,8 +732,69 @@
             margin-bottom: 4px;
         }
 
+        .channel-username {
+            font-size: 14px;
+            color: var(--accent-blue);
+            margin-bottom: 2px;
+        }
+
         .channel-subscribers {
             font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Channel View */
+        .channel-view {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--tg-bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+        }
+
+        .channel-view.active {
+            display: flex;
+        }
+
+        .channel-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--tg-bg);
+        }
+
+        .channel-header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9500 0%, #bf5af2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .channel-header-info {
+            flex: 1;
+        }
+
+        .channel-header-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .channel-header-subscribers {
+            font-size: 13px;
             color: var(--text-secondary);
         }
 
@@ -880,6 +943,51 @@
             justify-content: center;
             gap: 8px;
         }
+
+        .subscribe-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .unsubscribe-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .image-upload-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .image-preview {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            max-height: 200px;
+            object-fit: cover;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -995,6 +1103,30 @@
         </div>
     </div>
 
+    <!-- Channel View -->
+    <div class="channel-view" id="channel-view">
+        <div class="channel-header">
+            <button class="back-button" onclick="quantum.closeChannel()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="channel-header-avatar" id="channel-header-avatar">C</div>
+            <div class="channel-header-info">
+                <div class="channel-header-name" id="channel-header-name">Channel Name</div>
+                <div class="channel-header-subscribers" id="channel-header-subscribers">0 subscribers</div>
+            </div>
+            <button class="subscribe-btn" id="channel-subscribe-btn" onclick="quantum.toggleChannelSubscription()">
+                Subscribe
+            </button>
+        </div>
+        <div class="profile-content">
+            <div class="posts-section">
+                <div id="channel-posts-container">
+                    <div class="empty-state">No posts in this channel yet</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Settings Screen -->
     <div class="settings-screen" id="settings-screen" style="display: none;">
         <div class="header">
@@ -1017,20 +1149,6 @@
                     <i class="fas fa-chevron-right settings-item-arrow"></i>
                 </div>
             </div>
-            
-            <div class="settings-section">
-                <div class="settings-title">Privacy</div>
-                <div class="settings-item">
-                    <i class="fas fa-lock"></i>
-                    <div class="settings-item-text">Privacy & Security</div>
-                    <i class="fas fa-chevron-right settings-item-arrow"></i>
-                </div>
-                <div class="settings-item">
-                    <i class="fas fa-bell"></i>
-                    <div class="settings-item-text">Notifications</div>
-                    <i class="fas fa-chevron-right settings-item-arrow"></i>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1042,6 +1160,9 @@
                 <button class="close-modal" onclick="quantum.closeEditProfile()">
                     <i class="fas fa-times"></i>
                 </button>
+            </div>
+            <div class="profile-avatar-large" id="edit-profile-avatar" style="margin: 0 auto 20px; cursor: pointer;" onclick="quantum.uploadAvatar()">
+                <div class="avatar-upload">Change Avatar</div>
             </div>
             <input type="text" class="text-input" id="edit-firstname" placeholder="First Name">
             <input type="text" class="text-input" id="edit-lastname" placeholder="Last Name">
@@ -1093,14 +1214,14 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <textarea class="post-textarea" id="post-text" placeholder="What's on your mind?"></textarea>
+            <textarea class="textarea-input" id="post-text" placeholder="What's on your mind?" style="min-height: 100px;"></textarea>
             <img class="image-preview" id="post-image-preview">
             <input type="file" id="post-image-input" accept="image/*" style="display: none;">
             <button class="image-upload-btn" onclick="document.getElementById('post-image-input').click()">
                 <i class="fas fa-image"></i>
                 Add Image
             </button>
-            <button class="create-post-submit" onclick="quantum.createPost()">
+            <button class="save-info-btn" onclick="quantum.createPost()">
                 <i class="fas fa-share"></i>
                 Post
             </button>
@@ -1117,6 +1238,7 @@
                 </button>
             </div>
             <input type="text" class="text-input" id="channel-name" placeholder="Channel Name">
+            <input type="text" class="text-input" id="channel-username" placeholder="@channel_username">
             <textarea class="textarea-input" id="channel-description" placeholder="Channel Description"></textarea>
             <button class="save-info-btn" onclick="quantum.createChannel()">
                 Create Channel
@@ -1132,9 +1254,11 @@
                 this.chats = new Map();
                 this.posts = new Map();
                 this.channels = new Map();
+                this.channelSubscriptions = new Map(); // userId -> Set of channelIds
                 this.comments = new Map();
                 this.likes = new Map();
                 this.currentChat = null;
+                this.currentChannel = null;
                 this.viewingProfile = null;
                 this.tg = null;
                 
@@ -1150,20 +1274,6 @@
                 this.loadFromStorage();
                 this.setupEventListeners();
                 this.checkAuth();
-                
-                // ß∞ßÈß⁄ßÎß—ß÷ßﬁ ßÈß—ß‰ßÌ ß‡ß’ß⁄ßﬂ ß‚ß—ßŸ
-                this.clearTestChats();
-            }
-
-            clearTestChats() {
-                // ß∞ßÈß⁄ßÎß—ß÷ßﬁ ß‰ß‡ß›ßÓß‹ß‡ ß‰ß÷ß„ß‰ß‡ß”ßÌß÷ ßÈß—ß‰ßÌ, ß‡ß„ß‰ß—ß”ß›ßÒßÒ ß„ß‰ß‚ßÂß‹ß‰ßÂß‚ßÂ
-                const chatKeys = Array.from(this.chats.keys());
-                for (const key of chatKeys) {
-                    if (key.includes('demo') || key.includes('test')) {
-                        this.chats.delete(key);
-                    }
-                }
-                this.saveToStorage();
             }
 
             setupEventListeners() {
@@ -1177,6 +1287,15 @@
 
                 document.getElementById('post-image-input').addEventListener('change', (e) => {
                     this.handlePostImageUpload(e);
+                });
+
+                // Fix: Add click listeners for header icons
+                document.getElementById('new-chat-btn').addEventListener('click', () => {
+                    document.getElementById('user-search').focus();
+                });
+
+                document.getElementById('search-toggle').addEventListener('click', () => {
+                    document.getElementById('user-search').focus();
                 });
             }
 
@@ -1199,7 +1318,7 @@
             handleTelegramUser(tgUser) {
                 const userId = tgUser.id.toString();
                 
-                const userData = {
+                let userData = {
                     id: userId,
                     firstName: tgUser.first_name || 'User',
                     lastName: tgUser.last_name || '',
@@ -1216,6 +1335,12 @@
                     }
                 };
 
+                // Check if user already exists
+                const existingUser = this.users.get(userId);
+                if (existingUser) {
+                    userData = { ...existingUser, ...userData };
+                }
+
                 this.currentUser = userData;
                 this.users.set(userId, userData);
                 this.saveToStorage();
@@ -1228,6 +1353,7 @@
                     const savedChats = localStorage.getItem('quantum_chats');
                     const savedPosts = localStorage.getItem('quantum_posts');
                     const savedChannels = localStorage.getItem('quantum_channels');
+                    const savedSubscriptions = localStorage.getItem('quantum_subscriptions');
                     const savedComments = localStorage.getItem('quantum_comments');
                     const savedLikes = localStorage.getItem('quantum_likes');
                     
@@ -1235,6 +1361,7 @@
                     if (savedChats) this.chats = new Map(JSON.parse(savedChats));
                     if (savedPosts) this.posts = new Map(JSON.parse(savedPosts));
                     if (savedChannels) this.channels = new Map(JSON.parse(savedChannels));
+                    if (savedSubscriptions) this.channelSubscriptions = new Map(JSON.parse(savedSubscriptions));
                     if (savedComments) this.comments = new Map(JSON.parse(savedComments));
                     if (savedLikes) this.likes = new Map(JSON.parse(savedLikes));
                 } catch (error) {
@@ -1248,6 +1375,7 @@
                     localStorage.setItem('quantum_chats', JSON.stringify([...this.chats]));
                     localStorage.setItem('quantum_posts', JSON.stringify([...this.posts]));
                     localStorage.setItem('quantum_channels', JSON.stringify([...this.channels]));
+                    localStorage.setItem('quantum_subscriptions', JSON.stringify([...this.channelSubscriptions]));
                     localStorage.setItem('quantum_comments', JSON.stringify([...this.comments]));
                     localStorage.setItem('quantum_likes', JSON.stringify([...this.likes]));
                 } catch (error) {
@@ -1314,7 +1442,7 @@
                         username: 'clanffys', 
                         avatar: 'C',
                         isOnline: true,
-                        bio: 'ß¥ß⁄ßÁß⁄ß€ ß‡ßﬁßÂß‰\nß” ß„ß÷ß‰ß⁄',
+                        bio: '–¢–∏—Ö–∏–π –æ–º—É—Ç\n–≤ —Å–µ—Ç–∏',
                         isVerified: true
                     },
                     { 
@@ -1324,7 +1452,7 @@
                         username: 'johndoe', 
                         avatar: 'J',
                         isOnline: false,
-                        bio: 'Well well well\nß„ß÷ß“ß÷'
+                        bio: 'Well well well\n—Å–µ–±–µ'
                     }
                 ];
 
@@ -1340,7 +1468,7 @@
                 }
 
                 chatsContainer.innerHTML = results.map(user => `
-                    <div class="chat-item" onclick="quantum.viewUserProfile('${user.id}')">
+                    <div class="chat-item" onclick="quantum.startChat('${user.id}')">
                         <div class="chat-avatar">
                             ${user.avatar}
                             <div class="online-status ${user.isOnline ? 'online' : 'offline'}"></div>
@@ -1356,6 +1484,19 @@
                         </div>
                     </div>
                 `).join('');
+            }
+
+            startChat(userId) {
+                const chatKey = this.getChatKey(this.currentUser.id, userId);
+                
+                if (!this.chats.has(chatKey)) {
+                    this.chats.set(chatKey, []);
+                    this.saveToStorage();
+                }
+
+                // For now, just show a message that chat is started
+                alert(`Chat started with user ${userId}`);
+                this.loadChatsList();
             }
 
             loadChatsList() {
@@ -1407,24 +1548,40 @@
                 chatsContainer.innerHTML = chatsHTML;
             }
 
+            openChat(userId) {
+                // Simple chat implementation for now
+                alert(`Opening chat with ${userId}`);
+            }
+
             loadChannels() {
                 const channelsContainer = document.getElementById('channels-container');
-                const channels = Array.from(this.channels.values());
                 
-                if (channels.length === 0) {
+                // Get user's subscribed channels
+                const userSubscriptions = this.channelSubscriptions.get(this.currentUser.id) || new Set();
+                const userChannels = Array.from(this.channels.values()).filter(channel => 
+                    userSubscriptions.has(channel.id) || channel.ownerId === this.currentUser.id
+                );
+                
+                if (userChannels.length === 0) {
                     channelsContainer.innerHTML = '<div class="empty-state">No channels yet</div>';
                     return;
                 }
 
-                channelsContainer.innerHTML = channels.map(channel => `
-                    <div class="channel-item" onclick="quantum.openChannel('${channel.id}')">
-                        <div class="channel-avatar">${channel.name.charAt(0)}</div>
-                        <div class="channel-info">
-                            <div class="channel-name">${channel.name}</div>
-                            <div class="channel-subscribers">${channel.subscribers || 0} subscribers</div>
+                channelsContainer.innerHTML = userChannels.map(channel => {
+                    const isOwner = channel.ownerId === this.currentUser.id;
+                    return `
+                        <div class="channel-item" onclick="quantum.openChannel('${channel.id}')">
+                            <div class="channel-avatar" style="${channel.avatarUrl ? `background-image: url(${channel.avatarUrl})` : ''}">
+                                ${!channel.avatarUrl ? channel.name.charAt(0) : ''}
+                            </div>
+                            <div class="channel-info">
+                                <div class="channel-name">${channel.name}</div>
+                                <div class="channel-username">@${channel.username}</div>
+                                <div class="channel-subscribers">${channel.subscribers || 0} subscribers ${isOwner ? '(Your channel)' : ''}</div>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             openCreateChannelModal() {
@@ -1434,33 +1591,178 @@
             closeCreateChannelModal() {
                 document.getElementById('create-channel-modal').classList.remove('active');
                 document.getElementById('channel-name').value = '';
+                document.getElementById('channel-username').value = '';
                 document.getElementById('channel-description').value = '';
             }
 
             createChannel() {
                 const name = document.getElementById('channel-name').value.trim();
+                const username = document.getElementById('channel-username').value.trim().replace('@', '');
                 const description = document.getElementById('channel-description').value.trim();
                 
-                if (!name) return;
+                if (!name || !username) {
+                    this.showError('Channel name and username are required');
+                    return;
+                }
 
                 const channel = {
                     id: Date.now().toString(),
                     name: name,
+                    username: username,
                     description: description,
                     ownerId: this.currentUser.id,
+                    avatarUrl: null,
                     created: new Date().toISOString(),
                     subscribers: 1
                 };
 
                 this.channels.set(channel.id, channel);
+                
+                // Auto-subscribe owner to their channel
+                if (!this.channelSubscriptions.has(this.currentUser.id)) {
+                    this.channelSubscriptions.set(this.currentUser.id, new Set());
+                }
+                this.channelSubscriptions.get(this.currentUser.id).add(channel.id);
+                
                 this.saveToStorage();
                 this.closeCreateChannelModal();
                 this.loadChannels();
             }
 
             openChannel(channelId) {
-                // ß©ß’ß÷ß„ßÓ ßﬁß‡ßÿßﬂß‡ ß‚ß÷ß—ß›ß⁄ßŸß‡ß”ß—ß‰ßÓ ß·ß‚ß‡ß„ßﬁß‡ß‰ß‚ ß‹ß—ßﬂß—ß›ß—
-                alert(`Opening channel ${channelId}`);
+                const channel = this.channels.get(channelId);
+                if (!channel) return;
+
+                this.currentChannel = channelId;
+                
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('channel-view').classList.add('active');
+                
+                document.getElementById('channel-header-avatar').textContent = channel.avatarUrl ? '' : channel.name.charAt(0);
+                document.getElementById('channel-header-avatar').style.backgroundImage = channel.avatarUrl ? `url(${channel.avatarUrl})` : '';
+                document.getElementById('channel-header-name').textContent = channel.name;
+                document.getElementById('channel-header-subscribers').textContent = `${channel.subscribers || 0} subscribers`;
+                
+                const isSubscribed = this.isUserSubscribedToChannel(channelId);
+                const subscribeBtn = document.getElementById('channel-subscribe-btn');
+                subscribeBtn.textContent = isSubscribed ? 'Unsubscribe' : 'Subscribe';
+                subscribeBtn.className = isSubscribed ? 'unsubscribe-btn' : 'subscribe-btn';
+                
+                this.loadChannelPosts(channelId);
+            }
+
+            closeChannel() {
+                document.getElementById('channel-view').classList.remove('active');
+                document.getElementById('main-app').style.display = 'flex';
+                this.currentChannel = null;
+            }
+
+            isUserSubscribedToChannel(channelId) {
+                const userSubscriptions = this.channelSubscriptions.get(this.currentUser.id);
+                return userSubscriptions ? userSubscriptions.has(channelId) : false;
+            }
+
+            toggleChannelSubscription() {
+                if (!this.currentChannel) return;
+
+                const channel = this.channels.get(this.currentChannel);
+                if (!channel) return;
+
+                const isSubscribed = this.isUserSubscribedToChannel(this.currentChannel);
+                
+                if (!this.channelSubscriptions.has(this.currentUser.id)) {
+                    this.channelSubscriptions.set(this.currentUser.id, new Set());
+                }
+
+                const userSubscriptions = this.channelSubscriptions.get(this.currentUser.id);
+                
+                if (isSubscribed) {
+                    userSubscriptions.delete(this.currentChannel);
+                    channel.subscribers = Math.max(0, (channel.subscribers || 1) - 1);
+                } else {
+                    userSubscriptions.add(this.currentChannel);
+                    channel.subscribers = (channel.subscribers || 0) + 1;
+                }
+
+                this.channels.set(this.currentChannel, channel);
+                this.saveToStorage();
+
+                // Update UI
+                const subscribeBtn = document.getElementById('channel-subscribe-btn');
+                subscribeBtn.textContent = !isSubscribed ? 'Unsubscribe' : 'Subscribe';
+                subscribeBtn.className = !isSubscribed ? 'unsubscribe-btn' : 'subscribe-btn';
+                document.getElementById('channel-header-subscribers').textContent = `${channel.subscribers} subscribers`;
+            }
+
+            loadChannelPosts(channelId) {
+                const postsContainer = document.getElementById('channel-posts-container');
+                
+                if (!this.posts.has(channelId) || this.posts.get(channelId).length === 0) {
+                    postsContainer.innerHTML = '<div class="empty-state">No posts in this channel yet</div>';
+                    return;
+                }
+
+                const channelPosts = this.posts.get(channelId);
+                const channel = this.channels.get(channelId);
+
+                postsContainer.innerHTML = channelPosts.map(post => {
+                    const postLikes = this.likes.get(post.id) || new Set();
+                    const postComments = this.comments.get(post.id) || [];
+                    const isLiked = postLikes.has(this.currentUser.id);
+                    const likeCount = postLikes.size;
+                    const commentCount = postComments.length;
+
+                    return `
+                        <div class="post">
+                            <div class="post-header">
+                                <div class="post-avatar" style="${channel.avatarUrl ? `background-image: url(${channel.avatarUrl})` : ''}">
+                                    ${!channel.avatarUrl ? channel.name.charAt(0) : ''}
+                                </div>
+                                <div class="post-author">
+                                    <div class="post-author-name">
+                                        ${channel.name}
+                                        <span class="verified-badge"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <div class="post-time">${this.formatTime(post.timestamp)}</div>
+                                </div>
+                            </div>
+                            ${post.text ? `<div class="post-content">${post.text}</div>` : ''}
+                            ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
+                            
+                            <div class="post-stats">
+                                <span>${likeCount} likes</span>
+                                <span>${commentCount} comments</span>
+                            </div>
+                            
+                            <div class="post-actions">
+                                <button class="post-action ${isLiked ? 'active' : ''}" onclick="quantum.toggleLike('${post.id}')">
+                                    <i class="fas fa-heart"></i> Like
+                                </button>
+                                <button class="post-action" onclick="quantum.toggleComments('${post.id}')">
+                                    <i class="fas fa-comment"></i> Comment
+                                </button>
+                            </div>
+                            
+                            <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                                ${postComments.map((comment, index) => `
+                                    <div class="comment">
+                                        <div class="comment-avatar">${comment.author.charAt(0)}</div>
+                                        <div class="comment-content">
+                                            <div class="comment-author">${comment.author}</div>
+                                            <div>${comment.text}</div>
+                                            ${(channel.ownerId === this.currentUser.id || comment.author === `${this.currentUser.firstName} ${this.currentUser.lastName}`) ? 
+                                                `<div class="delete-comment" onclick="quantum.deleteComment('${post.id}', ${index})">
+                                                    <i class="fas fa-times"></i>
+                                                </div>` : ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                                <input type="text" class="comment-input" placeholder="Write a comment..." 
+                                       onkeypress="if(event.key==='Enter') quantum.addComment('${post.id}', this)">
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
             openSettings() {
@@ -1480,11 +1782,38 @@
                 document.getElementById('edit-worldview').value = this.currentUser.profileInfo.worldview;
                 document.getElementById('edit-politics').value = this.currentUser.profileInfo.politics;
                 document.getElementById('edit-quote').value = this.currentUser.profileInfo.quote;
+                
+                const editAvatar = document.getElementById('edit-profile-avatar');
+                editAvatar.textContent = this.currentUser.avatarUrl ? '' : this.currentUser.avatar;
+                editAvatar.style.backgroundImage = this.currentUser.avatarUrl ? `url(${this.currentUser.avatarUrl})` : '';
+                
                 document.getElementById('edit-profile-modal').classList.add('active');
             }
 
             closeEditProfile() {
                 document.getElementById('edit-profile-modal').classList.remove('active');
+            }
+
+            uploadAvatar() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.currentUser.avatarUrl = event.target.result;
+                            this.users.set(this.currentUser.id, this.currentUser);
+                            this.saveToStorage();
+                            this.updateProfile();
+                            this.closeEditProfile();
+                            this.openEditProfile(); // Reopen to show new avatar
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
             }
 
             openUsernameSettings() {
@@ -1513,7 +1842,7 @@
             }
 
             saveUsername() {
-                const username = document.getElementById('username-input').value.trim();
+                const username = document.getElementById('username-input').value.trim().replace('@', '');
                 if (username) {
                     this.currentUser.username = username;
                     this.users.set(this.currentUser.id, this.currentUser);
@@ -1618,7 +1947,9 @@
                     return `
                         <div class="post">
                             <div class="post-header">
-                                <div class="post-avatar">${user.avatar}</div>
+                                <div class="post-avatar" style="${user.avatarUrl ? `background-image: url(${user.avatarUrl})` : ''}">
+                                    ${!user.avatarUrl ? user.avatar : ''}
+                                </div>
                                 <div class="post-author">
                                     <div class="post-author-name">
                                         ${user.firstName} ${user.lastName}
@@ -1738,6 +2069,10 @@
                 this.loadPosts();
             }
 
+            getChatKey(user1, user2) {
+                return [user1, user2].sort().join('_');
+            }
+
             formatTime(dateString) {
                 const date = new Date(dateString);
                 const now = new Date();
@@ -1750,7 +2085,7 @@
             }
         }
 
-        // ß™ßﬂß⁄ßËß⁄ß—ß›ß⁄ßŸß—ßËß⁄ßÒ
+        // –ò–Ω–∏—Ü–∏–∞–ª–∏–∑–∞—Ü–∏—è
         const quantum = new QuantumMessenger();
     </script>
 </body>
