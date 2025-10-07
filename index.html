@@ -185,7 +185,7 @@
             opacity: 1;
         }
 
-        /* Chats List - Telegram Style */
+        /* Chats List */
         .chats-list {
             flex: 1;
             overflow-y: auto;
@@ -200,10 +200,6 @@
             gap: 12px;
         }
 
-        .search-icon {
-            color: var(--text-tertiary);
-        }
-
         .search-input {
             flex: 1;
             padding: 12px 16px;
@@ -213,11 +209,6 @@
             color: var(--text-primary);
             font-size: 15px;
             outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            border-color: var(--accent-blue);
         }
 
         .chat-item {
@@ -228,7 +219,6 @@
             align-items: center;
             gap: 12px;
             transition: all 0.2s ease;
-            position: relative;
         }
 
         .chat-item:active {
@@ -246,7 +236,6 @@
             font-weight: 600;
             color: white;
             font-size: 18px;
-            transition: all 0.3s ease;
             background-size: cover;
             background-position: center;
             position: relative;
@@ -260,14 +249,7 @@
             height: 12px;
             border-radius: 50%;
             border: 2px solid var(--tg-bg);
-        }
-
-        .online {
             background: var(--online);
-        }
-
-        .offline {
-            background: var(--offline);
         }
 
         .chat-info {
@@ -288,15 +270,11 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .chat-time {
             font-size: 12px;
             color: var(--text-tertiary);
-            white-space: nowrap;
         }
 
         .chat-last-message {
@@ -307,38 +285,132 @@
             text-overflow: ellipsis;
         }
 
-        .verified-badge {
-            color: var(--accent-blue);
-            font-size: 14px;
+        /* Chat Window */
+        .chat-window {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--tg-bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
         }
 
-        /* Menu Items */
-        .menu-item {
-            padding: 16px;
+        .chat-window.active {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 12px;
+            background: var(--tg-bg);
         }
 
-        .menu-item:active {
-            background-color: var(--bg-secondary);
+        .chat-header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #bf5af2 0%, #2ea6ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            background-size: cover;
+            background-position: center;
         }
 
-        .menu-item i {
-            width: 24px;
-            color: var(--accent-blue);
-        }
-
-        .menu-item-text {
+        .chat-header-info {
             flex: 1;
-            font-size: 16px;
         }
 
-        .menu-item-arrow {
-            color: var(--text-tertiary);
+        .chat-header-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chat-header-status {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.4;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.outgoing {
+            align-self: flex-end;
+            background: var(--message-out);
+        }
+
+        .message.incoming {
+            align-self: flex-start;
+            background: var(--message-in);
+        }
+
+        .message-input-container {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: var(--tg-bg);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            resize: none;
+        }
+
+        .send-button {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
         /* Profile */
@@ -346,7 +418,6 @@
             flex: 1;
             overflow-y: auto;
             padding: 0;
-            background: var(--tg-bg);
         }
 
         .profile-header {
@@ -369,7 +440,6 @@
             color: white;
             margin: 0 auto 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
             border: 4px solid var(--tg-bg);
             background-size: cover;
             background-position: center;
@@ -386,22 +456,12 @@
             padding: 4px;
             text-align: center;
             font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .profile-avatar-large:hover .avatar-upload {
-            opacity: 1;
         }
 
         .profile-name {
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .profile-username {
@@ -415,109 +475,120 @@
             color: var(--text-secondary);
             margin-bottom: 16px;
             line-height: 1.4;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        .profile-status {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-
-        .profile-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .profile-action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .message-btn {
-            background: var(--accent-blue);
-            color: white;
-        }
-
-        .edit-btn {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .profile-info {
+        .menu-item {
             padding: 16px;
-        }
-
-        .info-section {
-            margin-bottom: 20px;
-        }
-
-        .info-title {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
         }
 
-        .info-value {
-            font-size: 15px;
-            color: var(--text-primary);
-            padding: 8px 0;
+        .menu-item:active {
+            background-color: var(--bg-secondary);
         }
 
-        .info-edit {
+        .menu-item i {
+            width: 24px;
             color: var(--accent-blue);
-            font-size: 14px;
+        }
+
+        .menu-item-text {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        /* Channels */
+        .channel-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .select-input, .text-input, .textarea-input {
-            width: 100%;
-            padding: 10px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 15px;
-            margin-bottom: 8px;
-            outline: none;
-        }
-
-        .textarea-input {
-            resize: none;
-            min-height: 60px;
-        }
-
-        .save-info-btn {
-            width: 100%;
-            padding: 10px;
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
+        .channel-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9500 0%, #bf5af2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
+            color: white;
+            font-size: 18px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .channel-info {
+            flex: 1;
+        }
+
+        .channel-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .channel-username {
+            font-size: 14px;
+            color: var(--accent-blue);
+        }
+
+        .channel-subscribers {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Channel View */
+        .channel-view {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--tg-bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+        }
+
+        .channel-view.active {
+            display: flex;
+        }
+
+        .channel-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--tg-bg);
+        }
+
+        .channel-header-info {
+            flex: 1;
+        }
+
+        .channel-header-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .channel-header-subscribers {
+            font-size: 13px;
+            color: var(--text-secondary);
         }
 
         /* Posts */
         .posts-section {
             padding: 16px;
-            border-top: 1px solid var(--border-color);
         }
 
         .posts-title {
@@ -566,9 +637,6 @@
         .post-author-name {
             font-size: 14px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
         .post-time {
@@ -614,227 +682,10 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: color 0.3s ease;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        .post-action:active {
-            background: var(--bg-tertiary);
         }
 
         .post-action.active {
             color: var(--accent-blue);
-        }
-
-        .delete-post {
-            color: #ff3b30;
-        }
-
-        .comments-section {
-            margin-top: 12px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 12px;
-        }
-
-        .comment {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            position: relative;
-        }
-
-        .comment-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--bg-tertiary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .comment-content {
-            flex: 1;
-            background: var(--bg-tertiary);
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            position: relative;
-        }
-
-        .comment-author {
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .delete-comment {
-            position: absolute;
-            top: 4px;
-            right: 8px;
-            color: #ff3b30;
-            cursor: pointer;
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .delete-comment:hover {
-            opacity: 1;
-        }
-
-        .comment-input {
-            width: 100%;
-            padding: 8px 12px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-primary);
-            font-size: 13px;
-            outline: none;
-            margin-top: 8px;
-        }
-
-        /* Channels */
-        .channel-item {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .channel-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff9500 0%, #bf5af2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-            font-size: 18px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .channel-info {
-            flex: 1;
-        }
-
-        .channel-name {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .channel-username {
-            font-size: 14px;
-            color: var(--accent-blue);
-            margin-bottom: 2px;
-        }
-
-        .channel-subscribers {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        /* Channel View */
-        .channel-view {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            background: var(--tg-bg);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1000;
-        }
-
-        .channel-view.active {
-            display: flex;
-        }
-
-        .channel-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--tg-bg);
-        }
-
-        .channel-header-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff9500 0%, #bf5af2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .channel-header-info {
-            flex: 1;
-        }
-
-        .channel-header-name {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .channel-header-subscribers {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        /* Settings */
-        .settings-section {
-            margin-bottom: 20px;
-        }
-
-        .settings-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            padding: 0 16px;
-        }
-
-        .settings-item {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .settings-item:active {
-            background: var(--bg-secondary);
-        }
-
-        .settings-item i {
-            width: 24px;
-            color: var(--accent-blue);
-        }
-
-        .settings-item-text {
-            flex: 1;
-            font-size: 16px;
-        }
-
-        .settings-item-arrow {
-            color: var(--text-tertiary);
         }
 
         /* Modal Windows */
@@ -861,8 +712,6 @@
             padding: 20px;
             width: 90%;
             max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
         }
 
         .modal-header {
@@ -893,12 +742,6 @@
             font-size: 16px;
             cursor: pointer;
             padding: 8px;
-            margin-right: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:active {
-            transform: scale(0.9);
         }
 
         .loading {
@@ -920,11 +763,6 @@
             margin: 10px;
             border-radius: 8px;
             text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .hidden {
-            display: none !important;
         }
 
         .create-post-btn, .create-channel-btn {
@@ -962,6 +800,36 @@
             padding: 8px 16px;
             font-size: 14px;
             cursor: pointer;
+        }
+
+        .text-input, .textarea-input {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 15px;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .textarea-input {
+            resize: none;
+            min-height: 60px;
+        }
+
+        .save-info-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
         }
 
         .image-upload-btn {
@@ -1014,15 +882,15 @@
         </div>
 
         <div class="tabs">
-            <button class="tab active" onclick="quantum.switchTab('chats')">
+            <button class="tab active" data-tab="chats">
                 <i class="fas fa-comments"></i>
                 Chats
             </button>
-            <button class="tab" onclick="quantum.switchTab('channels')">
+            <button class="tab" data-tab="channels">
                 <i class="fas fa-broadcast-tower"></i>
                 Channels
             </button>
-            <button class="tab" onclick="quantum.switchTab('profile')">
+            <button class="tab" data-tab="profile">
                 <i class="fas fa-user"></i>
                 Profile
             </button>
@@ -1033,7 +901,7 @@
             <div id="chats-tab" class="tab-content active">
                 <div class="chats-list">
                     <div class="search-container">
-                        <i class="fas fa-search search-icon"></i>
+                        <i class="fas fa-search"></i>
                         <input type="text" class="search-input" placeholder="Search" id="user-search">
                     </div>
                     <div id="chats-container">
@@ -1046,10 +914,10 @@
             <div id="channels-tab" class="tab-content">
                 <div class="chats-list">
                     <div class="search-container">
-                        <i class="fas fa-search search-icon"></i>
+                        <i class="fas fa-search"></i>
                         <input type="text" class="search-input" placeholder="Search channels" id="channel-search">
                     </div>
-                    <button class="create-channel-btn" onclick="quantum.openCreateChannelModal()">
+                    <button class="create-channel-btn" id="create-channel-btn">
                         <i class="fas fa-plus"></i>
                         Create Channel
                     </button>
@@ -1072,20 +940,20 @@
                     </div>
 
                     <div class="menu">
-                        <div class="menu-item" onclick="quantum.openSettings()">
+                        <div class="menu-item" id="settings-btn">
                             <i class="fas fa-cog"></i>
                             <div class="menu-item-text">Settings</div>
-                            <i class="fas fa-chevron-right menu-item-arrow"></i>
+                            <i class="fas fa-chevron-right"></i>
                         </div>
-                        <div class="menu-item" onclick="quantum.openEditProfile()">
+                        <div class="menu-item" id="edit-profile-btn">
                             <i class="fas fa-edit"></i>
                             <div class="menu-item-text">Edit Profile</div>
-                            <i class="fas fa-chevron-right menu-item-arrow"></i>
+                            <i class="fas fa-chevron-right"></i>
                         </div>
-                        <div class="menu-item" onclick="quantum.openCreatePostModal()">
+                        <div class="menu-item" id="create-post-btn">
                             <i class="fas fa-plus"></i>
                             <div class="menu-item-text">Create Post</div>
-                            <i class="fas fa-chevron-right menu-item-arrow"></i>
+                            <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
 
@@ -1103,10 +971,35 @@
         </div>
     </div>
 
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <button class="back-button" id="back-from-chat">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="chat-header-avatar" id="chat-header-avatar">U</div>
+            <div class="chat-header-info">
+                <div class="chat-header-name" id="chat-header-name">User Name</div>
+                <div class="chat-header-status" id="chat-header-status">Online</div>
+            </div>
+        </div>
+        
+        <div class="messages-container" id="messages-container">
+            <div class="empty-state">No messages yet</div>
+        </div>
+        
+        <div class="message-input-container">
+            <input type="text" class="message-input" placeholder="Type a message..." id="message-input">
+            <button class="send-button" id="send-message-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Channel View -->
     <div class="channel-view" id="channel-view">
         <div class="channel-header">
-            <button class="back-button" onclick="quantum.closeChannel()">
+            <button class="back-button" id="back-from-channel">
                 <i class="fas fa-arrow-left"></i>
             </button>
             <div class="channel-header-avatar" id="channel-header-avatar">C</div>
@@ -1114,9 +1007,7 @@
                 <div class="channel-header-name" id="channel-header-name">Channel Name</div>
                 <div class="channel-header-subscribers" id="channel-header-subscribers">0 subscribers</div>
             </div>
-            <button class="subscribe-btn" id="channel-subscribe-btn" onclick="quantum.toggleChannelSubscription()">
-                Subscribe
-            </button>
+            <button class="subscribe-btn" id="channel-subscribe-btn">Subscribe</button>
         </div>
         <div class="profile-content">
             <div class="posts-section">
@@ -1127,101 +1018,23 @@
         </div>
     </div>
 
-    <!-- Settings Screen -->
-    <div class="settings-screen" id="settings-screen" style="display: none;">
-        <div class="header">
-            <button class="back-button" onclick="quantum.closeSettings()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="header-title">Settings</div>
-        </div>
-        <div class="profile-content">
-            <div class="settings-section">
-                <div class="settings-title">Account</div>
-                <div class="settings-item" onclick="quantum.openEditProfile()">
-                    <i class="fas fa-user-edit"></i>
-                    <div class="settings-item-text">Edit Profile</div>
-                    <i class="fas fa-chevron-right settings-item-arrow"></i>
-                </div>
-                <div class="settings-item" onclick="quantum.openUsernameSettings()">
-                    <i class="fas fa-at"></i>
-                    <div class="settings-item-text">Username</div>
-                    <i class="fas fa-chevron-right settings-item-arrow"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div class="modal" id="edit-profile-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Edit Profile</div>
-                <button class="close-modal" onclick="quantum.closeEditProfile()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="profile-avatar-large" id="edit-profile-avatar" style="margin: 0 auto 20px; cursor: pointer;" onclick="quantum.uploadAvatar()">
-                <div class="avatar-upload">Change Avatar</div>
-            </div>
-            <input type="text" class="text-input" id="edit-firstname" placeholder="First Name">
-            <input type="text" class="text-input" id="edit-lastname" placeholder="Last Name">
-            <textarea class="textarea-input" id="edit-bio" placeholder="Bio" maxlength="70"></textarea>
-            <select class="select-input" id="edit-worldview">
-                <option value="">Worldview</option>
-                <option value="Christianity">Christianity</option>
-                <option value="Agnosticism">Agnosticism</option>
-                <option value="Atheism">Atheism</option>
-            </select>
-            <select class="select-input" id="edit-politics">
-                <option value="">Political Views</option>
-                <option value="Centrist">Centrist</option>
-                <option value="Left-wing">Left-wing</option>
-                <option value="Right-wing">Right-wing</option>
-            </select>
-            <input type="text" class="text-input" id="edit-quote" placeholder="Favorite Quote" maxlength="40">
-            <button class="save-info-btn" onclick="quantum.saveProfile()">
-                Save Changes
-            </button>
-        </div>
-    </div>
-
-    <!-- Username Settings Modal -->
-    <div class="modal" id="username-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Username</div>
-                <button class="close-modal" onclick="quantum.closeUsernameSettings()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <input type="text" class="text-input" id="username-input" placeholder="@username">
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">
-                You can choose a username. If you do, people will be able to find you by this username and contact you without knowing your phone number.
-            </div>
-            <button class="save-info-btn" onclick="quantum.saveUsername()">
-                Save Username
-            </button>
-        </div>
-    </div>
-
     <!-- Create Post Modal -->
     <div class="modal" id="create-post-modal">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">Create Post</div>
-                <button class="close-modal" onclick="quantum.closeCreatePostModal()">
+                <button class="close-modal" id="close-create-post">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <textarea class="textarea-input" id="post-text" placeholder="What's on your mind?" style="min-height: 100px;"></textarea>
             <img class="image-preview" id="post-image-preview">
             <input type="file" id="post-image-input" accept="image/*" style="display: none;">
-            <button class="image-upload-btn" onclick="document.getElementById('post-image-input').click()">
+            <button class="image-upload-btn" id="upload-post-image">
                 <i class="fas fa-image"></i>
                 Add Image
             </button>
-            <button class="save-info-btn" onclick="quantum.createPost()">
+            <button class="save-info-btn" id="submit-post">
                 <i class="fas fa-share"></i>
                 Post
             </button>
@@ -1233,15 +1046,37 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">Create Channel</div>
-                <button class="close-modal" onclick="quantum.closeCreateChannelModal()">
+                <button class="close-modal" id="close-create-channel">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <input type="text" class="text-input" id="channel-name" placeholder="Channel Name">
             <input type="text" class="text-input" id="channel-username" placeholder="@channel_username">
             <textarea class="textarea-input" id="channel-description" placeholder="Channel Description"></textarea>
-            <button class="save-info-btn" onclick="quantum.createChannel()">
+            <button class="save-info-btn" id="submit-channel">
                 Create Channel
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="edit-profile-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Profile</div>
+                <button class="close-modal" id="close-edit-profile">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="profile-avatar-large" id="edit-profile-avatar" style="margin: 0 auto 20px; cursor: pointer;">
+                <div class="avatar-upload">Change Avatar</div>
+            </div>
+            <input type="text" class="text-input" id="edit-firstname" placeholder="First Name">
+            <input type="text" class="text-input" id="edit-lastname" placeholder="Last Name">
+            <input type="text" class="text-input" id="edit-username" placeholder="@username">
+            <textarea class="textarea-input" id="edit-bio" placeholder="Bio" maxlength="70"></textarea>
+            <button class="save-info-btn" id="submit-profile">
+                Save Changes
             </button>
         </div>
     </div>
@@ -1254,13 +1089,9 @@
                 this.chats = new Map();
                 this.posts = new Map();
                 this.channels = new Map();
-                this.channelSubscriptions = new Map(); // userId -> Set of channelIds
-                this.comments = new Map();
-                this.likes = new Map();
+                this.channelSubscriptions = new Map();
                 this.currentChat = null;
                 this.currentChannel = null;
-                this.viewingProfile = null;
-                this.tg = null;
                 
                 this.init();
             }
@@ -1277,25 +1108,70 @@
             }
 
             setupEventListeners() {
-                document.getElementById('user-search').addEventListener('input', (e) => {
-                    this.searchUsers(e.target.value);
+                // Tab switching
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.switchTab(e.target.getAttribute('data-tab'));
+                    });
                 });
 
-                document.getElementById('telegram-auth-button').addEventListener('click', () => {
-                    this.handleTelegramAuth();
-                });
-
-                document.getElementById('post-image-input').addEventListener('change', (e) => {
-                    this.handlePostImageUpload(e);
-                });
-
-                // Fix: Add click listeners for header icons
+                // Header buttons
                 document.getElementById('new-chat-btn').addEventListener('click', () => {
                     document.getElementById('user-search').focus();
                 });
 
                 document.getElementById('search-toggle').addEventListener('click', () => {
                     document.getElementById('user-search').focus();
+                });
+
+                // Navigation buttons
+                document.getElementById('back-from-chat').addEventListener('click', () => this.closeChat());
+                document.getElementById('back-from-channel').addEventListener('click', () => this.closeChannel());
+
+                // Message sending
+                document.getElementById('send-message-btn').addEventListener('click', () => this.sendMessage());
+                document.getElementById('message-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+
+                // Profile actions
+                document.getElementById('settings-btn').addEventListener('click', () => this.openSettings());
+                document.getElementById('edit-profile-btn').addEventListener('click', () => this.openEditProfile());
+                document.getElementById('create-post-btn').addEventListener('click', () => this.openCreatePostModal());
+
+                // Channel actions
+                document.getElementById('create-channel-btn').addEventListener('click', () => this.openCreateChannelModal());
+                document.getElementById('channel-subscribe-btn').addEventListener('click', () => this.toggleChannelSubscription());
+
+                // Modal actions
+                document.getElementById('close-create-post').addEventListener('click', () => this.closeCreatePostModal());
+                document.getElementById('close-create-channel').addEventListener('click', () => this.closeCreateChannelModal());
+                document.getElementById('close-edit-profile').addEventListener('click', () => this.closeEditProfile());
+
+                // Form submissions
+                document.getElementById('submit-post').addEventListener('click', () => this.createPost());
+                document.getElementById('submit-channel').addEventListener('click', () => this.createChannel());
+                document.getElementById('submit-profile').addEventListener('click', () => this.saveProfile());
+
+                // Image uploads
+                document.getElementById('upload-post-image').addEventListener('click', () => {
+                    document.getElementById('post-image-input').click();
+                });
+                document.getElementById('post-image-input').addEventListener('change', (e) => {
+                    this.handlePostImageUpload(e);
+                });
+                document.getElementById('edit-profile-avatar').addEventListener('click', () => {
+                    this.uploadAvatar();
+                });
+
+                // Search
+                document.getElementById('user-search').addEventListener('input', (e) => {
+                    this.searchUsers(e.target.value);
+                });
+
+                // Telegram auth
+                document.getElementById('telegram-auth-button').addEventListener('click', () => {
+                    this.handleTelegramAuth();
                 });
             }
 
@@ -1327,12 +1203,7 @@
                     avatarUrl: null,
                     isOnline: true,
                     lastSeen: new Date().toISOString(),
-                    bio: 'No bio yet',
-                    profileInfo: {
-                        worldview: '',
-                        politics: '',
-                        quote: ''
-                    }
+                    bio: 'No bio yet'
                 };
 
                 // Check if user already exists
@@ -1354,16 +1225,12 @@
                     const savedPosts = localStorage.getItem('quantum_posts');
                     const savedChannels = localStorage.getItem('quantum_channels');
                     const savedSubscriptions = localStorage.getItem('quantum_subscriptions');
-                    const savedComments = localStorage.getItem('quantum_comments');
-                    const savedLikes = localStorage.getItem('quantum_likes');
                     
                     if (savedUsers) this.users = new Map(JSON.parse(savedUsers));
                     if (savedChats) this.chats = new Map(JSON.parse(savedChats));
                     if (savedPosts) this.posts = new Map(JSON.parse(savedPosts));
                     if (savedChannels) this.channels = new Map(JSON.parse(savedChannels));
                     if (savedSubscriptions) this.channelSubscriptions = new Map(JSON.parse(savedSubscriptions));
-                    if (savedComments) this.comments = new Map(JSON.parse(savedComments));
-                    if (savedLikes) this.likes = new Map(JSON.parse(savedLikes));
                 } catch (error) {
                     console.log('Error loading from storage:', error);
                 }
@@ -1376,8 +1243,6 @@
                     localStorage.setItem('quantum_posts', JSON.stringify([...this.posts]));
                     localStorage.setItem('quantum_channels', JSON.stringify([...this.channels]));
                     localStorage.setItem('quantum_subscriptions', JSON.stringify([...this.channelSubscriptions]));
-                    localStorage.setItem('quantum_comments', JSON.stringify([...this.comments]));
-                    localStorage.setItem('quantum_likes', JSON.stringify([...this.likes]));
                 } catch (error) {
                     console.log('Error saving to storage:', error);
                 }
@@ -1436,23 +1301,20 @@
 
                 const demoUsers = [
                     { 
-                        id: 'clanffys', 
-                        firstName: 'Clanffys', 
-                        lastName: '', 
-                        username: 'clanffys', 
-                        avatar: 'C',
-                        isOnline: true,
-                        bio: 'Тихий омут\nв сети',
-                        isVerified: true
-                    },
-                    { 
                         id: 'user1', 
                         firstName: 'John', 
                         lastName: 'Doe', 
                         username: 'johndoe', 
                         avatar: 'J',
-                        isOnline: false,
-                        bio: 'Well well well\nсебе'
+                        isOnline: true
+                    },
+                    { 
+                        id: 'user2', 
+                        firstName: 'Alice', 
+                        lastName: 'Smith', 
+                        username: 'alice', 
+                        avatar: 'A',
+                        isOnline: false
                     }
                 ];
 
@@ -1471,14 +1333,11 @@
                     <div class="chat-item" onclick="quantum.startChat('${user.id}')">
                         <div class="chat-avatar">
                             ${user.avatar}
-                            <div class="online-status ${user.isOnline ? 'online' : 'offline'}"></div>
+                            ${user.isOnline ? '<div class="online-status"></div>' : ''}
                         </div>
                         <div class="chat-info">
                             <div class="chat-name-row">
-                                <div class="chat-name">
-                                    ${user.firstName} ${user.lastName}
-                                    ${user.isVerified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                </div>
+                                <div class="chat-name">${user.firstName} ${user.lastName}</div>
                             </div>
                             <div class="chat-last-message">@${user.username}</div>
                         </div>
@@ -1494,9 +1353,70 @@
                     this.saveToStorage();
                 }
 
-                // For now, just show a message that chat is started
-                alert(`Chat started with user ${userId}`);
-                this.loadChatsList();
+                this.openChat(userId);
+            }
+
+            openChat(userId) {
+                const user = this.users.get(userId);
+                if (!user) return;
+
+                this.currentChat = userId;
+                
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('chat-window').classList.add('active');
+                
+                document.getElementById('chat-header-avatar').textContent = user.avatar;
+                document.getElementById('chat-header-name').textContent = `${user.firstName} ${user.lastName}`;
+                document.getElementById('chat-header-status').textContent = user.isOnline ? 'Online' : 'Offline';
+                
+                this.loadMessages();
+            }
+
+            closeChat() {
+                document.getElementById('chat-window').classList.remove('active');
+                document.getElementById('main-app').style.display = 'flex';
+                this.currentChat = null;
+            }
+
+            loadMessages() {
+                const messagesContainer = document.getElementById('messages-container');
+                const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
+                const messages = this.chats.get(chatKey) || [];
+
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = '<div class="empty-state">No messages yet</div>';
+                    return;
+                }
+
+                messagesContainer.innerHTML = messages.map(msg => `
+                    <div class="message ${msg.sender === this.currentUser.id ? 'outgoing' : 'incoming'}">
+                        ${msg.text}
+                    </div>
+                `).join('');
+
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            sendMessage() {
+                const input = document.getElementById('message-input');
+                const text = input.value.trim();
+                
+                if (!text || !this.currentChat) return;
+
+                const chatKey = this.getChatKey(this.currentUser.id, this.currentChat);
+                const messages = this.chats.get(chatKey) || [];
+
+                messages.push({
+                    text: text,
+                    sender: this.currentUser.id,
+                    timestamp: new Date().toISOString()
+                });
+
+                this.chats.set(chatKey, messages);
+                this.saveToStorage();
+                
+                input.value = '';
+                this.loadMessages();
             }
 
             loadChatsList() {
@@ -1528,17 +1448,14 @@
                             <div class="chat-item" onclick="quantum.openChat('${otherUserId}')">
                                 <div class="chat-avatar">
                                     ${otherUser.avatar}
-                                    <div class="online-status ${otherUser.isOnline ? 'online' : 'offline'}"></div>
+                                    ${otherUser.isOnline ? '<div class="online-status"></div>' : ''}
                                 </div>
                                 <div class="chat-info">
                                     <div class="chat-name-row">
-                                        <div class="chat-name">
-                                            ${otherUser.firstName} ${otherUser.lastName}
-                                            ${otherUser.username === 'clanffys' ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                        </div>
+                                        <div class="chat-name">${otherUser.firstName} ${otherUser.lastName}</div>
                                         <div class="chat-time">${lastMessage ? this.formatTime(lastMessage.timestamp) : ''}</div>
                                     </div>
-                                    <div class="chat-last-message">${lastMessage ? (lastMessage.isSticker ? 'Sticker' : lastMessage.text) : 'No messages yet'}</div>
+                                    <div class="chat-last-message">${lastMessage ? lastMessage.text : 'No messages yet'}</div>
                                 </div>
                             </div>
                         `;
@@ -1548,15 +1465,8 @@
                 chatsContainer.innerHTML = chatsHTML;
             }
 
-            openChat(userId) {
-                // Simple chat implementation for now
-                alert(`Opening chat with ${userId}`);
-            }
-
             loadChannels() {
                 const channelsContainer = document.getElementById('channels-container');
-                
-                // Get user's subscribed channels
                 const userSubscriptions = this.channelSubscriptions.get(this.currentUser.id) || new Set();
                 const userChannels = Array.from(this.channels.values()).filter(channel => 
                     userSubscriptions.has(channel.id) || channel.ownerId === this.currentUser.id
@@ -1571,9 +1481,7 @@
                     const isOwner = channel.ownerId === this.currentUser.id;
                     return `
                         <div class="channel-item" onclick="quantum.openChannel('${channel.id}')">
-                            <div class="channel-avatar" style="${channel.avatarUrl ? `background-image: url(${channel.avatarUrl})` : ''}">
-                                ${!channel.avatarUrl ? channel.name.charAt(0) : ''}
-                            </div>
+                            <div class="channel-avatar">${channel.name.charAt(0)}</div>
                             <div class="channel-info">
                                 <div class="channel-name">${channel.name}</div>
                                 <div class="channel-username">@${channel.username}</div>
@@ -1598,7 +1506,6 @@
             createChannel() {
                 const name = document.getElementById('channel-name').value.trim();
                 const username = document.getElementById('channel-username').value.trim().replace('@', '');
-                const description = document.getElementById('channel-description').value.trim();
                 
                 if (!name || !username) {
                     this.showError('Channel name and username are required');
@@ -1609,16 +1516,15 @@
                     id: Date.now().toString(),
                     name: name,
                     username: username,
-                    description: description,
+                    description: document.getElementById('channel-description').value.trim(),
                     ownerId: this.currentUser.id,
-                    avatarUrl: null,
                     created: new Date().toISOString(),
                     subscribers: 1
                 };
 
                 this.channels.set(channel.id, channel);
                 
-                // Auto-subscribe owner to their channel
+                // Auto-subscribe owner
                 if (!this.channelSubscriptions.has(this.currentUser.id)) {
                     this.channelSubscriptions.set(this.currentUser.id, new Set());
                 }
@@ -1638,8 +1544,7 @@
                 document.getElementById('main-app').style.display = 'none';
                 document.getElementById('channel-view').classList.add('active');
                 
-                document.getElementById('channel-header-avatar').textContent = channel.avatarUrl ? '' : channel.name.charAt(0);
-                document.getElementById('channel-header-avatar').style.backgroundImage = channel.avatarUrl ? `url(${channel.avatarUrl})` : '';
+                document.getElementById('channel-header-avatar').textContent = channel.name.charAt(0);
                 document.getElementById('channel-header-name').textContent = channel.name;
                 document.getElementById('channel-header-subscribers').textContent = `${channel.subscribers || 0} subscribers`;
                 
@@ -1687,7 +1592,6 @@
                 this.channels.set(this.currentChannel, channel);
                 this.saveToStorage();
 
-                // Update UI
                 const subscribeBtn = document.getElementById('channel-subscribe-btn');
                 subscribeBtn.textContent = !isSubscribed ? 'Unsubscribe' : 'Subscribe';
                 subscribeBtn.className = !isSubscribed ? 'unsubscribe-btn' : 'subscribe-btn';
@@ -1705,83 +1609,31 @@
                 const channelPosts = this.posts.get(channelId);
                 const channel = this.channels.get(channelId);
 
-                postsContainer.innerHTML = channelPosts.map(post => {
-                    const postLikes = this.likes.get(post.id) || new Set();
-                    const postComments = this.comments.get(post.id) || [];
-                    const isLiked = postLikes.has(this.currentUser.id);
-                    const likeCount = postLikes.size;
-                    const commentCount = postComments.length;
-
-                    return `
-                        <div class="post">
-                            <div class="post-header">
-                                <div class="post-avatar" style="${channel.avatarUrl ? `background-image: url(${channel.avatarUrl})` : ''}">
-                                    ${!channel.avatarUrl ? channel.name.charAt(0) : ''}
-                                </div>
-                                <div class="post-author">
-                                    <div class="post-author-name">
-                                        ${channel.name}
-                                        <span class="verified-badge"><i class="fas fa-check"></i></span>
-                                    </div>
-                                    <div class="post-time">${this.formatTime(post.timestamp)}</div>
-                                </div>
-                            </div>
-                            ${post.text ? `<div class="post-content">${post.text}</div>` : ''}
-                            ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
-                            
-                            <div class="post-stats">
-                                <span>${likeCount} likes</span>
-                                <span>${commentCount} comments</span>
-                            </div>
-                            
-                            <div class="post-actions">
-                                <button class="post-action ${isLiked ? 'active' : ''}" onclick="quantum.toggleLike('${post.id}')">
-                                    <i class="fas fa-heart"></i> Like
-                                </button>
-                                <button class="post-action" onclick="quantum.toggleComments('${post.id}')">
-                                    <i class="fas fa-comment"></i> Comment
-                                </button>
-                            </div>
-                            
-                            <div class="comments-section" id="comments-${post.id}" style="display: none;">
-                                ${postComments.map((comment, index) => `
-                                    <div class="comment">
-                                        <div class="comment-avatar">${comment.author.charAt(0)}</div>
-                                        <div class="comment-content">
-                                            <div class="comment-author">${comment.author}</div>
-                                            <div>${comment.text}</div>
-                                            ${(channel.ownerId === this.currentUser.id || comment.author === `${this.currentUser.firstName} ${this.currentUser.lastName}`) ? 
-                                                `<div class="delete-comment" onclick="quantum.deleteComment('${post.id}', ${index})">
-                                                    <i class="fas fa-times"></i>
-                                                </div>` : ''}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                                <input type="text" class="comment-input" placeholder="Write a comment..." 
-                                       onkeypress="if(event.key==='Enter') quantum.addComment('${post.id}', this)">
+                postsContainer.innerHTML = channelPosts.map(post => `
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-avatar">${channel.name.charAt(0)}</div>
+                            <div class="post-author">
+                                <div class="post-author-name">${channel.name}</div>
+                                <div class="post-time">${this.formatTime(post.timestamp)}</div>
                             </div>
                         </div>
-                    `;
-                }).join('');
+                        ${post.text ? `<div class="post-content">${post.text}</div>` : ''}
+                        ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
+                    </div>
+                `).join('');
             }
 
             openSettings() {
-                document.getElementById('main-app').style.display = 'none';
-                document.getElementById('settings-screen').style.display = 'flex';
-            }
-
-            closeSettings() {
-                document.getElementById('settings-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'flex';
+                // Simple settings implementation
+                alert('Settings will be implemented here');
             }
 
             openEditProfile() {
                 document.getElementById('edit-firstname').value = this.currentUser.firstName;
                 document.getElementById('edit-lastname').value = this.currentUser.lastName;
+                document.getElementById('edit-username').value = this.currentUser.username;
                 document.getElementById('edit-bio').value = this.currentUser.bio;
-                document.getElementById('edit-worldview').value = this.currentUser.profileInfo.worldview;
-                document.getElementById('edit-politics').value = this.currentUser.profileInfo.politics;
-                document.getElementById('edit-quote').value = this.currentUser.profileInfo.quote;
                 
                 const editAvatar = document.getElementById('edit-profile-avatar');
                 editAvatar.textContent = this.currentUser.avatarUrl ? '' : this.currentUser.avatar;
@@ -1808,7 +1660,7 @@
                             this.saveToStorage();
                             this.updateProfile();
                             this.closeEditProfile();
-                            this.openEditProfile(); // Reopen to show new avatar
+                            this.openEditProfile();
                         };
                         reader.readAsDataURL(file);
                     }
@@ -1816,40 +1668,16 @@
                 input.click();
             }
 
-            openUsernameSettings() {
-                document.getElementById('username-input').value = this.currentUser.username;
-                document.getElementById('username-modal').classList.add('active');
-            }
-
-            closeUsernameSettings() {
-                document.getElementById('username-modal').classList.remove('active');
-            }
-
             saveProfile() {
                 this.currentUser.firstName = document.getElementById('edit-firstname').value;
                 this.currentUser.lastName = document.getElementById('edit-lastname').value;
+                this.currentUser.username = document.getElementById('edit-username').value.replace('@', '');
                 this.currentUser.bio = document.getElementById('edit-bio').value;
-                this.currentUser.profileInfo = {
-                    worldview: document.getElementById('edit-worldview').value,
-                    politics: document.getElementById('edit-politics').value,
-                    quote: document.getElementById('edit-quote').value
-                };
                 
                 this.users.set(this.currentUser.id, this.currentUser);
                 this.saveToStorage();
                 this.updateProfile();
                 this.closeEditProfile();
-            }
-
-            saveUsername() {
-                const username = document.getElementById('username-input').value.trim().replace('@', '');
-                if (username) {
-                    this.currentUser.username = username;
-                    this.users.set(this.currentUser.id, this.currentUser);
-                    this.saveToStorage();
-                    this.updateProfile();
-                    this.closeUsernameSettings();
-                }
             }
 
             updateProfile() {
@@ -1862,7 +1690,6 @@
                 document.getElementById('profile-name').textContent = `${this.currentUser.firstName} ${this.currentUser.lastName}`;
                 document.getElementById('profile-username').textContent = this.currentUser.username ? `@${this.currentUser.username}` : 'No username';
                 document.getElementById('profile-bio').textContent = this.currentUser.bio || 'No bio yet';
-                document.getElementById('profile-bio').innerHTML = this.currentUser.bio ? this.currentUser.bio.replace(/\n/g, '<br>') : 'No bio yet';
             }
 
             openCreatePostModal() {
@@ -1913,160 +1740,37 @@
                 userPosts.unshift(post);
                 this.posts.set(this.currentUser.id, userPosts);
                 
-                if (!this.likes.has(postId)) {
-                    this.likes.set(postId, new Set());
-                }
-                if (!this.comments.has(postId)) {
-                    this.comments.set(postId, []);
-                }
-                
                 this.saveToStorage();
                 this.closeCreatePostModal();
                 this.loadPosts();
             }
 
-            loadPosts(userId = null) {
-                const targetUserId = userId || this.currentUser.id;
+            loadPosts() {
                 const postsContainer = document.getElementById('posts-container');
 
-                if (!this.posts.has(targetUserId) || this.posts.get(targetUserId).length === 0) {
+                if (!this.posts.has(this.currentUser.id) || this.posts.get(this.currentUser.id).length === 0) {
                     postsContainer.innerHTML = '<div class="empty-state">No posts yet</div>';
                     return;
                 }
 
-                const userPosts = this.posts.get(targetUserId);
-                const user = this.users.get(targetUserId);
+                const userPosts = this.posts.get(this.currentUser.id);
+                const user = this.users.get(this.currentUser.id);
 
-                postsContainer.innerHTML = userPosts.map(post => {
-                    const postLikes = this.likes.get(post.id) || new Set();
-                    const postComments = this.comments.get(post.id) || [];
-                    const isLiked = postLikes.has(this.currentUser.id);
-                    const likeCount = postLikes.size;
-                    const commentCount = postComments.length;
-
-                    return `
-                        <div class="post">
-                            <div class="post-header">
-                                <div class="post-avatar" style="${user.avatarUrl ? `background-image: url(${user.avatarUrl})` : ''}">
-                                    ${!user.avatarUrl ? user.avatar : ''}
-                                </div>
-                                <div class="post-author">
-                                    <div class="post-author-name">
-                                        ${user.firstName} ${user.lastName}
-                                        ${user.username === 'clanffys' ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                    </div>
-                                    <div class="post-time">${this.formatTime(post.timestamp)}</div>
-                                </div>
+                postsContainer.innerHTML = userPosts.map(post => `
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-avatar" style="${user.avatarUrl ? `background-image: url(${user.avatarUrl})` : ''}">
+                                ${!user.avatarUrl ? user.avatar : ''}
                             </div>
-                            ${post.text ? `<div class="post-content">${post.text}</div>` : ''}
-                            ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
-                            
-                            <div class="post-stats">
-                                <span>${likeCount} likes</span>
-                                <span>${commentCount} comments</span>
-                            </div>
-                            
-                            <div class="post-actions">
-                                <button class="post-action ${isLiked ? 'active' : ''}" onclick="quantum.toggleLike('${post.id}')">
-                                    <i class="fas fa-heart"></i> Like
-                                </button>
-                                <button class="post-action" onclick="quantum.toggleComments('${post.id}')">
-                                    <i class="fas fa-comment"></i> Comment
-                                </button>
-                                ${!userId ? `<button class="post-action delete-post" onclick="quantum.deletePost('${post.id}')">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>` : ''}
-                            </div>
-                            
-                            <div class="comments-section" id="comments-${post.id}" style="display: none;">
-                                ${postComments.map((comment, index) => `
-                                    <div class="comment">
-                                        <div class="comment-avatar">${comment.author.charAt(0)}</div>
-                                        <div class="comment-content">
-                                            <div class="comment-author">${comment.author}</div>
-                                            <div>${comment.text}</div>
-                                            ${(userId === this.currentUser.id || comment.author === `${this.currentUser.firstName} ${this.currentUser.lastName}`) ? 
-                                                `<div class="delete-comment" onclick="quantum.deleteComment('${post.id}', ${index})">
-                                                    <i class="fas fa-times"></i>
-                                                </div>` : ''}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                                <input type="text" class="comment-input" placeholder="Write a comment..." 
-                                       onkeypress="if(event.key==='Enter') quantum.addComment('${post.id}', this)">
+                            <div class="post-author">
+                                <div class="post-author-name">${user.firstName} ${user.lastName}</div>
+                                <div class="post-time">${this.formatTime(post.timestamp)}</div>
                             </div>
                         </div>
-                    `;
-                }).join('');
-            }
-
-            toggleLike(postId) {
-                if (!this.likes.has(postId)) {
-                    this.likes.set(postId, new Set());
-                }
-                
-                const postLikes = this.likes.get(postId);
-                if (postLikes.has(this.currentUser.id)) {
-                    postLikes.delete(this.currentUser.id);
-                } else {
-                    postLikes.add(this.currentUser.id);
-                }
-                
-                this.saveToStorage();
-                this.loadPosts(this.viewingProfile || this.currentUser.id);
-            }
-
-            toggleComments(postId) {
-                const commentsSection = document.getElementById(`comments-${postId}`);
-                commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
-            }
-
-            addComment(postId, input) {
-                const text = input.value.trim();
-                if (!text) return;
-
-                if (!this.comments.has(postId)) {
-                    this.comments.set(postId, []);
-                }
-
-                const postComments = this.comments.get(postId);
-                postComments.push({
-                    author: `${this.currentUser.firstName} ${this.currentUser.lastName}`,
-                    text: text,
-                    timestamp: new Date().toISOString()
-                });
-
-                this.saveToStorage();
-                input.value = '';
-                this.loadPosts(this.viewingProfile || this.currentUser.id);
-                
-                const commentsSection = document.getElementById(`comments-${postId}`);
-                commentsSection.style.display = 'block';
-            }
-
-            deleteComment(postId, commentIndex) {
-                if (!this.comments.has(postId)) return;
-
-                const postComments = this.comments.get(postId);
-                postComments.splice(commentIndex, 1);
-                this.comments.set(postId, postComments);
-                
-                this.saveToStorage();
-                this.loadPosts(this.viewingProfile || this.currentUser.id);
-            }
-
-            deletePost(postId) {
-                if (!this.posts.has(this.currentUser.id)) return;
-
-                const userPosts = this.posts.get(this.currentUser.id);
-                const updatedPosts = userPosts.filter(post => post.id !== postId);
-                this.posts.set(this.currentUser.id, updatedPosts);
-                
-                this.likes.delete(postId);
-                this.comments.delete(postId);
-                
-                this.saveToStorage();
-                this.loadPosts();
+                        ${post.text ? `<div class="post-content">${post.text}</div>` : ''}
+                        ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
+                    </div>
+                `).join('');
             }
 
             getChatKey(user1, user2) {
