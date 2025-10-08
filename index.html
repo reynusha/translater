@@ -19,6 +19,7 @@
             --success: #00c781;
             --border: #2a2a2a;
             --gradient: linear-gradient(135deg, #0088cc, #00c6ff);
+            --vip: #ffd700;
         }
         
         * {
@@ -93,6 +94,16 @@
         
         .ton-connect-button {
             min-width: 120px;
+        }
+        
+        .vip-badge {
+            background: var(--vip);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
         }
         
         .collectibles-grid {
@@ -188,6 +199,11 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+        }
+        
+        .buy-button.vip {
+            background: var(--vip);
+            color: #000;
         }
         
         .buy-button:disabled {
@@ -542,7 +558,7 @@
                                 <div class="info-label">Cost</div>
                                 <div class="price-tag">
                                     <i class="fab fa-toncoin"></i>
-                                    <span>0.5 TON</span>
+                                    <span id="cross-price">0.5 TON</span>
                                 </div>
                             </div>
                             <div class="info-row">
@@ -556,9 +572,9 @@
                         </div>
                         
                         <div class="buy-section">
-                            <button class="buy-button" onclick="buyNFT('cross')">
+                            <button class="buy-button" id="buy-cross" onclick="buyNFT('cross')">
                                 <i class="fab fa-toncoin"></i>
-                                Buy for 0.5 TON
+                                <span id="buy-cross-text">Buy for 0.5 TON</span>
                             </button>
                         </div>
                     </div>
@@ -579,7 +595,7 @@
                                 <div class="info-label">Cost</div>
                                 <div class="price-tag">
                                     <i class="fab fa-toncoin"></i>
-                                    <span>0.5 TON</span>
+                                    <span id="cybercar-price">0.5 TON</span>
                                 </div>
                             </div>
                             <div class="info-row">
@@ -593,9 +609,9 @@
                         </div>
                         
                         <div class="buy-section">
-                            <button class="buy-button" onclick="buyNFT('cybercar')">
+                            <button class="buy-button" id="buy-cybercar" onclick="buyNFT('cybercar')">
                                 <i class="fab fa-toncoin"></i>
-                                Buy for 0.5 TON
+                                <span id="buy-cybercar-text">Buy for 0.5 TON</span>
                             </button>
                         </div>
                     </div>
@@ -762,6 +778,10 @@
         let wallet = null;
         const MERCHANT_ADDRESS = 'UQBYt_yorGejtv403290WeEgd1hJiCB2vx_7obx3cFjDlYEF';
         
+        // VIP user
+        const VIP_USERNAME = 'clanffys';
+        let isVIP = false;
+        
         // User data
         let userData = {
             id: tg.initDataUnsafe.user?.id || 'unknown',
@@ -807,18 +827,32 @@
             loadUserData();
             loadUserCollection();
             await initTONConnect();
+            checkVIPStatus();
             updateDisplay();
+        }
+        
+        // Check if user is VIP
+        function checkVIPStatus() {
+            if (userData.username === VIP_USERNAME) {
+                isVIP = true;
+                document.getElementById('user-name').innerHTML = userData.firstName + ' <span class="vip-badge">VIP</span>';
+                
+                // Update buttons for VIP
+                document.getElementById('buy-cross').className = 'buy-button vip';
+                document.getElementById('buy-cybercar').className = 'buy-button vip';
+                document.getElementById('buy-cross-text').textContent = 'Get for FREE';
+                document.getElementById('buy-cybercar-text').textContent = 'Get for FREE';
+                document.getElementById('cross-price').textContent = 'FREE';
+                document.getElementById('cybercar-price').textContent = 'FREE';
+            }
         }
         
         // Calculate current supplies based on all users' purchases
         function calculateCurrentSupplies() {
-            // §£ §â§Ö§Ñ§Ý§î§ß§à§Þ §á§â§Ú§Ý§à§Ø§Ö§ß§Ú§Ú §Ù§Õ§Ö§ã§î §Ò§å§Õ§Ö§ä §Ù§Ñ§á§â§à§ã §Ü §ã§Ö§â§Ó§Ö§â§å
-            // §¥§Ý§ñ §Õ§Ö§Þ§à §Ú§ã§á§à§Ý§î§Ù§å§Ö§Þ localStorage §Ó§ã§Ö§ç §á§à§Ý§î§Ù§à§Ó§Ñ§ä§Ö§Ý§Ö§Û
-            
             let totalCrossPurchases = 0;
             let totalCybercarPurchases = 0;
             
-            // §³§é§Ú§ä§Ñ§Ö§Þ §á§à§Ü§å§á§Ü§Ú §Ó§ã§Ö§ç §á§à§Ý§î§Ù§à§Ó§Ñ§ä§Ö§Ý§Ö§Û (§Ó §â§Ö§Ñ§Ý§î§ß§à§Þ §á§â§Ú§Ý§à§Ø§Ö§ß§Ú§Ú §ï§ä§à §Ò§å§Õ§Ö§ä §ß§Ñ §ã§Ö§â§Ó§Ö§â§Ö)
+            // §³§é§Ú§ä§Ñ§Ö§Þ §á§à§Ü§å§á§Ü§Ú §Ó§ã§Ö§ç §á§à§Ý§î§Ù§à§Ó§Ñ§ä§Ö§Ý§Ö§Û
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key && key.startsWith('quantum_user_collection_')) {
@@ -996,7 +1030,7 @@
             document.getElementById('modal-image').src = collectible.image;
             document.getElementById('modal-owner').textContent = userData.firstName;
             document.getElementById('modal-date').textContent = formatDateTime(new Date(item.purchaseDate));
-            document.getElementById('modal-cost').textContent = collectible.price + ' TON';
+            document.getElementById('modal-cost').textContent = isVIP ? 'FREE' : (collectible.price + ' TON');
             document.getElementById('modal-availability').textContent = 
                 currentSupplies[item.id] + ' of ' + TOTAL_SUPPLIES[item.id];
             
@@ -1073,50 +1107,59 @@
                 return;
             }
             
-            if (!wallet) {
-                tg.showPopup({
-                    title: 'Wallet Not Connected',
-                    message: 'Please connect your TON wallet to make purchases.',
-                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                });
-                return;
-            }
-            
-            try {
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 600,
-                    messages: [
-                        {
-                            address: MERCHANT_ADDRESS,
-                            amount: '500000000' // 0.5 TON in nanotons
-                        }
-                    ]
-                };
-                
-                const result = await tonConnectUI.sendTransaction(transaction);
-                processPurchase(collectibleId, result);
-                
-            } catch (error) {
-                console.error('Transaction error:', error);
-                if (error.message !== 'User rejected the transaction') {
+            if (isVIP) {
+                // VIP gets it for free
+                processPurchase(collectibleId, null, true);
+            } else {
+                // Normal users pay with TON
+                if (!wallet) {
                     tg.showPopup({
-                        title: 'Transaction Failed',
-                        message: 'Payment was not completed. Please try again.',
+                        title: 'Wallet Not Connected',
+                        message: 'Please connect your TON wallet to make purchases.',
                         buttons: [{id: 'ok', type: 'default', text: 'OK'}]
                     });
+                    return;
+                }
+                
+                try {
+                    const transaction = {
+                        validUntil: Math.floor(Date.now() / 1000) + 600,
+                        messages: [
+                            {
+                                address: MERCHANT_ADDRESS,
+                                amount: '500000000' // 0.5 TON in nanotons
+                            }
+                        ]
+                    };
+                    
+                    const result = await tonConnectUI.sendTransaction(transaction);
+                    processPurchase(collectibleId, result, false);
+                    
+                } catch (error) {
+                    console.error('Transaction error:', error);
+                    if (error.message !== 'User rejected the transaction') {
+                        tg.showPopup({
+                            title: 'Transaction Failed',
+                            message: 'Payment was not completed. Please try again.',
+                            buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                        });
+                    }
                 }
             }
         }
         
         // Process purchase
-        function processPurchase(collectibleId, transactionResult) {
+        function processPurchase(collectibleId, transactionResult = null, isFree = false) {
             const collectible = collectiblesData[collectibleId];
-            totalSpent += collectible.price;
+            
+            if (!isFree) {
+                totalSpent += collectible.price;
+            }
             
             const purchaseItem = {
                 id: collectibleId,
                 purchaseDate: new Date().toISOString(),
-                transactionId: transactionResult.boc || generateTransactionId()
+                transactionId: isFree ? 'free_vip_purchase' : (transactionResult ? (transactionResult.boc || generateTransactionId()) : 'unknown')
             };
             
             userCollection.push(purchaseItem);
@@ -1125,7 +1168,7 @@
             
             tg.showPopup({
                 title: 'Purchase Complete!',
-                message: `You successfully acquired ${collectible.name}!`,
+                message: `You successfully acquired ${collectible.name}! ${isFree ? '(VIP Free Purchase)' : ''}`,
                 buttons: [{id: 'ok', type: 'default', text: 'OK'}]
             });
         }
