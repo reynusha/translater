@@ -38,55 +38,41 @@
         .container {
             max-width: 428px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 16px;
         }
         
         .header {
-            padding: 24px 0;
+            padding: 20px 0;
             text-align: center;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.5px;
-        }
-        
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 4px;
-            font-weight: 400;
         }
         
         .section {
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
         
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .section-title i {
-            color: var(--accent);
+            margin-bottom: 16px;
+            padding: 0 8px;
         }
         
         .wallet-card {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 24px;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
             border: 1px solid var(--border);
         }
         
@@ -94,7 +80,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
         }
         
         .wallet-address {
@@ -102,193 +87,256 @@
             font-size: 12px;
             color: var(--text-secondary);
             background: var(--bg-secondary);
-            padding: 8px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 10px;
         }
         
         .ton-connect-button {
-            min-width: 140px;
+            min-width: 120px;
         }
         
-        .grid {
+        .collectibles-grid {
             display: grid;
-            gap: 16px;
+            gap: 12px;
         }
         
-        .grid-2 {
-            grid-template-columns: 1fr 1fr;
-        }
-        
-        .nft-card {
+        .collectible-card {
             background: var(--bg-card);
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            cursor: pointer;
         }
         
-        .nft-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 8px 24px rgba(0, 136, 204, 0.15);
+        .collectible-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
         }
         
-        .nft-image {
+        .collectible-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .collectible-stock {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .collectible-image {
             width: 100%;
-            height: 160px;
-            background: var(--bg-secondary);
+            height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
+            background: transparent;
         }
         
-        .nft-image img {
-            width: 120px;
-            height: 120px;
+        .collectible-image img {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
         }
         
-        .nft-content {
+        .collectible-info {
             padding: 16px;
+            border-top: 1px solid var(--border);
         }
         
-        .nft-name {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
         
-        .nft-price {
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .price-tag {
             display: flex;
             align-items: center;
             gap: 6px;
             font-weight: 600;
             color: var(--ton);
-            margin-bottom: 8px;
         }
         
-        .nft-stock {
-            font-size: 12px;
-            color: var(--text-secondary);
+        .buy-section {
+            padding: 16px;
+            border-top: 1px solid var(--border);
         }
         
-        .buy-btn {
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .quantity-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .qty-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .qty-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .buy-button {
             width: 100%;
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
-        .buy-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
-        }
-        
-        .buy-btn:disabled {
+        .buy-button:disabled {
             background: var(--border);
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
         
         .profile-card {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
             border: 1px solid var(--border);
-            text-align: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
         }
         
         .avatar {
-            width: 80px;
-            height: 80px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--gradient);
-            margin: 0 auto 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 20px;
             color: white;
         }
         
+        .user-details {
+            flex: 1;
+        }
+        
         .username {
-            font-size: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .member-since {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .collection-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
             font-weight: 600;
             margin-bottom: 4px;
         }
         
-        .member-since {
-            font-size: 14px;
+        .stat-label {
+            font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 16px;
         }
         
         .collection-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 8px;
         }
         
         .collection-item {
             background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
             border: 1px solid var(--border);
             cursor: pointer;
-            transition: all 0.2s ease;
         }
         
-        .collection-item:hover {
-            transform: scale(1.05);
-            border-color: var(--accent);
-        }
-        
-        .collection-icon {
-            width: 48px;
-            height: 48px;
+        .collection-image {
+            width: 60px;
+            height: 60px;
             margin: 0 auto 8px;
-            border-radius: 12px;
-            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
-        .collection-icon img {
-            width: 32px;
-            height: 32px;
+        .collection-image img {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
         }
         
         .collection-name {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
         }
         
         .empty-state {
             text-align: center;
-            padding: 48px 20px;
+            padding: 40px 20px;
             color: var(--text-secondary);
         }
         
         .empty-state i {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 40px;
+            margin-bottom: 12px;
             opacity: 0.5;
         }
         
@@ -300,7 +348,7 @@
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
             display: flex;
-            padding: 12px 20px;
+            padding: 12px 16px;
             backdrop-filter: blur(20px);
         }
         
@@ -312,7 +360,7 @@
             gap: 4px;
             padding: 8px;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 10px;
             transition: all 0.2s ease;
         }
         
@@ -322,26 +370,20 @@
         }
         
         .nav-icon {
-            font-size: 20px;
+            font-size: 18px;
         }
         
         .nav-label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
         }
         
         .page {
             display: none;
-            animation: fadeIn 0.3s ease;
         }
         
         .page.active {
             display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .modal {
@@ -350,12 +392,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            padding: 16px;
         }
         
         .modal.active {
@@ -364,117 +406,100 @@
         
         .modal-content {
             background: var(--bg-card);
-            border-radius: 24px;
-            padding: 24px;
-            margin: 20px;
-            max-width: 380px;
+            border-radius: 20px;
             width: 100%;
+            max-width: 360px;
             border: 1px solid var(--border);
-            animation: modalSlide 0.3s ease;
-        }
-        
-        @keyframes modalSlide {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            overflow: hidden;
         }
         
         .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: between;
-            margin-bottom: 20px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
         }
         
         .modal-title {
             font-size: 20px;
             font-weight: 600;
+            margin-bottom: 8px;
         }
         
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 20px;
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             cursor: pointer;
-            padding: 4px;
+            font-size: 14px;
+        }
+        
+        .action-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
         }
         
         .modal-image {
             width: 100%;
             height: 200px;
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: transparent;
         }
         
         .modal-image img {
-            width: 160px;
-            height: 160px;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
         }
         
-        .info-row {
+        .modal-details {
+            padding: 20px;
+        }
+        
+        .detail-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border);
         }
         
-        .info-label {
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
             color: var(--text-secondary);
+            font-size: 14px;
         }
         
-        .info-value {
+        .detail-value {
             font-weight: 500;
+            font-size: 14px;
         }
         
-        .upgrade-notice {
-            background: rgba(0, 136, 204, 0.1);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 20px;
-            border-left: 3px solid var(--accent);
-        }
-        
-        .upgrade-title {
-            font-weight: 600;
-            margin-bottom: 8px;
+        .ton-badge {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
+            color: var(--ton);
+            font-weight: 600;
         }
         
-        .upgrade-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        
-        .purchase-time {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 16px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .success-badge {
+            color: var(--success);
+            font-weight: 600;
         }
     </style>
 </head>
@@ -482,7 +507,6 @@
     <div class="container">
         <div class="header">
             <div class="logo">QUANTUM</div>
-            <div class="subtitle">Premium Digital Collectibles</div>
         </div>
         
         <!-- Store Page -->
@@ -495,44 +519,97 @@
             </div>
             
             <div class="section">
-                <h2 class="section-title">
-                    <i class="fas fa-gem"></i>
-                    Exclusive Collection
-                </h2>
+                <h2 class="section-title">Collectibles</h2>
                 
-                <div class="grid grid-2">
+                <div class="collectibles-grid">
                     <!-- Christian Cross -->
-                    <div class="nft-card" onclick="showNFTModal('cross')">
-                        <div class="nft-image">
-                            <img src="https://i.imgur.com/ezgif-825d8532b9c755.gif" alt="Christian Cross">
+                    <div class="collectible-card">
+                        <div class="collectible-header">
+                            <div class="collectible-title">Christian Cross</div>
+                            <div class="collectible-stock" id="cross-stock">0 of 1200</div>
                         </div>
-                        <div class="nft-content">
-                            <div class="nft-name">Christian Cross</div>
-                            <div class="nft-price">
-                                <i class="fab fa-toncoin"></i>
-                                <span>0.5 TON</span>
+                        
+                        <div class="collectible-image">
+                            <img src="https://i.postimg.cc/HL2pCGh5/ezgif-825d8532b9c755.gif" alt="Christian Cross">
+                        </div>
+                        
+                        <div class="collectible-info">
+                            <div class="info-row">
+                                <div class="info-label">Cost</div>
+                                <div class="price-tag">
+                                    <i class="fab fa-toncoin"></i>
+                                    <span>0.5 TON</span>
+                                </div>
                             </div>
-                            <div class="nft-stock" id="cross-stock">1,200 available</div>
-                            <button class="buy-btn" onclick="event.stopPropagation(); buyNFT('cross')">
-                                Purchase
+                            <div class="info-row">
+                                <div class="info-label">Owner</div>
+                                <div class="info-value">-</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Date</div>
+                                <div class="info-value">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="buy-section">
+                            <div class="quantity-selector">
+                                <div class="info-label">Quantity</div>
+                                <div class="quantity-buttons">
+                                    <div class="qty-btn active">1</div>
+                                    <div class="qty-btn">+10</div>
+                                    <div class="qty-btn">+20</div>
+                                    <div class="qty-btn">+50</div>
+                                </div>
+                            </div>
+                            <button class="buy-button" onclick="buyNFT('cross')">
+                                <i class="fab fa-toncoin"></i>
+                                Buy for 0.5 TON
                             </button>
                         </div>
                     </div>
                     
                     <!-- Cybercar -->
-                    <div class="nft-card" onclick="showNFTModal('cybercar')">
-                        <div class="nft-image">
+                    <div class="collectible-card">
+                        <div class="collectible-header">
+                            <div class="collectible-title">Cybercar</div>
+                            <div class="collectible-stock" id="cybercar-stock">0 of 2000</div>
+                        </div>
+                        
+                        <div class="collectible-image">
                             <img src="https://i.postimg.cc/1zrHK4Vn/ezgif-8f92856a9fc001-2.gif" alt="Cybercar">
                         </div>
-                        <div class="nft-content">
-                            <div class="nft-name">Cybercar</div>
-                            <div class="nft-price">
-                                <i class="fab fa-toncoin"></i>
-                                <span>0.5 TON</span>
+                        
+                        <div class="collectible-info">
+                            <div class="info-row">
+                                <div class="info-label">Cost</div>
+                                <div class="price-tag">
+                                    <i class="fab fa-toncoin"></i>
+                                    <span>0.5 TON</span>
+                                </div>
                             </div>
-                            <div class="nft-stock" id="cybercar-stock">2,000 available</div>
-                            <button class="buy-btn" onclick="event.stopPropagation(); buyNFT('cybercar')">
-                                Purchase
+                            <div class="info-row">
+                                <div class="info-label">Owner</div>
+                                <div class="info-value">-</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Date</div>
+                                <div class="info-value">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="buy-section">
+                            <div class="quantity-selector">
+                                <div class="info-label">Quantity</div>
+                                <div class="quantity-buttons">
+                                    <div class="qty-btn active">1</div>
+                                    <div class="qty-btn">+10</div>
+                                    <div class="qty-btn">+20</div>
+                                    <div class="qty-btn">+50</div>
+                                </div>
+                            </div>
+                            <button class="buy-button" onclick="buyNFT('cybercar')">
+                                <i class="fab fa-toncoin"></i>
+                                Buy for 0.5 TON
                             </button>
                         </div>
                     </div>
@@ -543,24 +620,35 @@
         <!-- Profile Page -->
         <div id="profile-page" class="page">
             <div class="profile-card">
-                <div class="avatar">
-                    <i class="fas fa-user"></i>
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="username" id="user-name">User</div>
+                        <div class="member-since" id="user-joined">Member since: Loading...</div>
+                    </div>
                 </div>
-                <div class="username" id="user-name">User</div>
-                <div class="member-since" id="user-joined">Member since: Loading...</div>
+                
+                <div class="collection-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-collected">0</div>
+                        <div class="stat-label">Collected</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-spent">0 TON</div>
+                        <div class="stat-label">Spent</div>
+                    </div>
+                </div>
             </div>
             
             <div class="section">
-                <h2 class="section-title">
-                    <i class="fas fa-crown"></i>
-                    My Collection
-                </h2>
+                <h2 class="section-title">My Collection</h2>
                 
                 <div id="collection-container">
                     <div class="empty-state" id="empty-collection">
                         <i class="fas fa-box-open"></i>
-                        <p>Your collection is empty</p>
-                        <p style="font-size: 13px; margin-top: 8px;">Start building your digital assets</p>
+                        <p>No collectibles yet</p>
                     </div>
                     <div class="collection-grid" id="collection-grid" style="display: none;">
                         <!-- Collection items will appear here -->
@@ -576,7 +664,7 @@
             <div class="nav-icon">
                 <i class="fas fa-store"></i>
             </div>
-            <div class="nav-label">Market</div>
+            <div class="nav-label">Store</div>
         </div>
         <div class="nav-item" onclick="showPage('profile-page')">
             <div class="nav-icon">
@@ -586,60 +674,54 @@
         </div>
     </div>
     
-    <!-- NFT Modal -->
-    <div class="modal" id="nft-modal">
+    <!-- Collectible Modal -->
+    <div class="modal" id="collectible-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="modal-title">Collectible Details</div>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
+                <div class="modal-title" id="modal-title">Christian Cross</div>
+                <div class="modal-actions">
+                    <button class="action-btn">Transfer</button>
+                    <button class="action-btn">Share</button>
+                    <button class="action-btn">Link</button>
+                </div>
+            </div>
+            
+            <div class="modal-image">
+                <img src="" alt="" id="modal-image">
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-row">
+                    <div class="detail-label">Owner</div>
+                    <div class="detail-value" id="modal-owner">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Date</div>
+                    <div class="detail-value" id="modal-date">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Cost</div>
+                    <div class="detail-value">
+                        <div class="ton-badge">
+                            <i class="fab fa-toncoin"></i>
+                            <span id="modal-cost">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Availability</div>
+                    <div class="detail-value" id="modal-availability">-</div>
+                </div>
+            </div>
+            
+            <div style="padding: 20px; border-top: 1px solid var(--border);">
+                <button class="buy-button" onclick="closeModal()">
+                    Close
+                </button>
+                <button class="buy-button" style="background: var(--success); margin-top: 8px;">
+                    Send +1
                 </button>
             </div>
-            
-            <div class="modal-image" id="modal-image">
-                <!-- Image will be inserted here -->
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Name:</div>
-                <div class="info-value" id="modal-name">-</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Price:</div>
-                <div class="info-value" id="modal-price">-</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Supply:</div>
-                <div class="info-value" id="modal-supply">-</div>
-            </div>
-            
-            <div class="info-row">
-                <div class="info-label">Upgrade Status:</div>
-                <div class="info-value" id="modal-upgrade">Not available</div>
-            </div>
-            
-            <div id="purchase-time-container" style="display: none;">
-                <div class="purchase-time">
-                    <i class="fas fa-clock"></i>
-                    Purchased: <span id="purchase-time">-</span>
-                </div>
-            </div>
-            
-            <div class="upgrade-notice">
-                <div class="upgrade-title">
-                    <i class="fas fa-rocket"></i>
-                    Evolution Roadmap
-                </div>
-                <div class="upgrade-text">
-                    Enhancement upgrades are scheduled for release in the near future. These digital collectibles will be convertible into exclusive NFTs with unique traits and rarity scores. The community and holders will govern pricing dynamics on our upcoming marketplace platform.
-                </div>
-            </div>
-            
-            <button class="buy-btn" id="modal-buy-btn" style="margin-top: 20px; display: none;">
-                Purchase for 0.5 TON
-            </button>
         </div>
     </div>
 
@@ -665,19 +747,19 @@
             joinDate: null
         };
         
-        // NFTs data
-        let nftsData = {
+        // Collectibles data
+        let collectiblesData = {
             cross: {
                 name: 'Christian Cross',
-                price: '0.5 TON',
+                price: '0.5',
                 totalSupply: 1200,
                 currentSupply: 1200,
-                image: 'https://i.imgur.com/ezgif-825d8532b9c755.gif',
+                image: 'https://i.postimg.cc/HL2pCGh5/ezgif-825d8532b9c755.gif',
                 description: 'Exclusive spiritual digital collectible'
             },
             cybercar: {
                 name: 'Cybercar',
-                price: '0.5 TON',
+                price: '0.5',
                 totalSupply: 2000,
                 currentSupply: 2000,
                 image: 'https://i.postimg.cc/1zrHK4Vn/ezgif-8f92856a9fc001-2.gif',
@@ -687,8 +769,7 @@
         
         // User's collection
         let userCollection = [];
-        let currentModalNFT = null;
-        let isViewingOwnedNFT = false;
+        let totalSpent = 0;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -696,17 +777,21 @@
         });
 
         async function initializeApp() {
-            // Load user data
             loadUserData();
-            
-            // Load user collection
             loadUserCollection();
-            
-            // Initialize TON Connect
             await initTONConnect();
-            
-            // Update display
             updateDisplay();
+            setupQuantityButtons();
+        }
+        
+        // Setup quantity buttons
+        function setupQuantityButtons() {
+            document.querySelectorAll('.qty-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.parentElement.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
         }
         
         // Initialize TON Connect
@@ -719,14 +804,12 @@
                     buttonRootId: 'connect-btn'
                 });
 
-                // Check if wallet is already connected
                 wallet = await tonConnectUI.connectionRestored;
                 
                 if (wallet) {
                     updateWalletDisplay();
                 }
 
-                // Subscribe to wallet changes
                 tonConnectUI.onStatusChange(async (newWallet) => {
                     wallet = newWallet;
                     updateWalletDisplay();
@@ -741,7 +824,7 @@
                 });
 
             } catch (error) {
-                console.error('TON Connect initialization error:', error);
+                console.error('TON Connect error:', error);
                 document.getElementById('wallet-address').textContent = 'Connection error';
             }
         }
@@ -781,28 +864,36 @@
         // Load user collection
         function loadUserCollection() {
             const savedCollection = localStorage.getItem('quantum_user_collection');
+            const savedSpent = localStorage.getItem('quantum_total_spent');
+            
             if (savedCollection) {
                 userCollection = JSON.parse(savedCollection);
-                
-                userCollection.forEach(item => {
-                    if (nftsData[item.id]) {
-                        nftsData[item.id].currentSupply--;
-                    }
-                });
+                collectiblesData.cross.currentSupply = collectiblesData.cross.totalSupply - userCollection.filter(item => item.id === 'cross').length;
+                collectiblesData.cybercar.currentSupply = collectiblesData.cybercar.totalSupply - userCollection.filter(item => item.id === 'cybercar').length;
+            }
+            
+            if (savedSpent) {
+                totalSpent = parseFloat(savedSpent);
             }
         }
         
         // Save user collection
         function saveUserCollection() {
             localStorage.setItem('quantum_user_collection', JSON.stringify(userCollection));
+            localStorage.setItem('quantum_total_spent', totalSpent.toString());
         }
         
         // Update display
         function updateDisplay() {
+            // Update stocks
             document.getElementById('cross-stock').textContent = 
-                nftsData.cross.currentSupply.toLocaleString() + ' / ' + nftsData.cross.totalSupply.toLocaleString();
+                (collectiblesData.cross.totalSupply - collectiblesData.cross.currentSupply) + ' of ' + collectiblesData.cross.totalSupply;
             document.getElementById('cybercar-stock').textContent = 
-                nftsData.cybercar.currentSupply.toLocaleString() + ' / ' + nftsData.cybercar.totalSupply.toLocaleString();
+                (collectiblesData.cybercar.totalSupply - collectiblesData.cybercar.currentSupply) + ' of ' + collectiblesData.cybercar.totalSupply;
+            
+            // Update profile stats
+            document.getElementById('total-collected').textContent = userCollection.length;
+            document.getElementById('total-spent').textContent = totalSpent.toFixed(1) + ' TON';
             
             updateCollectionDisplay();
         }
@@ -818,18 +909,18 @@
                 collectionGrid.innerHTML = '';
                 
                 userCollection.forEach((item, index) => {
-                    const nft = nftsData[item.id];
-                    if (!nft) return;
+                    const collectible = collectiblesData[item.id];
+                    if (!collectible) return;
                     
                     const collectionItem = document.createElement('div');
                     collectionItem.className = 'collection-item';
-                    collectionItem.onclick = () => showOwnedNFTModal(item);
+                    collectionItem.onclick = () => showCollectibleModal(item);
                     
                     collectionItem.innerHTML = `
-                        <div class="collection-icon">
-                            <img src="${nft.image}" alt="${nft.name}">
+                        <div class="collection-image">
+                            <img src="${collectible.image}" alt="${collectible.name}">
                         </div>
-                        <div class="collection-name">${nft.name}</div>
+                        <div class="collection-name">${collectible.name}</div>
                     `;
                     
                     collectionGrid.appendChild(collectionItem);
@@ -840,71 +931,30 @@
             }
         }
         
-        // Show NFT modal for purchase
-        function showNFTModal(nftId) {
-            const nft = nftsData[nftId];
-            if (!nft) return;
+        // Show collectible modal
+        function showCollectibleModal(item) {
+            const collectible = collectiblesData[item.id];
+            if (!collectible) return;
             
-            currentModalNFT = nftId;
-            isViewingOwnedNFT = false;
+            document.getElementById('modal-title').textContent = collectible.name;
+            document.getElementById('modal-image').src = collectible.image;
+            document.getElementById('modal-owner').textContent = userData.firstName;
+            document.getElementById('modal-date').textContent = formatDateTime(new Date(item.purchaseDate));
+            document.getElementById('modal-cost').textContent = collectible.price + ' TON';
+            document.getElementById('modal-availability').textContent = 
+                (collectible.totalSupply - collectible.currentSupply) + ' of ' + collectible.totalSupply;
             
-            document.getElementById('modal-title').textContent = 'Collectible Details';
-            document.getElementById('modal-name').textContent = nft.name;
-            document.getElementById('modal-price').textContent = nft.price;
-            document.getElementById('modal-supply').textContent = 
-                nft.currentSupply.toLocaleString() + ' / ' + nft.totalSupply.toLocaleString();
-            document.getElementById('modal-upgrade').textContent = 'Not available';
-            
-            const modalImage = document.getElementById('modal-image');
-            modalImage.innerHTML = `<img src="${nft.image}" alt="${nft.name}">`;
-            
-            document.getElementById('purchase-time-container').style.display = 'none';
-            
-            const buyBtn = document.getElementById('modal-buy-btn');
-            buyBtn.style.display = 'block';
-            buyBtn.textContent = `Purchase for ${nft.price}`;
-            buyBtn.onclick = () => buyNFT(nftId);
-            buyBtn.disabled = nft.currentSupply <= 0;
-            
-            document.getElementById('nft-modal').classList.add('active');
-        }
-        
-        // Show owned NFT modal
-        function showOwnedNFTModal(item) {
-            const nft = nftsData[item.id];
-            if (!nft) return;
-            
-            currentModalNFT = item.id;
-            isViewingOwnedNFT = true;
-            
-            document.getElementById('modal-title').textContent = 'Your Collectible';
-            document.getElementById('modal-name').textContent = nft.name;
-            document.getElementById('modal-price').textContent = 'Owned';
-            document.getElementById('modal-supply').textContent = 
-                nft.currentSupply.toLocaleString() + ' / ' + nft.totalSupply.toLocaleString();
-            document.getElementById('modal-upgrade').textContent = 'Not available';
-            
-            const modalImage = document.getElementById('modal-image');
-            modalImage.innerHTML = `<img src="${nft.image}" alt="${nft.name}">`;
-            
-            document.getElementById('purchase-time-container').style.display = 'block';
-            document.getElementById('purchase-time').textContent = formatDateTime(new Date(item.purchaseDate));
-            
-            document.getElementById('modal-buy-btn').style.display = 'none';
-            
-            document.getElementById('nft-modal').classList.add('active');
+            document.getElementById('collectible-modal').classList.add('active');
         }
         
         // Close modal
         function closeModal() {
-            document.getElementById('nft-modal').classList.remove('active');
-            currentModalNFT = null;
-            isViewingOwnedNFT = false;
+            document.getElementById('collectible-modal').classList.remove('active');
         }
         
-        // Buy NFT with REAL TON payment
-        async function buyNFT(nftId) {
-            const nft = nftsData[nftId];
+        // Buy collectible with REAL TON payment
+        async function buyNFT(collectibleId) {
+            const collectible = collectiblesData[collectibleId];
             
             if (!wallet) {
                 tg.showPopup({
@@ -915,7 +965,7 @@
                 return;
             }
             
-            if (nft.currentSupply <= 0) {
+            if (collectible.currentSupply <= 0) {
                 tg.showPopup({
                     title: 'Out of Stock',
                     message: 'This collectible is no longer available!',
@@ -925,22 +975,18 @@
             }
             
             try {
-                // Create REAL TON transaction
                 const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
+                    validUntil: Math.floor(Date.now() / 1000) + 600,
                     messages: [
                         {
-                            address: MERCHANT_ADDRESS, // Твой кошелек
+                            address: MERCHANT_ADDRESS,
                             amount: '500000000' // 0.5 TON in nanotons
                         }
                     ]
                 };
                 
-                // Send transaction to blockchain
                 const result = await tonConnectUI.sendTransaction(transaction);
-                
-                // If we get here, transaction was successful
-                processPurchase(nftId, result);
+                processPurchase(collectibleId, result);
                 
             } catch (error) {
                 console.error('Transaction error:', error);
@@ -955,13 +1001,14 @@
         }
         
         // Process purchase after successful payment
-        function processPurchase(nftId, transactionResult) {
-            const nft = nftsData[nftId];
+        function processPurchase(collectibleId, transactionResult) {
+            const collectible = collectiblesData[collectibleId];
             
-            nft.currentSupply--;
+            collectible.currentSupply--;
+            totalSpent += parseFloat(collectible.price);
             
             const purchaseItem = {
-                id: nftId,
+                id: collectibleId,
                 purchaseDate: new Date().toISOString(),
                 transactionId: transactionResult.boc || generateTransactionId()
             };
@@ -969,14 +1016,11 @@
             userCollection.push(purchaseItem);
             saveUserCollection();
             updateDisplay();
-            closeModal();
             
             tg.showPopup({
                 title: 'Purchase Complete!',
-                message: `You successfully acquired ${nft.name}! Transaction confirmed on blockchain.`,
-                buttons: [{id: 'ok', type: 'default', text: 'View Collection'}]
-            }, () => {
-                showPage('profile-page');
+                message: `You successfully acquired ${collectible.name}!`,
+                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
             });
         }
         
