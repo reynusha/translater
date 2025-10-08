@@ -143,12 +143,15 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
         }
         
         .nft-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
         
         .nft-content {
@@ -264,7 +267,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+        }
+        
+        .collection-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
         
         .collection-name {
@@ -404,9 +412,9 @@
         }
         
         .modal-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
         }
         
         .info-row {
@@ -496,7 +504,7 @@
                     <!-- Christian Cross -->
                     <div class="nft-card" onclick="showNFTModal('cross')">
                         <div class="nft-image">
-                            <img src="https://t.me/qentrum/4" alt="Christian Cross">
+                            <img src="https://i.imgur.com/ezgif-825d8532b9c755.gif" alt="Christian Cross">
                         </div>
                         <div class="nft-content">
                             <div class="nft-name">Christian Cross</div>
@@ -514,7 +522,7 @@
                     <!-- Cybercar -->
                     <div class="nft-card" onclick="showNFTModal('cybercar')">
                         <div class="nft-image">
-                            <img src="https://t.me/qentrum/6" alt="Cybercar">
+                            <img src="https://i.postimg.cc/1zrHK4Vn/ezgif-8f92856a9fc001-2.gif" alt="Cybercar">
                         </div>
                         <div class="nft-content">
                             <div class="nft-name">Cybercar</div>
@@ -664,7 +672,7 @@
                 price: '0.5 TON',
                 totalSupply: 1200,
                 currentSupply: 1200,
-                image: 'https://t.me/qentrum/4',
+                image: 'https://i.imgur.com/ezgif-825d8532b9c755.gif',
                 description: 'Exclusive spiritual digital collectible'
             },
             cybercar: {
@@ -672,7 +680,7 @@
                 price: '0.5 TON',
                 totalSupply: 2000,
                 currentSupply: 2000,
-                image: 'https://t.me/qentrum/6',
+                image: 'https://i.postimg.cc/1zrHK4Vn/ezgif-8f92856a9fc001-2.gif',
                 description: 'Futuristic vehicle digital asset'
             }
         };
@@ -819,8 +827,7 @@
                     
                     collectionItem.innerHTML = `
                         <div class="collection-icon">
-                            <img src="${nft.image}" style="width: 32px; height: 32px; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                            <i class="fas fa-gem" style="display: none; color: var(--accent);"></i>
+                            <img src="${nft.image}" alt="${nft.name}">
                         </div>
                         <div class="collection-name">${nft.name}</div>
                     `;
