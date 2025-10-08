@@ -19,7 +19,6 @@
             --success: #00c781;
             --border: #2a2a2a;
             --gradient: linear-gradient(135deg, #0088cc, #00c6ff);
-            --admin: #ff6b35;
         }
         
         * {
@@ -81,7 +80,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
         }
         
         .wallet-address {
@@ -95,40 +93,6 @@
         
         .ton-connect-button {
             min-width: 120px;
-        }
-        
-        .balance-card {
-            background: linear-gradient(135deg, #1a2a3a, #2a3a4a);
-            border-radius: 12px;
-            padding: 16px;
-            border: 1px solid var(--ton);
-            text-align: center;
-        }
-        
-        .balance-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-        
-        .balance-amount {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--ton);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .admin-badge {
-            background: var(--admin);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
-            margin-left: 8px;
         }
         
         .collectibles-grid {
@@ -229,40 +193,6 @@
         .buy-button:disabled {
             background: var(--border);
             cursor: not-allowed;
-        }
-        
-        .buy-button.wallet {
-            background: var(--ton);
-        }
-        
-        .buy-button.balance {
-            background: var(--success);
-        }
-        
-        .payment-options {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        
-        .payment-option {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .payment-option.active {
-            border-color: var(--accent);
-            background: rgba(0, 136, 204, 0.1);
-        }
-        
-        .admin-button {
-            background: var(--admin);
         }
         
         .profile-card {
@@ -552,86 +482,28 @@
             gap: 8px;
         }
         
-        .admin-panel {
+        .info-box {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid var(--admin);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
         }
         
-        .admin-title {
+        .info-title {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 12px;
-            color: var(--admin);
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .admin-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        
-        .form-label {
+        .info-text {
             font-size: 14px;
             color: var(--text-secondary);
-        }
-        
-        .form-input {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        .admin-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        
-        .admin-action-btn {
-            background: var(--admin);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        
-        .admin-action-btn.secondary {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-        }
-        
-        .insufficient-balance {
-            color: #ff6b6b;
-            font-size: 12px;
-            text-align: center;
-            margin-top: 8px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -648,41 +520,6 @@
                     <div class="wallet-address" id="wallet-address">Not connected</div>
                     <div id="connect-btn" class="ton-connect-button"></div>
                 </div>
-                <div class="balance-card">
-                    <div class="balance-label">Your TON Balance</div>
-                    <div class="balance-amount">
-                        <i class="fab fa-toncoin"></i>
-                        <span id="user-balance">0.0</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Admin Panel (only for @clanffys) -->
-            <div id="admin-panel" class="admin-panel" style="display: none;">
-                <div class="admin-title">
-                    <i class="fas fa-crown"></i>
-                    Admin Panel
-                </div>
-                <div class="admin-form">
-                    <div class="form-group">
-                        <label class="form-label">Telegram Username</label>
-                        <input type="text" class="form-input" id="admin-username" placeholder="@username">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">TON Amount</label>
-                        <input type="number" class="form-input" id="admin-amount" placeholder="0.5" step="0.1" min="0.1">
-                    </div>
-                    <div class="admin-actions">
-                        <button class="admin-action-btn secondary" onclick="sendTONToUser()">
-                            <i class="fas fa-paper-plane"></i>
-                            Send TON
-                        </button>
-                        <button class="admin-action-btn" onclick="addTONToSelf()">
-                            <i class="fas fa-plus"></i>
-                            Add to Self
-                        </button>
-                    </div>
-                </div>
             </div>
             
             <div class="section">
@@ -693,7 +530,7 @@
                     <div class="collectible-card">
                         <div class="collectible-header">
                             <div class="collectible-title">Christian Cross</div>
-                            <div class="collectible-stock" id="cross-stock">1197 of 1200</div>
+                            <div class="collectible-stock" id="cross-stock">Loading...</div>
                         </div>
                         
                         <div class="collectible-image">
@@ -719,21 +556,10 @@
                         </div>
                         
                         <div class="buy-section">
-                            <div class="payment-options">
-                                <div class="payment-option active" onclick="selectPaymentMethod('balance')">
-                                    Balance
-                                </div>
-                                <div class="payment-option" onclick="selectPaymentMethod('wallet')">
-                                    Wallet
-                                </div>
-                            </div>
-                            <button class="buy-button balance" onclick="buyNFT('cross')">
+                            <button class="buy-button" onclick="buyNFT('cross')">
                                 <i class="fab fa-toncoin"></i>
                                 Buy for 0.5 TON
                             </button>
-                            <div class="insufficient-balance" id="cross-insufficient" style="display: none;">
-                                Insufficient balance
-                            </div>
                         </div>
                     </div>
                     
@@ -741,7 +567,7 @@
                     <div class="collectible-card">
                         <div class="collectible-header">
                             <div class="collectible-title">Cybercar</div>
-                            <div class="collectible-stock" id="cybercar-stock">2000 of 2000</div>
+                            <div class="collectible-stock" id="cybercar-stock">Loading...</div>
                         </div>
                         
                         <div class="collectible-image">
@@ -767,21 +593,10 @@
                         </div>
                         
                         <div class="buy-section">
-                            <div class="payment-options">
-                                <div class="payment-option active" onclick="selectPaymentMethod('balance')">
-                                    Balance
-                                </div>
-                                <div class="payment-option" onclick="selectPaymentMethod('wallet')">
-                                    Wallet
-                                </div>
-                            </div>
-                            <button class="buy-button balance" onclick="buyNFT('cybercar')">
+                            <button class="buy-button" onclick="buyNFT('cybercar')">
                                 <i class="fab fa-toncoin"></i>
                                 Buy for 0.5 TON
                             </button>
-                            <div class="insufficient-balance" id="cybercar-insufficient" style="display: none;">
-                                Insufficient balance
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -798,14 +613,6 @@
                     <div class="user-details">
                         <div class="username" id="user-name">User</div>
                         <div class="member-since" id="user-joined">Member since: Loading...</div>
-                    </div>
-                </div>
-                
-                <div class="balance-card" style="margin-bottom: 16px;">
-                    <div class="balance-label">Your TON Balance</div>
-                    <div class="balance-amount">
-                        <i class="fab fa-toncoin"></i>
-                        <span id="profile-balance">0.0</span>
                     </div>
                 </div>
                 
@@ -835,6 +642,39 @@
                 </div>
             </div>
         </div>
+
+        <!-- NFT Marketplace Page -->
+        <div id="marketplace-page" class="page">
+            <div class="info-box">
+                <div class="info-title">
+                    <i class="fas fa-gem"></i>
+                    NFT Evolution Roadmap
+                </div>
+                <div class="info-text">
+                    In the near future, all acquired collectibles will undergo significant upgrades, transforming into exclusive NFTs with unique traits and rarity scores. These digital assets will become tradable on our upcoming marketplace platform, enabling peer-to-peer transactions between collectors.
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">
+                    <i class="fas fa-chart-line"></i>
+                    Community-Driven Economy
+                </div>
+                <div class="info-text">
+                    The valuation and pricing dynamics of these NFTs will be entirely governed by community demand and market forces. Each collectible's worth will be determined by its rarity, historical significance, and the collective preferences of the Quantum ecosystem participants.
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">
+                    <i class="fas fa-rocket"></i>
+                    Future Enhancements
+                </div>
+                <div class="info-text">
+                    Our development roadmap includes advanced features such as rarity upgrades, special editions, and collaborative community events. These enhancements will create new opportunities for collectors and investors within the TON blockchain ecosystem.
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Bottom Navigation -->
@@ -844,6 +684,12 @@
                 <i class="fas fa-store"></i>
             </div>
             <div class="nav-label">Store</div>
+        </div>
+        <div class="nav-item" onclick="showPage('marketplace-page')">
+            <div class="nav-icon">
+                <i class="fas fa-gem"></i>
+            </div>
+            <div class="nav-label">NFT Market</div>
         </div>
         <div class="nav-item" onclick="showPage('profile-page')">
             <div class="nav-icon">
@@ -916,9 +762,6 @@
         let wallet = null;
         const MERCHANT_ADDRESS = 'UQBYt_yorGejtv403290WeEgd1hJiCB2vx_7obx3cFjDlYEF';
         
-        // Admin username
-        const ADMIN_USERNAME = 'clanffys';
-        
         // User data
         let userData = {
             id: tg.initDataUnsafe.user?.id || 'unknown',
@@ -928,20 +771,11 @@
             joinDate: null
         };
         
-        // Global supplies
-        const GLOBAL_SUPPLIES = {
-            cross: 1197,
-            cybercar: 2000
-        };
-        
+        // Total supplies (§ß§Ö§Ú§Ù§Þ§Ö§ß§ß§í§Ö)
         const TOTAL_SUPPLIES = {
             cross: 1200,
             cybercar: 2000
         };
-        
-        // User balance
-        let userBalance = 0;
-        let currentPaymentMethod = 'balance';
         
         // Collectibles data
         let collectiblesData = {
@@ -972,79 +806,44 @@
         async function initializeApp() {
             loadUserData();
             loadUserCollection();
-            loadUserBalance();
             await initTONConnect();
-            checkAdminAccess();
             updateDisplay();
-            updatePaymentButtons();
         }
         
-        // Load user balance
-        function loadUserBalance() {
-            const savedBalance = localStorage.getItem('quantum_user_balance');
-            if (savedBalance) {
-                userBalance = parseFloat(savedBalance);
-            }
-        }
-        
-        // Save user balance
-        function saveUserBalance() {
-            localStorage.setItem('quantum_user_balance', userBalance.toString());
-        }
-        
-        // Check if user is admin
-        function checkAdminAccess() {
-            if (userData.username === ADMIN_USERNAME) {
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('user-name').innerHTML = userData.firstName + ' <span class="admin-badge">ADMIN</span>';
-            }
-        }
-        
-        // Select payment method
-        function selectPaymentMethod(method) {
-            currentPaymentMethod = method;
+        // Calculate current supplies based on all users' purchases
+        function calculateCurrentSupplies() {
+            // §£ §â§Ö§Ñ§Ý§î§ß§à§Þ §á§â§Ú§Ý§à§Ø§Ö§ß§Ú§Ú §Ù§Õ§Ö§ã§î §Ò§å§Õ§Ö§ä §Ù§Ñ§á§â§à§ã §Ü §ã§Ö§â§Ó§Ö§â§å
+            // §¥§Ý§ñ §Õ§Ö§Þ§à §Ú§ã§á§à§Ý§î§Ù§å§Ö§Þ localStorage §Ó§ã§Ö§ç §á§à§Ý§î§Ù§à§Ó§Ñ§ä§Ö§Ý§Ö§Û
             
-            // Update UI
-            document.querySelectorAll('.payment-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            let totalCrossPurchases = 0;
+            let totalCybercarPurchases = 0;
             
-            updatePaymentButtons();
-        }
-        
-        // Update payment buttons based on balance
-        function updatePaymentButtons() {
-            const crossPrice = collectiblesData.cross.price;
-            const cybercarPrice = collectiblesData.cybercar.price;
-            
-            // Update button colors and texts
-            document.querySelectorAll('.buy-button').forEach(button => {
-                if (currentPaymentMethod === 'balance') {
-                    button.className = 'buy-button balance';
-                    button.innerHTML = '<i class="fab fa-toncoin"></i> Buy for 0.5 TON';
-                } else {
-                    button.className = 'buy-button wallet';
-                    button.innerHTML = '<i class="fas fa-wallet"></i> Pay with Wallet';
+            // §³§é§Ú§ä§Ñ§Ö§Þ §á§à§Ü§å§á§Ü§Ú §Ó§ã§Ö§ç §á§à§Ý§î§Ù§à§Ó§Ñ§ä§Ö§Ý§Ö§Û (§Ó §â§Ö§Ñ§Ý§î§ß§à§Þ §á§â§Ú§Ý§à§Ø§Ö§ß§Ú§Ú §ï§ä§à §Ò§å§Õ§Ö§ä §ß§Ñ §ã§Ö§â§Ó§Ö§â§Ö)
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('quantum_user_collection_')) {
+                    try {
+                        const userColl = JSON.parse(localStorage.getItem(key));
+                        userColl.forEach(item => {
+                            if (item.id === 'cross') totalCrossPurchases++;
+                            if (item.id === 'cybercar') totalCybercarPurchases++;
+                        });
+                    } catch (e) {
+                        console.error('Error parsing user collection:', e);
+                    }
                 }
+            }
+            
+            // §¥§à§Ò§Ñ§Ó§Ý§ñ§Ö§Þ §ä§Ö§Ü§å§ë§Ú§Ö §á§à§Ü§å§á§Ü§Ú §á§à§Ý§î§Ù§à§Ó§Ñ§ä§Ö§Ý§ñ
+            userCollection.forEach(item => {
+                if (item.id === 'cross') totalCrossPurchases++;
+                if (item.id === 'cybercar') totalCybercarPurchases++;
             });
             
-            // Show/hide insufficient balance messages
-            document.getElementById('cross-insufficient').style.display = 
-                (currentPaymentMethod === 'balance' && userBalance < crossPrice) ? 'block' : 'none';
-            document.getElementById('cybercar-insufficient').style.display = 
-                (currentPaymentMethod === 'balance' && userBalance < cybercarPrice) ? 'block' : 'none';
-            
-            // Disable buttons if insufficient balance
-            document.querySelectorAll('.buy-button').forEach(button => {
-                if (currentPaymentMethod === 'balance') {
-                    const collectibleId = button.closest('.collectible-card').querySelector('.collectible-title').textContent.toLowerCase().includes('cross') ? 'cross' : 'cybercar';
-                    const price = collectiblesData[collectibleId].price;
-                    button.disabled = userBalance < price;
-                } else {
-                    button.disabled = false;
-                }
-            });
+            return {
+                cross: Math.max(0, TOTAL_SUPPLIES.cross - totalCrossPurchases),
+                cybercar: Math.max(0, TOTAL_SUPPLIES.cybercar - totalCybercarPurchases)
+            };
         }
         
         // Initialize TON Connect
@@ -1102,13 +901,13 @@
             nameElement.textContent = userData.firstName + (userData.lastName ? ' ' + userData.lastName : '');
             
             const joinElement = document.getElementById('user-joined');
-            const joinDate = localStorage.getItem('quantum_join_date');
+            const joinDate = localStorage.getItem('quantum_join_date_' + userData.id);
             if (joinDate) {
                 userData.joinDate = new Date(joinDate);
                 joinElement.textContent = 'Member since: ' + formatDate(userData.joinDate);
             } else {
                 const now = new Date();
-                localStorage.setItem('quantum_join_date', now.toISOString());
+                localStorage.setItem('quantum_join_date_' + userData.id, now.toISOString());
                 userData.joinDate = now;
                 joinElement.textContent = 'Member since: ' + formatDate(now);
             }
@@ -1116,8 +915,8 @@
         
         // Load user collection
         function loadUserCollection() {
-            const savedCollection = localStorage.getItem('quantum_user_collection');
-            const savedSpent = localStorage.getItem('quantum_total_spent');
+            const savedCollection = localStorage.getItem('quantum_user_collection_' + userData.id);
+            const savedSpent = localStorage.getItem('quantum_total_spent_' + userData.id);
             
             if (savedCollection) {
                 userCollection = JSON.parse(savedCollection);
@@ -1130,42 +929,25 @@
         
         // Save user collection
         function saveUserCollection() {
-            localStorage.setItem('quantum_user_collection', JSON.stringify(userCollection));
-            localStorage.setItem('quantum_total_spent', totalSpent.toString());
-        }
-        
-        // Update global supply
-        function updateGlobalSupply(collectibleId) {
-            if (GLOBAL_SUPPLIES[collectibleId] > 0) {
-                GLOBAL_SUPPLIES[collectibleId]--;
-                return true;
-            }
-            return false;
-        }
-        
-        // Get global supply
-        function getGlobalSupply(collectibleId) {
-            return GLOBAL_SUPPLIES[collectibleId];
+            localStorage.setItem('quantum_user_collection_' + userData.id, JSON.stringify(userCollection));
+            localStorage.setItem('quantum_total_spent_' + userData.id, totalSpent.toString());
         }
         
         // Update display
         function updateDisplay() {
-            // Update stocks from global supplies
-            document.getElementById('cross-stock').textContent = 
-                getGlobalSupply('cross') + ' of ' + TOTAL_SUPPLIES.cross;
-            document.getElementById('cybercar-stock').textContent = 
-                getGlobalSupply('cybercar') + ' of ' + TOTAL_SUPPLIES.cybercar;
+            const currentSupplies = calculateCurrentSupplies();
             
-            // Update balance
-            document.getElementById('user-balance').textContent = userBalance.toFixed(1);
-            document.getElementById('profile-balance').textContent = userBalance.toFixed(1);
+            // Update stocks
+            document.getElementById('cross-stock').textContent = 
+                currentSupplies.cross + ' of ' + TOTAL_SUPPLIES.cross;
+            document.getElementById('cybercar-stock').textContent = 
+                currentSupplies.cybercar + ' of ' + TOTAL_SUPPLIES.cybercar;
             
             // Update profile stats
             document.getElementById('total-collected').textContent = userCollection.length;
             document.getElementById('total-spent').textContent = totalSpent.toFixed(1) + ' TON';
             
             updateCollectionDisplay();
-            updatePaymentButtons();
         }
         
         // Update collection display
@@ -1208,13 +990,15 @@
             
             currentModalItem = item;
             
+            const currentSupplies = calculateCurrentSupplies();
+            
             document.getElementById('modal-title').textContent = collectible.name;
             document.getElementById('modal-image').src = collectible.image;
             document.getElementById('modal-owner').textContent = userData.firstName;
             document.getElementById('modal-date').textContent = formatDateTime(new Date(item.purchaseDate));
             document.getElementById('modal-cost').textContent = collectible.price + ' TON';
             document.getElementById('modal-availability').textContent = 
-                getGlobalSupply(item.id) + ' of ' + TOTAL_SUPPLIES[item.id];
+                currentSupplies[item.id] + ' of ' + TOTAL_SUPPLIES[item.id];
             
             document.getElementById('collectible-modal').classList.add('active');
         }
@@ -1275,64 +1059,12 @@
             });
         }
         
-        // Admin: Send TON to user
-        function sendTONToUser() {
-            const username = document.getElementById('admin-username').value.trim();
-            const amount = parseFloat(document.getElementById('admin-amount').value);
-            
-            if (!username || !amount) {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Please fill all fields',
-                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                });
-                return;
-            }
-            
-            // In real app, this would send to the user's balance
-            tg.showPopup({
-                title: 'TON Sent',
-                message: `Sent ${amount} TON to @${username}`,
-                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-            });
-            
-            // Clear form
-            document.getElementById('admin-username').value = '';
-            document.getElementById('admin-amount').value = '';
-        }
-        
-        // Admin: Add TON to self
-        function addTONToSelf() {
-            const amount = parseFloat(document.getElementById('admin-amount').value);
-            
-            if (!amount) {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Please enter amount',
-                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                });
-                return;
-            }
-            
-            userBalance += amount;
-            saveUserBalance();
-            updateDisplay();
-            
-            tg.showPopup({
-                title: 'TON Added',
-                message: `Added ${amount} TON to your balance`,
-                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-            });
-            
-            // Clear form
-            document.getElementById('admin-amount').value = '';
-        }
-        
         // Buy collectible
         async function buyNFT(collectibleId) {
             const collectible = collectiblesData[collectibleId];
+            const currentSupplies = calculateCurrentSupplies();
             
-            if (getGlobalSupply(collectibleId) <= 0) {
+            if (currentSupplies[collectibleId] <= 0) {
                 tg.showPopup({
                     title: 'Out of Stock',
                     message: 'This collectible is no longer available!',
@@ -1341,79 +1073,50 @@
                 return;
             }
             
-            if (currentPaymentMethod === 'balance') {
-                // Pay with balance
-                if (userBalance < collectible.price) {
-                    tg.showPopup({
-                        title: 'Insufficient Balance',
-                        message: `You need ${collectible.price} TON but have only ${userBalance.toFixed(1)} TON`,
-                        buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                    });
-                    return;
-                }
-                
-                // Process purchase with balance
-                userBalance -= collectible.price;
-                saveUserBalance();
-                processPurchase(collectibleId);
-                
-            } else {
-                // Pay with wallet
-                if (!wallet) {
-                    tg.showPopup({
-                        title: 'Wallet Not Connected',
-                        message: 'Please connect your TON wallet to make purchases.',
-                        buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                    });
-                    return;
-                }
-                
-                try {
-                    const transaction = {
-                        validUntil: Math.floor(Date.now() / 1000) + 600,
-                        messages: [
-                            {
-                                address: MERCHANT_ADDRESS,
-                                amount: '500000000' // 0.5 TON in nanotons
-                            }
-                        ]
-                    };
-                    
-                    const result = await tonConnectUI.sendTransaction(transaction);
-                    processPurchase(collectibleId, result);
-                    
-                } catch (error) {
-                    console.error('Transaction error:', error);
-                    if (error.message !== 'User rejected the transaction') {
-                        tg.showPopup({
-                            title: 'Transaction Failed',
-                            message: 'Payment was not completed. Please try again.',
-                            buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                        });
-                    }
-                }
-            }
-        }
-        
-        // Process purchase
-        function processPurchase(collectibleId, transactionResult = null) {
-            // Update global supply
-            if (!updateGlobalSupply(collectibleId)) {
+            if (!wallet) {
                 tg.showPopup({
-                    title: 'Purchase Failed',
-                    message: 'This collectible is no longer available!',
+                    title: 'Wallet Not Connected',
+                    message: 'Please connect your TON wallet to make purchases.',
                     buttons: [{id: 'ok', type: 'default', text: 'OK'}]
                 });
                 return;
             }
             
+            try {
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 600,
+                    messages: [
+                        {
+                            address: MERCHANT_ADDRESS,
+                            amount: '500000000' // 0.5 TON in nanotons
+                        }
+                    ]
+                };
+                
+                const result = await tonConnectUI.sendTransaction(transaction);
+                processPurchase(collectibleId, result);
+                
+            } catch (error) {
+                console.error('Transaction error:', error);
+                if (error.message !== 'User rejected the transaction') {
+                    tg.showPopup({
+                        title: 'Transaction Failed',
+                        message: 'Payment was not completed. Please try again.',
+                        buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                    });
+                }
+            }
+        }
+        
+        // Process purchase
+        function processPurchase(collectibleId, transactionResult) {
             const collectible = collectiblesData[collectibleId];
             totalSpent += collectible.price;
             
             const purchaseItem = {
                 id: collectibleId,
                 purchaseDate: new Date().toISOString(),
-                transactionId: transactionResult ? (transactionResult.boc || generateTransactionId()) : 'balance_payment'
+                transactionId: transactionResult.boc || generateTransactionId()
             };
             
             userCollection.push(purchaseItem);
@@ -1447,6 +1150,8 @@
             if (pageId === 'store-page') {
                 document.querySelectorAll('.nav-item')[0].classList.add('active');
             } else if (pageId === 'profile-page') {
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+            } else if (pageId === 'marketplace-page') {
                 document.querySelectorAll('.nav-item')[1].classList.add('active');
             }
         }
