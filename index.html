@@ -7,138 +7,236 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-bg: #1a1a1a;
-            --secondary-bg: #242424;
-            --tertiary-bg: #2d2d2d;
-            --accent-color: #3390ec;
-            --accent-gradient: linear-gradient(135deg, #3390ec, #6c5ce7);
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2d2d2d;
+            --bg-quaternary: #3a3a3a;
             --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --text-muted: #6a6a6a;
-            --border-color: #3a3a3a;
-            --success-color: #00b894;
-            --error-color: #e84343;
-            --verified-color: #4fc3f7;
+            --text-secondary: #a8a8a8;
+            --text-tertiary: #6a6a6a;
+            --accent-primary: #3390ec;
+            --accent-secondary: #2a7bc8;
+            --accent-gradient: linear-gradient(135deg, #3390ec, #2a7bc8);
+            --border-primary: #404040;
+            --border-secondary: #505050;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+            --online: #4caf50;
+            --offline: #f44336;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--primary-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-primary);
             color: var(--text-primary);
+            line-height: 1.6;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: var(--secondary-bg);
-            position: relative;
             overflow: hidden;
+            user-select: none;
         }
 
-        .header {
-            background-color: var(--tertiary-bg);
-            padding: 15px;
+        #app {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            z-index: 10;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            background-color: var(--bg-secondary);
         }
 
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Header Styles */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-primary);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 12px;
         }
 
-        .header-actions i {
-            font-size: 1.2rem;
+        .header-action {
+            background: none;
+            border: none;
             color: var(--text-secondary);
+            font-size: 18px;
             cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .header-action:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        /* Content Area */
         .content {
             flex: 1;
-            overflow-y: auto;
-            padding: 15px;
+            overflow: hidden;
             position: relative;
         }
 
         .tab-content {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
         }
 
         .tab-content.active {
-            display: block;
+            opacity: 1;
+            visibility: visible;
         }
 
-        .navigation {
+        /* Bottom Navigation */
+        .bottom-nav {
             display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            background-color: var(--tertiary-bg);
-            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-tertiary);
+            border-top: 1px solid var(--border-primary);
+            position: relative;
+            z-index: 100;
         }
 
         .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
             cursor: pointer;
-            padding: 5px 15px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            transition: var(--transition);
+            font-size: 12px;
+            color: var(--text-secondary);
+            position: relative;
         }
 
         .nav-item.active {
-            background-color: rgba(51, 144, 236, 0.1);
+            color: var(--accent-primary);
         }
 
-        .nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-            color: var(--text-secondary);
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--accent-gradient);
+            border-radius: 0 0 3px 3px;
         }
 
-        .nav-item.active i {
-            color: var(--accent-color);
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
         }
 
-        .nav-item span {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
-        .nav-item.active span {
-            color: var(--accent-color);
+        /* Home/Feed Styles */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* Home Tab Styles */
+        .create-post-card {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .create-post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .create-post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 16px;
+        }
+
+        .create-post-input {
+            flex: 1;
+            background-color: var(--bg-quaternary);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 10px 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .create-post-input:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .create-post-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
         .post {
-            background-color: var(--tertiary-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
 
         .post-header {
@@ -147,88 +245,158 @@
             margin-bottom: 12px;
         }
 
-        .post-avatar {
+        .avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 10px;
+            margin-right: 12px;
             background: var(--accent-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 700;
             color: white;
-            font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
+            transition: var(--transition);
         }
 
-        .post-user-info {
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .user-info {
             flex: 1;
         }
 
-        .post-username {
+        .user-display-name {
             font-weight: 600;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
-            cursor: pointer;
+            gap: 6px;
+        }
+
+        .user-display-name:hover {
+            color: var(--accent-primary);
+        }
+
+        .user-username {
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
         .verified-badge {
-            color: var(--verified-color);
-            font-size: 0.9rem;
+            color: var(--accent-primary);
+            font-size: 14px;
         }
 
         .post-time {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            color: var(--text-tertiary);
+            font-size: 12px;
         }
 
         .post-content {
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .post-image {
-            width: 100%;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            font-size: 15px;
         }
 
         .post-actions {
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid var(--border-color);
-            padding-top: 10px;
+            border-top: 1px solid var(--border-primary);
+            padding-top: 12px;
         }
 
-        .post-action {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .action-btn {
+            background: none;
+            border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
         }
 
-        .post-action:hover {
+        .action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
         }
 
-        /* Chats Tab Styles */
+        .action-btn.active {
+            color: var(--accent-primary);
+        }
+
+        /* Chats Styles */
+        .chats-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chats-search {
+            padding: 0 0 16px 0;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-secondary);
+            z-index: 10;
+        }
+
+        .search-input-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border-radius: 20px;
+            border: none;
+            background-color: var(--bg-quaternary);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: var(--bg-tertiary);
+            box-shadow: 0 0 0 2px var(--accent-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+        }
+
         .chats-list {
-            margin-top: 10px;
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .chat-item {
             display: flex;
             padding: 12px;
-            border-bottom: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: var(--transition);
+            margin-bottom: 8px;
         }
 
         .chat-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--bg-quaternary);
+        }
+
+        .chat-item.active {
+            background-color: var(--bg-quaternary);
         }
 
         .chat-avatar {
@@ -240,1011 +408,1697 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-weight: bold;
+            color: white;
+            font-size: 18px;
         }
 
         .chat-info {
             flex: 1;
+            min-width: 0;
         }
 
         .chat-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            align-items: center;
+            margin-bottom: 6px;
         }
 
-        .chat-username {
+        .chat-name {
             font-weight: 600;
-        }
-
-        .chat-time {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .chat-last-message {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            font-size: 15px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .search-container {
-            position: relative;
-            margin-bottom: 15px;
+        .chat-time {
+            color: var(--text-tertiary);
+            font-size: 12px;
+            white-space: nowrap;
         }
 
-        .search-input {
-            width: 100%;
-            padding: 12px 15px 12px 40px;
-            border-radius: 20px;
-            border: none;
-            background-color: var(--tertiary-bg);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        /* Chat Window Styles */
-        .chat-window {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--secondary-bg);
-            z-index: 20;
-        }
-
-        .chat-header-bar {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: var(--tertiary-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .back-button {
-            margin-right: 15px;
-            cursor: pointer;
+        .chat-last-message {
             color: var(--text-secondary);
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .chat-avatar-small {
-            width: 40px;
-            height: 40px;
+        .chat-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .chat-unread {
+            background-color: var(--accent-primary);
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            margin-right: 10px;
-            background: var(--accent-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
         }
 
-        .chat-title {
-            flex: 1;
-            font-weight: 600;
-            cursor: pointer;
+        .chat-online {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--online);
         }
 
-        .chat-actions {
-            display: flex;
-            gap: 15px;
-            color: var(--text-secondary);
-        }
-
-        .chat-actions i {
-            cursor: pointer;
-        }
-
-        .messages-container {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
+        /* Chat View Styles */
+        .chat-view {
+            height: 100%;
             display: flex;
             flex-direction: column;
         }
 
+        .chat-header-detailed {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-primary);
+            background-color: var(--bg-tertiary);
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
         .message {
+            display: flex;
             max-width: 80%;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            border-radius: 12px;
+            animation: messageAppear 0.3s ease-out;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.own {
+            align-self: flex-end;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            background-color: var(--bg-quaternary);
             position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.own .message-bubble {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .message-content {
+            word-wrap: break-word;
             line-height: 1.4;
         }
 
-        .message-incoming {
-            align-self: flex-start;
-            background-color: var(--tertiary-bg);
-            border-top-left-radius: 0;
-        }
-
-        .message-outgoing {
-            align-self: flex-end;
-            background: var(--accent-gradient);
-            border-top-right-radius: 0;
-        }
-
         .message-time {
-            font-size: 0.7rem;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
             text-align: right;
-            margin-top: 5px;
-            opacity: 0.7;
+        }
+
+        .message.own .message-time {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .message-input-container {
             display: flex;
-            padding: 15px;
-            background-color: var(--tertiary-bg);
-            border-top: 1px solid var(--border-color);
-            align-items: center;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-primary);
+            background-color: var(--bg-tertiary);
+            gap: 12px;
+            align-items: flex-end;
         }
 
         .message-input {
             flex: 1;
-            padding: 12px 15px;
-            border-radius: 20px;
+            padding: 12px 16px;
+            border-radius: 24px;
             border: none;
-            background-color: var(--secondary-bg);
+            background-color: var(--bg-quaternary);
             color: var(--text-primary);
-            font-size: 0.9rem;
-            margin-right: 10px;
+            font-size: 15px;
+            resize: none;
+            max-height: 120px;
+            outline: none;
+            transition: var(--transition);
         }
 
-        .attachment-button, .send-button {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            margin-right: 10px;
+        .message-input:focus {
+            background-color: var(--bg-secondary);
+            box-shadow: 0 0 0 2px var(--accent-primary);
         }
 
         .send-button {
             background: var(--accent-gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
             color: white;
-        }
-
-        /* Profile Tab Styles */
-        .profile-header {
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 20px;
-            background-color: var(--tertiary-bg);
-            border-radius: 12px;
-            margin-bottom: 20px;
+            justify-content: center;
+            font-size: 18px;
+            transition: var(--transition);
+            flex-shrink: 0;
         }
 
-        .profile-avatar {
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(51, 144, 236, 0.3);
+        }
+
+        .send-button:disabled {
+            background: var(--bg-quaternary);
+            color: var(--text-tertiary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Profile Styles */
+        .profile-container {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            text-align: center;
+            padding: 24px 16px;
+            border-bottom: 1px solid var(--border-primary);
+            background-color: var(--bg-tertiary);
+            margin: -16px -16px 16px -16px;
+        }
+
+        .profile-avatar-large {
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            margin-bottom: 15px;
+            margin: 0 auto 16px;
             background: var(--accent-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 2.5rem;
+            font-size: 36px;
             font-weight: bold;
-            position: relative;
-        }
-
-        .online-status {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background-color: var(--success-color);
-            border: 2px solid var(--tertiary-bg);
+            color: white;
+            box-shadow: var(--shadow);
         }
 
         .profile-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
         .profile-username {
             color: var(--text-secondary);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .profile-bio {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            line-height: 1.4;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .profile-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            background-color: var(--bg-quaternary);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.online {
+            background-color: var(--online);
+        }
+
+        .status-indicator.offline {
+            background-color: var(--offline);
+        }
+
+        .profile-role {
+            font-size: 14px;
+            color: var(--accent-primary);
+            font-weight: 600;
         }
 
         .profile-stats {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-top: 15px;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
         }
 
         .stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
 
         .stat-value {
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 18px;
+            font-weight: 700;
         }
 
         .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         .profile-posts {
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
-        .create-post {
-            display: flex;
-            align-items: center;
-            background-color: var(--tertiary-bg);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-
-        .create-post-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            background: var(--accent-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .create-post-input {
-            flex: 1;
-            padding: 10px 15px;
-            border-radius: 20px;
-            border: none;
-            background-color: var(--secondary-bg);
-            color: var(--text-primary);
-        }
-
-        /* Settings Tab Styles */
-        .settings-section {
-            background-color: var(--tertiary-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .settings-title {
-            font-size: 1.1rem;
+        .section-title {
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-
-        .settings-item-info {
-            flex: 1;
-        }
-
-        .settings-item-title {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .settings-item-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .settings-item-action {
-            color: var(--accent-color);
-            cursor: pointer;
-        }
-
-        .edit-profile-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .form-input {
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--secondary-bg);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        .save-button {
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: var(--accent-gradient);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .nft-notification {
-            background-color: rgba(51, 144, 236, 0.1);
-            border: 1px solid var(--accent-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        /* Stickers Panel */
-        .stickers-panel {
-            display: none;
-            background-color: var(--tertiary-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 15px;
-            max-height: 200px;
+        /* Settings Styles */
+        .settings-container {
+            height: 100%;
             overflow-y: auto;
         }
 
-        .stickers-title {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
+        .settings-section {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
         }
 
-        .stickers-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .sticker {
+        .settings-title i {
+            color: var(--accent-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea {
             width: 100%;
-            aspect-ratio: 1;
-            background-color: var(--secondary-bg);
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-primary);
+            background-color: var(--bg-quaternary);
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(51, 144, 236, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .save-button {
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 14px 24px;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            font-size: 16px;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(51, 144, 236, 0.3);
+        }
+
+        .save-button:active {
+            transform: translateY(0);
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            font-size: 1.5rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .app-container {
-                max-width: 100%;
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        .modal-text {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-button.primary {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .modal-button.secondary {
+            background-color: var(--bg-quaternary);
+            color: var(--text-primary);
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            max-width: 350px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            z-index: 1100;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            color: var(--accent-primary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: 16px;
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .notification-close:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 8px; }
+        .mt-2 { margin-top: 16px; }
+        .mt-3 { margin-top: 24px; }
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+        .mb-3 { margin-bottom: 24px; }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            #app {
+                max-width: 500px;
+                height: 90vh;
+                margin: 5vh auto;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             }
-            
-            .message {
-                max-width: 90%;
-            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-quaternary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <div id="app">
+        <!-- Header -->
         <div class="header">
-            <h1>Quantum</h1>
+            <div class="header-title">
+                <i class="fas fa-atom"></i>
+                <span id="header-text">Quantum</span>
+            </div>
             <div class="header-actions">
-                <i class="fas fa-search"></i>
-                <i class="fas fa-ellipsis-v"></i>
+                <button class="header-action" id="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="header-action" id="menu-button">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
             </div>
         </div>
 
+        <!-- Content Area -->
         <div class="content">
             <!-- Home Tab -->
-            <div class="tab-content active" id="home">
-                <div class="post">
-                    <div class="post-header">
-                        <div class="post-avatar">CR</div>
-                        <div class="post-user-info">
-                            <div class="post-username">
-                                Clanffys <i class="fas fa-check-circle verified-badge"></i>
-                            </div>
-                            <div class="post-time">2 hours ago</div>
+            <div class="tab-content active" id="home-tab">
+                <div class="feed">
+                    <div class="create-post-card">
+                        <div class="create-post-header">
+                            <div class="create-post-avatar" id="current-user-avatar">U</div>
+                            <div class="create-post-input" id="create-post-trigger">What's on your mind?</div>
                         </div>
                     </div>
-                    <div class="post-content">
-                        Welcome to Quantum Messenger! This is a new platform for secure and fast communication. We're excited to have you on board!
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action">
-                            <i class="far fa-heart"></i> <span>24</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-comment"></i> <span>5</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-share-square"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="post-header">
-                        <div class="post-avatar">JD</div>
-                        <div class="post-user-info">
-                            <div class="post-username">John Doe</div>
-                            <div class="post-time">5 hours ago</div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        Just tried out the new Quantum messenger. The interface is sleek and the performance is impressive!
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action">
-                            <i class="far fa-heart"></i> <span>12</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-comment"></i> <span>3</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-share-square"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="post-header">
-                        <div class="post-avatar">AS</div>
-                        <div class="post-user-info">
-                            <div class="post-username">Alice Smith</div>
-                            <div class="post-time">1 day ago</div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        The integration of news feed and messaging in one app is exactly what I needed. Great job Quantum team!
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action">
-                            <i class="far fa-heart"></i> <span>18</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-comment"></i> <span>7</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-share-square"></i>
-                        </div>
+                    <div id="posts-container">
+                        <!-- Posts will be dynamically inserted here -->
                     </div>
                 </div>
             </div>
 
             <!-- Chats Tab -->
-            <div class="tab-content" id="chats">
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search">
+            <div class="tab-content" id="chats-tab">
+                <div class="chats-container">
+                    <div class="chats-search">
+                        <div class="search-input-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="search-input" placeholder="Search chats...">
+                        </div>
+                    </div>
+                    <ul class="chats-list" id="chats-list">
+                        <!-- Chat items will be dynamically inserted here -->
+                    </ul>
                 </div>
+            </div>
 
-                <div class="chats-list">
-                    <div class="chat-item" onclick="openChat('clanffys')">
-                        <div class="chat-avatar">CR</div>
-                        <div class="chat-info">
-                            <div class="chat-header">
-                                <div class="chat-username">Clanffys <i class="fas fa-check-circle verified-badge"></i></div>
-                                <div class="chat-time">10:24 AM</div>
+            <!-- Chat View (Hidden by default) -->
+            <div class="tab-content" id="chat-view">
+                <div class="chat-view">
+                    <div class="chat-header-detailed">
+                        <button class="back-button" id="back-to-chats">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="avatar" id="chat-user-avatar">U</div>
+                        <div class="user-info">
+                            <div class="user-display-name" id="chat-user-name">
+                                User Name
+                                <i class="fas fa-check-circle verified-badge"></i>
                             </div>
-                            <div class="chat-last-message">Welcome to Quantum Messenger! Let me know if you have any questions.</div>
+                            <div class="user-username" id="chat-user-status">online</div>
                         </div>
                     </div>
-
-                    <div class="chat-item" onclick="openChat('john-doe')">
-                        <div class="chat-avatar">JD</div>
-                        <div class="chat-info">
-                            <div class="chat-header">
-                                <div class="chat-username">John Doe</div>
-                                <div class="chat-time">Yesterday</div>
-                            </div>
-                            <div class="chat-last-message">Thanks for the invite! The app looks amazing.</div>
-                        </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be dynamically inserted here -->
                     </div>
-
-                    <div class="chat-item" onclick="openChat('alice-smith')">
-                        <div class="chat-avatar">AS</div>
-                        <div class="chat-info">
-                            <div class="chat-header">
-                                <div class="chat-username">Alice Smith</div>
-                                <div class="chat-time">2 days ago</div>
-                            </div>
-                            <div class="chat-last-message">Can we schedule a meeting for next week?</div>
-                        </div>
-                    </div>
-
-                    <div class="chat-item" onclick="openChat('robert-brown')">
-                        <div class="chat-avatar">RB</div>
-                        <div class="chat-info">
-                            <div class="chat-header">
-                                <div class="chat-username">Robert Brown</div>
-                                <div class="chat-time">Last week</div>
-                            </div>
-                            <div class="chat-last-message">I've sent you the documents we discussed.</div>
-                        </div>
+                    <div class="message-input-container">
+                        <textarea class="message-input" id="message-input" placeholder="Type a message..."></textarea>
+                        <button class="send-button" id="send-message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Profile Tab -->
-            <div class="tab-content" id="profile">
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        CR
-                        <div class="online-status"></div>
-                    </div>
-                    <div class="profile-name">
-                        Clanffys <i class="fas fa-check-circle verified-badge"></i>
-                    </div>
-                    <div class="profile-username">@clanffys</div>
-                    <div class="profile-bio">Creator of Quantum Messenger | Building the future of communication</div>
-                    <div class="profile-stats">
-                        <div class="stat">
-                            <div class="stat-value">127</div>
-                            <div class="stat-label">Posts</div>
+            <div class="tab-content" id="profile-tab">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar-large" id="profile-avatar-large">U</div>
+                        <div class="profile-name" id="profile-display-name">User Name</div>
+                        <div class="profile-username" id="profile-username">
+                            @username
+                            <i class="fas fa-check-circle verified-badge"></i>
                         </div>
-                        <div class="stat">
-                            <div class="stat-value">1.2K</div>
-                            <div class="stat-label">Followers</div>
+                        <div class="profile-bio" id="profile-bio">This is a sample bio. Click edit to change it.</div>
+                        <div class="profile-status">
+                            <div class="status-indicator online"></div>
+                            <span id="profile-status-text">online</span>
                         </div>
-                        <div class="stat">
-                            <div class="stat-value">543</div>
-                            <div class="stat-label">Following</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="create-post">
-                    <div class="create-post-avatar">CR</div>
-                    <input type="text" class="create-post-input" placeholder="What's on your mind?">
-                </div>
-
-                <div class="profile-posts">
-                    <div class="post">
-                        <div class="post-header">
-                            <div class="post-avatar">CR</div>
-                            <div class="post-user-info">
-                                <div class="post-username">
-                                    Clanffys <i class="fas fa-check-circle verified-badge"></i>
-                                </div>
-                                <div class="post-time">2 hours ago</div>
+                        <div class="profile-role" id="profile-role">Member</div>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <div class="stat-value" id="posts-count">0</div>
+                                <div class="stat-label">Posts</div>
                             </div>
-                        </div>
-                        <div class="post-content">
-                            We're working on some exciting new features for Quantum. Stay tuned for updates!
-                        </div>
-                        <div class="post-actions">
-                            <div class="post-action">
-                                <i class="far fa-heart"></i> <span>42</span>
+                            <div class="stat">
+                                <div class="stat-value" id="followers-count">0</div>
+                                <div class="stat-label">Followers</div>
                             </div>
-                            <div class="post-action">
-                                <i class="far fa-comment"></i> <span>8</span>
-                            </div>
-                            <div class="post-action">
-                                <i class="far fa-share-square"></i>
+                            <div class="stat">
+                                <div class="stat-value" id="following-count">0</div>
+                                <div class="stat-label">Following</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="post">
-                        <div class="post-header">
-                            <div class="post-avatar">CR</div>
-                            <div class="post-user-info">
-                                <div class="post-username">
-                                    Clanffys <i class="fas fa-check-circle verified-badge"></i>
-                                </div>
-                                <div class="post-time">1 day ago</div>
-                            </div>
+                    <div class="profile-posts">
+                        <div class="section-title">
+                            <i class="fas fa-stream"></i>
+                            <span>Posts</span>
                         </div>
-                        <div class="post-content">
-                            Just released the beta version of Quantum Messenger. Thank you to all our early testers for your feedback!
-                        </div>
-                        <div class="post-actions">
-                            <div class="post-action">
-                                <i class="far fa-heart"></i> <span>67</span>
-                            </div>
-                            <div class="post-action">
-                                <i class="far fa-comment"></i> <span>15</span>
-                            </div>
-                            <div class="post-action">
-                                <i class="far fa-share-square"></i>
-                            </div>
+                        <div id="user-posts-container">
+                            <!-- User posts will be dynamically inserted here -->
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Settings Tab -->
-            <div class="tab-content" id="settings">
-                <div class="settings-section">
-                    <div class="settings-title">
-                        <i class="fas fa-user-cog"></i> Account Settings
-                    </div>
-                    <div class="settings-item" onclick="openEditProfile()">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Edit Profile</div>
-                            <div class="settings-item-desc">Change your avatar, display name, and bio</div>
+            <div class="tab-content" id="settings-tab">
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <div class="settings-title">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Edit Profile</span>
                         </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Privacy & Security</div>
-                            <div class="settings-item-desc">Manage your privacy settings</div>
-                        </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Notifications</div>
-                            <div class="settings-item-desc">Configure your notification preferences</div>
-                        </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <div class="settings-title">
-                        <i class="fas fa-palette"></i> Appearance
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Theme</div>
-                            <div class="settings-item-desc">Dark (Default)</div>
-                        </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Font Size</div>
-                            <div class="settings-item-desc">Medium</div>
-                        </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <div class="settings-title">
-                        <i class="fas fa-info-circle"></i> About
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Version</div>
-                            <div class="settings-item-desc">Quantum 1.0.0</div>
-                        </div>
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Terms of Service</div>
-                        </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-title">Privacy Policy</div>
-                        </div>
-                        <div class="settings-item-action">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Edit Profile Form (Hidden by default) -->
-            <div class="tab-content" id="edit-profile">
-                <div class="settings-section">
-                    <div class="settings-title">
-                        <i class="fas fa-arrow-left" onclick="closeEditProfile()" style="cursor: pointer;"></i>
-                        Edit Profile
-                    </div>
-
-                    <div class="edit-profile-form">
                         <div class="form-group">
-                            <label class="form-label">Avatar</label>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div class="profile-avatar" style="width: 80px; height: 80px; font-size: 2rem;">CR</div>
-                                <div class="settings-item-action">Change</div>
-                            </div>
+                            <label class="form-label" for="edit-display-name">Display Name</label>
+                            <input type="text" class="form-input" id="edit-display-name" placeholder="Your display name">
                         </div>
-
                         <div class="form-group">
-                            <label class="form-label">Display Name</label>
-                            <input type="text" class="form-input" value="Clanffys">
+                            <label class="form-label" for="edit-username">Username</label>
+                            <input type="text" class="form-input" id="edit-username" placeholder="Your username">
                         </div>
-
                         <div class="form-group">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-input" value="clanffys" id="username-input">
-                            <div class="nft-notification">
-                                In the future, you will be able to turn your username into collectible NFTs and sell them for the project's internal cryptocurrency.
-                            </div>
+                            <label class="form-label" for="edit-bio">Bio</label>
+                            <textarea class="form-textarea" id="edit-bio" placeholder="Tell something about yourself"></textarea>
                         </div>
+                        <button class="save-button" id="save-profile">Save Changes</button>
+                    </div>
 
+                    <div class="settings-section">
+                        <div class="settings-title">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </div>
                         <div class="form-group">
-                            <label class="form-label">Bio</label>
-                            <textarea class="form-input" rows="3">Creator of Quantum Messenger | Building the future of communication</textarea>
+                            <label class="form-label">
+                                <input type="checkbox" id="message-notifications" checked>
+                                Message notifications
+                            </label>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="post-notifications" checked>
+                                Post notifications
+                            </label>
+                        </div>
+                    </div>
 
-                        <button class="save-button">Save Changes</button>
+                    <div class="settings-section">
+                        <div class="settings-title">
+                            <i class="fas fa-palette"></i>
+                            <span>Appearance</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Theme</label>
+                            <select class="form-input" id="theme-select">
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="auto">System</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Chat Window (Hidden by default) -->
-        <div class="chat-window" id="chat-window">
-            <div class="chat-header-bar">
-                <div class="back-button" onclick="closeChat()">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <div class="chat-avatar-small" id="chat-avatar">CR</div>
-                <div class="chat-title" id="chat-title">Clanffys <i class="fas fa-check-circle verified-badge"></i></div>
-                <div class="chat-actions">
-                    <i class="fas fa-phone-alt"></i>
-                    <i class="fas fa-video"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                </div>
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-tab="home">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div>Home</div>
             </div>
-
-            <div class="messages-container" id="messages-container">
-                <div class="message message-incoming">
-                    Welcome to Quantum Messenger! How can I help you today?
-                    <div class="message-time">10:20 AM</div>
-                </div>
-                <div class="message message-outgoing">
-                    Hi! I'm exploring the app and it looks great so far.
-                    <div class="message-time">10:22 AM</div>
-                </div>
-                <div class="message message-incoming">
-                    Glad to hear that! Let me know if you have any questions about the features.
-                    <div class="message-time">10:24 AM</div>
-                </div>
+            <div class="nav-item" data-tab="chats">
+                <div class="nav-icon"><i class="fas fa-comments"></i></div>
+                <div>Chats</div>
             </div>
-
-            <div class="stickers-panel" id="stickers-panel">
-                <div class="stickers-title">Keanu Reeves Stickers</div>
-                <div class="stickers-container">
-                    <div class="sticker">👋</div>
-                    <div class="sticker">👍</div>
-                    <div class="sticker">😊</div>
-                    <div class="sticker">😂</div>
-                    <div class="sticker">😎</div>
-                    <div class="sticker">🤔</div>
-                    <div class="sticker">❤️</div>
-                    <div class="sticker">🔥</div>
-                </div>
+            <div class="nav-item" data-tab="profile">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <div>Profile</div>
             </div>
+            <div class="nav-item" data-tab="settings">
+                <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                <div>Settings</div>
+            </div>
+        </div>
 
-            <div class="message-input-container">
-                <div class="attachment-button" onclick="toggleStickers()">
-                    <i class="fas fa-smile"></i>
+        <!-- Create Post Modal -->
+        <div class="modal" id="create-post-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Create Post</div>
+                    <button class="modal-close" id="close-create-post-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <input type="text" class="message-input" placeholder="Message" id="message-input">
-                <div class="send-button" onclick="sendMessage()">
-                    <i class="fas fa-paper-plane"></i>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <textarea class="form-textarea" id="post-content" placeholder="What's on your mind?" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-button secondary" id="cancel-post">Cancel</button>
+                    <button class="modal-button primary" id="publish-post">Publish</button>
                 </div>
             </div>
         </div>
 
-        <div class="navigation">
-            <div class="nav-item active" onclick="switchTab('home')">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
+        <!-- NFT Notification Modal -->
+        <div class="modal" id="nft-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Username NFTs</div>
+                    <button class="modal-close" id="close-nft-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-text">
+                        In the future, usernames can be turned into collectible NFTs and sold for the project's internal cryptocurrency.
+                        Changing your username now will reserve it for potential future NFT conversion.
+                    </p>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-button primary" id="confirm-username-change">I Understand</button>
+                </div>
             </div>
-            <div class="nav-item" onclick="switchTab('chats')">
-                <i class="fas fa-comments"></i>
-                <span>Chats</span>
+        </div>
+
+        <!-- Notification Toast -->
+        <div class="notification" id="notification">
+            <div class="notification-icon">
+                <i class="fas fa-info-circle"></i>
             </div>
-            <div class="nav-item" onclick="switchTab('profile')">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
+            <div class="notification-content">
+                <div class="notification-title" id="notification-title">Information</div>
+                <div class="notification-message" id="notification-message">This is a notification message.</div>
             </div>
-            <div class="nav-item" onclick="switchTab('settings')">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </div>
+            <button class="notification-close" id="close-notification">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     </div>
 
     <script>
-        // Tab navigation
-        function switchTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Update navigation items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            event.currentTarget.classList.add('active');
-        }
+        // Quantum Messenger Application
+        class QuantumMessenger {
+            constructor() {
+                this.state = {
+                    currentUser: null,
+                    currentTab: 'home',
+                    users: [],
+                    posts: [],
+                    chats: [],
+                    currentChat: null,
+                    settings: {
+                        theme: 'dark',
+                        messageNotifications: true,
+                        postNotifications: true
+                    }
+                };
 
-        // Chat functionality
-        function openChat(user) {
-            document.getElementById('chat-window').style.display = 'flex';
-            
-            // Set chat details based on user
-            if (user === 'clanffys') {
-                document.getElementById('chat-avatar').textContent = 'CR';
-                document.getElementById('chat-title').innerHTML = 'Clanffys <i class="fas fa-check-circle verified-badge"></i>';
-            } else if (user === 'john-doe') {
-                document.getElementById('chat-avatar').textContent = 'JD';
-                document.getElementById('chat-title').textContent = 'John Doe';
-            } else if (user === 'alice-smith') {
-                document.getElementById('chat-avatar').textContent = 'AS';
-                document.getElementById('chat-title').textContent = 'Alice Smith';
-            } else if (user === 'robert-brown') {
-                document.getElementById('chat-avatar').textContent = 'RB';
-                document.getElementById('chat-title').textContent = 'Robert Brown';
+                this.init();
             }
-        }
 
-        function closeChat() {
-            document.getElementById('chat-window').style.display = 'none';
-            document.getElementById('stickers-panel').style.display = 'none';
-        }
+            init() {
+                this.loadData();
+                this.setupEventListeners();
+                this.renderCurrentTab();
+                this.showNotification('Welcome to Quantum Messenger!', 'info');
+            }
 
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const message = input.value.trim();
-            
-            if (message) {
-                const messagesContainer = document.getElementById('messages-container');
-                const newMessage = document.createElement('div');
-                newMessage.className = 'message message-outgoing';
+            loadData() {
+                // Try to load from localStorage
+                const savedData = localStorage.getItem('quantum-data');
                 
-                const now = new Date();
-                const timeString = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
-                
-                newMessage.innerHTML = `
-                    ${message}
-                    <div class="message-time">${timeString}</div>
-                `;
-                
-                messagesContainer.appendChild(newMessage);
-                input.value = '';
-                
-                // Scroll to bottom
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                
-                // Simulate reply after a short delay
-                setTimeout(() => {
-                    const replies = [
-                        "Thanks for your message!",
-                        "I'll get back to you soon.",
-                        "That's interesting!",
-                        "Let me check on that."
-                    ];
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    this.state.users = data.users || [];
+                    this.state.posts = data.posts || [];
+                    this.state.chats = data.chats || [];
+                    this.state.settings = data.settings || this.state.settings;
                     
-                    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+                    // Find current user
+                    const currentUserId = localStorage.getItem('quantum-current-user');
+                    if (currentUserId) {
+                        this.state.currentUser = this.state.users.find(user => user.id === parseInt(currentUserId)) || this.createNewUser();
+                    } else {
+                        this.state.currentUser = this.createNewUser();
+                    }
+                } else {
+                    // Initialize with default data
+                    this.initializeDefaultData();
+                }
+                
+                this.saveData();
+            }
+
+            initializeDefaultData() {
+                // Create default users
+                this.state.users = [
+                    {
+                        id: 1,
+                        username: 'clanffys',
+                        displayName: 'Alexey Clanffys',
+                        bio: 'Creator of Quantum Messenger. Building the future of communication.',
+                        avatar: 'A',
+                        isVerified: true,
+                        role: 'Project Creator',
+                        isOnline: true,
+                        followers: [2, 3],
+                        following: [2, 3],
+                        joinedDate: new Date('2023-01-15').toISOString()
+                    },
+                    {
+                        id: 2,
+                        username: 'johndoe',
+                        displayName: 'John Doe',
+                        bio: 'Digital enthusiast and tech lover. Always exploring new possibilities.',
+                        avatar: 'J',
+                        isVerified: false,
+                        isOnline: false,
+                        lastSeen: new Date(Date.now() - 3600000).toISOString(),
+                        followers: [1],
+                        following: [1, 3],
+                        joinedDate: new Date('2023-03-10').toISOString()
+                    },
+                    {
+                        id: 3,
+                        username: 'janedoe',
+                        displayName: 'Jane Doe',
+                        bio: 'Tech enthusiast and digital creator. Love building amazing products.',
+                        avatar: 'J',
+                        isVerified: false,
+                        isOnline: true,
+                        followers: [1, 2],
+                        following: [1],
+                        joinedDate: new Date('2023-02-20').toISOString()
+                    }
+                ];
+                
+                // Create default posts
+                this.state.posts = [
+                    {
+                        id: 1,
+                        userId: 1,
+                        content: 'Welcome to Quantum Messenger! This is the beginning of something amazing. We are building the future of communication with privacy and user experience at its core.',
+                        timestamp: new Date().toISOString(),
+                        likes: [2, 3],
+                        comments: [
+                            { id: 1, userId: 2, content: 'Looks great! Can\'t wait to see what you build next.', timestamp: new Date().toISOString() },
+                            { id: 2, userId: 3, content: 'Excited to try it out! The design is beautiful.', timestamp: new Date().toISOString() }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        userId: 2,
+                        content: 'Just discovered this new messenger. The interface is sleek and intuitive! Love the attention to detail in the design.',
+                        timestamp: new Date(Date.now() - 3600000).toISOString(),
+                        likes: [1],
+                        comments: []
+                    },
+                    {
+                        id: 3,
+                        userId: 3,
+                        content: 'The future of messaging is here! Quantum combines the best of Telegram and VK with a fresh approach. Well done team!',
+                        timestamp: new Date(Date.now() - 7200000).toISOString(),
+                        likes: [1, 2],
+                        comments: [
+                            { id: 3, userId: 1, content: 'Thank you for the kind words! We have many exciting features in the pipeline.', timestamp: new Date(Date.now() - 3600000).toISOString() }
+                        ]
+                    }
+                ];
+                
+                // Create default chats
+                this.state.chats = [
+                    {
+                        id: 1,
+                        participants: [1, 2],
+                        messages: [
+                            { id: 1, senderId: 1, content: 'Hi John! Welcome to Quantum.', timestamp: new Date(Date.now() - 7200000).toISOString() },
+                            { id: 2, senderId: 2, content: 'Thanks Alexey! The app looks amazing. The design is so clean and intuitive.', timestamp: new Date(Date.now() - 3600000).toISOString() },
+                            { id: 3, senderId: 1, content: 'Glad you like it! We have many exciting features planned for the future.', timestamp: new Date(Date.now() - 1800000).toISOString() },
+                            { id: 4, senderId: 2, content: 'Looking forward to seeing them. The NFT username concept is particularly interesting!', timestamp: new Date(Date.now() - 1200000).toISOString() }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        participants: [1, 3],
+                        messages: [
+                            { id: 1, senderId: 3, content: 'Hello! Is this the new messenger everyone is talking about?', timestamp: new Date(Date.now() - 5400000).toISOString() },
+                            { id: 2, senderId: 1, content: 'Yes, welcome to Quantum! We\'re excited to have you here.', timestamp: new Date(Date.now() - 4800000).toISOString() },
+                            { id: 3, senderId: 3, content: 'The interface is beautiful. I love the gradient accents and smooth animations.', timestamp: new Date(Date.now() - 4200000).toISOString() }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        participants: [2, 3],
+                        messages: [
+                            { id: 1, senderId: 2, content: 'Hey Jane, have you tried the new Quantum messenger?', timestamp: new Date(Date.now() - 6000000).toISOString() },
+                            { id: 2, senderId: 3, content: 'Yes! It\'s fantastic. The design is so much better than other messengers.', timestamp: new Date(Date.now() - 5700000).toISOString() },
+                            { id: 3, senderId: 2, content: 'I agree. The dark theme is easy on the eyes and the navigation is intuitive.', timestamp: new Date(Date.now() - 5400000).toISOString() }
+                        ]
+                    }
+                ];
+                
+                // Create current user
+                this.state.currentUser = this.createNewUser();
+            }
+
+            createNewUser() {
+                // Generate a random user ID
+                const newUserId = Math.max(...this.state.users.map(u => u.id), 0) + 1;
+                
+                // Generate a random username and display name
+                const randomNames = [
+                    { username: 'quantum_user', displayName: 'Quantum User' },
+                    { username: 'digital_nomad', displayName: 'Digital Nomad' },
+                    { username: 'tech_enthusiast', displayName: 'Tech Enthusiast' },
+                    { username: 'future_builder', displayName: 'Future Builder' },
+                    { username: 'code_explorer', displayName: 'Code Explorer' }
+                ];
+                
+                const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+                
+                const newUser = {
+                    id: newUserId,
+                    username: randomName.username,
+                    displayName: randomName.displayName,
+                    bio: 'New to Quantum Messenger. Excited to explore!',
+                    avatar: randomName.displayName.charAt(0),
+                    isVerified: false,
+                    isOnline: true,
+                    followers: [],
+                    following: [1], // Follow the creator by default
+                    joinedDate: new Date().toISOString()
+                };
+                
+                this.state.users.push(newUser);
+                return newUser;
+            }
+
+            saveData() {
+                const data = {
+                    users: this.state.users,
+                    posts: this.state.posts,
+                    chats: this.state.chats,
+                    settings: this.state.settings
+                };
+                
+                localStorage.setItem('quantum-data', JSON.stringify(data));
+                localStorage.setItem('quantum-current-user', this.state.currentUser.id.toString());
+            }
+
+            setupEventListeners() {
+                // Navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const tab = item.getAttribute('data-tab');
+                        this.switchTab(tab);
+                    });
+                });
+
+                // Back to chats button
+                document.getElementById('back-to-chats').addEventListener('click', () => {
+                    this.switchTab('chats');
+                });
+
+                // Create post triggers
+                document.getElementById('create-post-trigger').addEventListener('click', () => {
+                    this.openCreatePostModal();
+                });
+
+                // Modal controls
+                document.getElementById('close-create-post-modal').addEventListener('click', () => {
+                    this.closeCreatePostModal();
+                });
+
+                document.getElementById('cancel-post').addEventListener('click', () => {
+                    this.closeCreatePostModal();
+                });
+
+                document.getElementById('publish-post').addEventListener('click', () => {
+                    this.publishPost();
+                });
+
+                // Message sending
+                document.getElementById('send-message').addEventListener('click', () => {
+                    this.sendMessage();
+                });
+
+                document.getElementById('message-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+
+                // Profile saving
+                document.getElementById('save-profile').addEventListener('click', () => {
+                    this.saveProfile();
+                });
+
+                // NFT modal
+                document.getElementById('close-nft-modal').addEventListener('click', () => {
+                    this.closeNftModal();
+                });
+
+                document.getElementById('confirm-username-change').addEventListener('click', () => {
+                    this.closeNftModal();
+                });
+
+                // Notification close
+                document.getElementById('close-notification').addEventListener('click', () => {
+                    this.hideNotification();
+                });
+
+                // Settings changes
+                document.getElementById('theme-select').addEventListener('change', (e) => {
+                    this.changeTheme(e.target.value);
+                });
+
+                document.getElementById('message-notifications').addEventListener('change', (e) => {
+                    this.toggleMessageNotifications(e.target.checked);
+                });
+
+                document.getElementById('post-notifications').addEventListener('change', (e) => {
+                    this.togglePostNotifications(e.target.checked);
+                });
+
+                // Username change detection for NFT modal
+                document.getElementById('edit-username').addEventListener('focus', () => {
+                    this.originalUsername = document.getElementById('edit-username').value;
+                });
+
+                document.getElementById('edit-username').addEventListener('blur', () => {
+                    const newUsername = document.getElementById('edit-username').value;
+                    if (this.originalUsername && newUsername !== this.originalUsername) {
+                        this.showNftModal();
+                    }
+                });
+            }
+
+            switchTab(tab) {
+                // Update navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.getAttribute('data-tab') === tab) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Show selected tab content
+                document.getElementById(`${tab}-tab`).classList.add('active');
+
+                // Update header text
+                document.getElementById('header-text').textContent = this.getHeaderText(tab);
+
+                // Update state
+                this.state.currentTab = tab;
+
+                // Render specific content
+                switch(tab) {
+                    case 'home':
+                        this.renderHome();
+                        break;
+                    case 'chats':
+                        this.renderChats();
+                        break;
+                    case 'profile':
+                        this.renderProfile(this.state.currentUser.id);
+                        break;
+                    case 'settings':
+                        this.renderSettings();
+                        break;
+                }
+            }
+
+            getHeaderText(tab) {
+                switch(tab) {
+                    case 'home': return 'Home';
+                    case 'chats': return this.state.currentChat ? this.getUser(this.state.currentChat.participants.find(id => id !== this.state.currentUser.id)).displayName : 'Chats';
+                    case 'profile': return 'Profile';
+                    case 'settings': return 'Settings';
+                    default: return 'Quantum';
+                }
+            }
+
+            renderHome() {
+                const postsContainer = document.getElementById('posts-container');
+                postsContainer.innerHTML = '';
+
+                // Update current user avatar
+                document.getElementById('current-user-avatar').textContent = this.state.currentUser.avatar;
+
+                // Sort posts by timestamp (newest first)
+                const sortedPosts = [...this.state.posts].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (sortedPosts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="post">
+                            <div class="post-content text-center">
+                                No posts yet. Be the first to post something!
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                sortedPosts.forEach(post => {
+                    const user = this.getUser(post.userId);
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
                     
-                    const replyMessage = document.createElement('div');
-                    replyMessage.className = 'message message-incoming';
-                    replyMessage.innerHTML = `
-                        ${randomReply}
-                        <div class="message-time">${timeString}</div>
+                    const isLiked = post.likes.includes(this.state.currentUser.id);
+                    
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <div class="avatar" onclick="app.renderProfile(${user.id})">${user.avatar}</div>
+                            <div class="user-info">
+                                <div class="user-display-name" onclick="app.renderProfile(${user.id})">
+                                    ${user.displayName}
+                                    ${user.isVerified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                                </div>
+                                <div class="user-username">@${user.username} • ${this.formatTime(post.timestamp)}</div>
+                            </div>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-actions">
+                            <button class="action-btn ${isLiked ? 'active' : ''}" onclick="app.toggleLike(${post.id})">
+                                <i class="fas fa-heart"></i> <span>${post.likes.length}</span>
+                            </button>
+                            <button class="action-btn" onclick="app.toggleComments(${post.id})">
+                                <i class="fas fa-comment"></i> <span>${post.comments.length}</span>
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-share"></i> <span>Share</span>
+                            </button>
+                        </div>
                     `;
                     
-                    messagesContainer.appendChild(replyMessage);
+                    postsContainer.appendChild(postElement);
+                });
+            }
+
+            renderChats() {
+                const chatsList = document.getElementById('chats-list');
+                chatsList.innerHTML = '';
+
+                // Hide chat view, show chats list
+                document.getElementById('chat-view').classList.remove('active');
+                document.getElementById('chats-tab').classList.add('active');
+
+                this.state.chats.forEach(chat => {
+                    const otherUserId = chat.participants.find(id => id !== this.state.currentUser.id);
+                    const user = this.getUser(otherUserId);
+                    const lastMessage = chat.messages[chat.messages.length - 1];
+                    
+                    const chatItem = document.createElement('li');
+                    chatItem.className = 'chat-item';
+                    chatItem.onclick = () => this.openChat(chat.id);
+                    
+                    chatItem.innerHTML = `
+                        <div class="chat-avatar">${user.avatar}</div>
+                        <div class="chat-info">
+                            <div class="chat-header">
+                                <div class="chat-name">${user.displayName}</div>
+                                <div class="chat-time">${lastMessage ? this.formatTime(lastMessage.timestamp) : ''}</div>
+                            </div>
+                            <div class="chat-last-message">${lastMessage ? lastMessage.content : 'No messages yet'}</div>
+                        </div>
+                        <div class="chat-meta">
+                            ${user.isOnline ? '<div class="chat-online"></div>' : ''}
+                        </div>
+                    `;
+                    
+                    chatsList.appendChild(chatItem);
+                });
+            }
+
+            openChat(chatId) {
+                this.state.currentChat = this.state.chats.find(chat => chat.id === chatId);
+                
+                // Hide chats list, show chat view
+                document.getElementById('chats-tab').classList.remove('active');
+                document.getElementById('chat-view').classList.add('active');
+                
+                this.renderChat();
+            }
+
+            renderChat() {
+                const otherUserId = this.state.currentChat.participants.find(id => id !== this.state.currentUser.id);
+                const user = this.getUser(otherUserId);
+                const messagesContainer = document.getElementById('chat-messages');
+                
+                // Update chat header
+                document.getElementById('chat-user-avatar').textContent = user.avatar;
+                document.getElementById('chat-user-name').innerHTML = `
+                    ${user.displayName}
+                    ${user.isVerified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                `;
+                document.getElementById('chat-user-status').textContent = user.isOnline ? 'online' : `last seen ${this.formatTime(user.lastSeen)}`;
+                
+                // Clear messages
+                messagesContainer.innerHTML = '';
+                
+                // Add messages
+                this.state.currentChat.messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `message ${message.senderId === this.state.currentUser.id ? 'own' : ''}`;
+                    
+                    messageElement.innerHTML = `
+                        <div class="message-bubble">
+                            <div class="message-content">${message.content}</div>
+                            <div class="message-time">${this.formatTime(message.timestamp)}</div>
+                        </div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageElement);
+                });
+                
+                // Scroll to bottom
+                setTimeout(() => {
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 1000);
+                }, 100);
+                
+                // Update header
+                document.getElementById('header-text').textContent = user.displayName;
+            }
+
+            sendMessage() {
+                const input = document.getElementById('message-input');
+                const content = input.value.trim();
+                
+                if (content) {
+                    const newMessage = {
+                        id: Date.now(),
+                        senderId: this.state.currentUser.id,
+                        content: content,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    this.state.currentChat.messages.push(newMessage);
+                    this.saveData();
+                    this.renderChat();
+                    input.value = '';
+                }
+            }
+
+            renderProfile(userId) {
+                const user = this.getUser(userId);
+                const isOwnProfile = userId === this.state.currentUser.id;
+                
+                // Update profile header
+                document.getElementById('profile-avatar-large').textContent = user.avatar;
+                document.getElementById('profile-display-name').textContent = user.displayName;
+                document.getElementById('profile-username').innerHTML = `
+                    @${user.username}
+                    ${user.isVerified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                `;
+                document.getElementById('profile-bio').textContent = user.bio;
+                document.getElementById('profile-status-text').textContent = user.isOnline ? 'online' : 'offline';
+                document.getElementById('profile-role').textContent = user.role || 'Member';
+                
+                // Update stats
+                const userPosts = this.state.posts.filter(post => post.userId === userId);
+                document.getElementById('posts-count').textContent = userPosts.length;
+                document.getElementById('followers-count').textContent = user.followers ? user.followers.length : 0;
+                document.getElementById('following-count').textContent = user.following ? user.following.length : 0;
+                
+                // Render user posts
+                const userPostsContainer = document.getElementById('user-posts-container');
+                userPostsContainer.innerHTML = '';
+                
+                if (userPosts.length === 0) {
+                    userPostsContainer.innerHTML = `
+                        <div class="post">
+                            <div class="post-content text-center">
+                                No posts yet.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    userPosts.forEach(post => {
+                        const postElement = document.createElement('div');
+                        postElement.className = 'post';
+                        
+                        const isLiked = post.likes.includes(this.state.currentUser.id);
+                        
+                        postElement.innerHTML = `
+                            <div class="post-content">${post.content}</div>
+                            <div class="post-actions">
+                                <button class="action-btn ${isLiked ? 'active' : ''}" onclick="app.toggleLike(${post.id})">
+                                    <i class="fas fa-heart"></i> <span>${post.likes.length}</span>
+                                </button>
+                                <button class="action-btn" onclick="app.toggleComments(${post.id})">
+                                    <i class="fas fa-comment"></i> <span>${post.comments.length}</span>
+                                </button>
+                                ${isOwnProfile ? `<button class="action-btn" onclick="app.deletePost(${post.id})"><i class="fas fa-trash"></i></button>` : ''}
+                            </div>
+                        `;
+                        
+                        userPostsContainer.appendChild(postElement);
+                    });
+                }
+                
+                // Switch to profile tab if viewing own profile
+                if (isOwnProfile) {
+                    this.switchTab('profile');
+                }
+            }
+
+            renderSettings() {
+                // Pre-fill form with current user data
+                document.getElementById('edit-display-name').value = this.state.currentUser.displayName;
+                document.getElementById('edit-username').value = this.state.currentUser.username;
+                document.getElementById('edit-bio').value = this.state.currentUser.bio;
+                
+                // Pre-fill settings
+                document.getElementById('theme-select').value = this.state.settings.theme;
+                document.getElementById('message-notifications').checked = this.state.settings.messageNotifications;
+                document.getElementById('post-notifications').checked = this.state.settings.postNotifications;
+            }
+
+            openCreatePostModal() {
+                document.getElementById('create-post-modal').classList.add('active');
+            }
+
+            closeCreatePostModal() {
+                document.getElementById('create-post-modal').classList.remove('active');
+                document.getElementById('post-content').value = '';
+            }
+
+            publishPost() {
+                const content = document.getElementById('post-content').value.trim();
+                
+                if (content) {
+                    const newPost = {
+                        id: Date.now(),
+                        userId: this.state.currentUser.id,
+                        content: content,
+                        timestamp: new Date().toISOString(),
+                        likes: [],
+                        comments: []
+                    };
+                    
+                    this.state.posts.push(newPost);
+                    this.saveData();
+                    this.closeCreatePostModal();
+                    this.renderHome();
+                    this.showNotification('Your post has been published!', 'success');
+                }
+            }
+
+            saveProfile() {
+                const displayName = document.getElementById('edit-display-name').value.trim();
+                const username = document.getElementById('edit-username').value.trim();
+                const bio = document.getElementById('edit-bio').value.trim();
+                
+                // Validate inputs
+                if (!displayName || !username) {
+                    this.showNotification('Display name and username are required', 'error');
+                    return;
+                }
+                
+                // Check if username is available (if changed)
+                if (username !== this.state.currentUser.username) {
+                    const usernameExists = this.state.users.some(user => 
+                        user.username === username && user.id !== this.state.currentUser.id
+                    );
+                    
+                    if (usernameExists) {
+                        this.showNotification('Username is already taken. Please choose another one.', 'error');
+                        return;
+                    }
+                }
+                
+                // Update user
+                this.state.currentUser.displayName = displayName;
+                this.state.currentUser.username = username;
+                this.state.currentUser.bio = bio;
+                this.state.currentUser.avatar = displayName.charAt(0);
+                
+                // Update in users array
+                const userIndex = this.state.users.findIndex(user => user.id === this.state.currentUser.id);
+                if (userIndex !== -1) {
+                    this.state.users[userIndex] = this.state.currentUser;
+                }
+                
+                this.saveData();
+                this.renderProfile(this.state.currentUser.id);
+                this.showNotification('Profile updated successfully!', 'success');
+            }
+
+            toggleLike(postId) {
+                const post = this.state.posts.find(p => p.id === postId);
+                const likeIndex = post.likes.indexOf(this.state.currentUser.id);
+                
+                if (likeIndex === -1) {
+                    post.likes.push(this.state.currentUser.id);
+                } else {
+                    post.likes.splice(likeIndex, 1);
+                }
+                
+                this.saveData();
+                
+                // Re-render current view
+                if (this.state.currentTab === 'home') {
+                    this.renderHome();
+                } else if (this.state.currentTab === 'profile') {
+                    this.renderProfile(this.state.currentUser.id);
+                }
+            }
+
+            deletePost(postId) {
+                this.state.posts = this.state.posts.filter(p => p.id !== postId);
+                this.saveData();
+                this.renderProfile(this.state.currentUser.id);
+                this.showNotification('Post deleted successfully', 'success');
+            }
+
+            toggleComments(postId) {
+                // In a full implementation, this would open a comments view
+                this.showNotification('Comments functionality will be implemented in the next update', 'info');
+            }
+
+            showNftModal() {
+                document.getElementById('nft-modal').classList.add('active');
+            }
+
+            closeNftModal() {
+                document.getElementById('nft-modal').classList.remove('active');
+            }
+
+            changeTheme(theme) {
+                this.state.settings.theme = theme;
+                this.saveData();
+                
+                // In a full implementation, this would change the actual theme
+                this.showNotification(`Theme changed to ${theme} mode`, 'success');
+            }
+
+            toggleMessageNotifications(enabled) {
+                this.state.settings.messageNotifications = enabled;
+                this.saveData();
+            }
+
+            togglePostNotifications(enabled) {
+                this.state.settings.postNotifications = enabled;
+                this.saveData();
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.getElementById('notification');
+                const title = document.getElementById('notification-title');
+                const messageEl = document.getElementById('notification-message');
+                
+                // Set notification type
+                const icons = {
+                    info: 'info-circle',
+                    success: 'check-circle',
+                    warning: 'exclamation-triangle',
+                    error: 'exclamation-circle'
+                };
+                
+                const colors = {
+                    info: '#3390ec',
+                    success: '#4caf50',
+                    warning: '#ff9800',
+                    error: '#f44336'
+                };
+                
+                notification.querySelector('.notification-icon i').className = `fas fa-${icons[type]}`;
+                notification.style.borderLeftColor = colors[type];
+                
+                // Set content
+                title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                messageEl.textContent = message;
+                
+                // Show notification
+                notification.classList.add('show');
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    this.hideNotification();
+                }, 5000);
+            }
+
+            hideNotification() {
+                document.getElementById('notification').classList.remove('show');
+            }
+
+            // Utility methods
+            getUser(userId) {
+                return this.state.users.find(user => user.id === userId) || this.state.currentUser;
+            }
+
+            formatTime(timestamp) {
+                if (!timestamp) return 'unknown';
+                
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
+                
+                return date.toLocaleDateString();
             }
         }
 
-        function toggleStickers() {
-            const stickersPanel = document.getElementById('stickers-panel');
-            if (stickersPanel.style.display === 'block') {
-                stickersPanel.style.display = 'none';
-            } else {
-                stickersPanel.style.display = 'block';
-            }
-        }
-
-        // Profile editing
-        function openEditProfile() {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById('edit-profile').classList.add('active');
-        }
-
-        function closeEditProfile() {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById('settings').classList.add('active');
-            
-            // Reset navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-item')[3].classList.add('active');
-        }
-
-        // Username change notification
-        document.getElementById('username-input').addEventListener('focus', function() {
-            // The NFT notification is already visible in the HTML
-        });
-
-        // Initialize with home tab active
-        document.addEventListener('DOMContentLoaded', function() {
-            switchTab('home');
-        });
+        // Initialize the application
+        const app = new QuantumMessenger();
     </script>
 </body>
 </html>
