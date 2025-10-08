@@ -19,6 +19,7 @@
             --success: #00c781;
             --border: #2a2a2a;
             --gradient: linear-gradient(135deg, #0088cc, #00c6ff);
+            --admin: #ff6b35;
         }
         
         * {
@@ -95,6 +96,16 @@
             min-width: 120px;
         }
         
+        .admin-badge {
+            background: var(--admin);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
         .collectibles-grid {
             display: grid;
             gap: 12px;
@@ -134,9 +145,10 @@
         }
         
         .collectible-image img {
-            width: 100%;
-            height: 100%;
+            width: 180px;
+            height: 180px;
             object-fit: contain;
+            border-radius: 12px;
         }
         
         .collectible-info {
@@ -174,37 +186,6 @@
             border-top: 1px solid var(--border);
         }
         
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        
-        .quantity-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .qty-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .qty-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-        
         .buy-button {
             width: 100%;
             background: var(--gradient);
@@ -223,6 +204,10 @@
         .buy-button:disabled {
             background: var(--border);
             cursor: not-allowed;
+        }
+        
+        .admin-button {
+            background: var(--admin);
         }
         
         .profile-card {
@@ -321,6 +306,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            border-radius: 6px;
         }
         
         .collection-name {
@@ -427,7 +413,7 @@
         
         .modal-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             justify-content: center;
             margin-top: 12px;
         }
@@ -458,9 +444,10 @@
         }
         
         .modal-image img {
-            width: 100%;
-            height: 100%;
+            width: 180px;
+            height: 180px;
             object-fit: contain;
+            border-radius: 12px;
         }
         
         .modal-details {
@@ -501,6 +488,89 @@
             color: var(--success);
             font-weight: 600;
         }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .admin-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--admin);
+        }
+        
+        .admin-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--admin);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .form-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .admin-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .admin-action-btn {
+            background: var(--admin);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .admin-action-btn.secondary {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
     </style>
 </head>
 <body>
@@ -518,6 +588,34 @@
                 </div>
             </div>
             
+            <!-- Admin Panel (only for @clanffys) -->
+            <div id="admin-panel" class="admin-panel" style="display: none;">
+                <div class="admin-title">
+                    <i class="fas fa-crown"></i>
+                    Admin Panel
+                </div>
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label class="form-label">Telegram Username</label>
+                        <input type="text" class="form-input" id="admin-username" placeholder="@username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">TON Amount</label>
+                        <input type="number" class="form-input" id="admin-amount" placeholder="0.5" step="0.1" min="0.1">
+                    </div>
+                    <div class="admin-actions">
+                        <button class="admin-action-btn secondary" onclick="sendTONToUser()">
+                            <i class="fas fa-paper-plane"></i>
+                            Send TON
+                        </button>
+                        <button class="admin-action-btn" onclick="addTONToSelf()">
+                            <i class="fas fa-plus"></i>
+                            Add to Self
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <div class="section">
                 <h2 class="section-title">Collectibles</h2>
                 
@@ -526,7 +624,7 @@
                     <div class="collectible-card">
                         <div class="collectible-header">
                             <div class="collectible-title">Christian Cross</div>
-                            <div class="collectible-stock" id="cross-stock">0 of 1200</div>
+                            <div class="collectible-stock" id="cross-stock">1200 of 1200</div>
                         </div>
                         
                         <div class="collectible-image">
@@ -552,15 +650,6 @@
                         </div>
                         
                         <div class="buy-section">
-                            <div class="quantity-selector">
-                                <div class="info-label">Quantity</div>
-                                <div class="quantity-buttons">
-                                    <div class="qty-btn active">1</div>
-                                    <div class="qty-btn">+10</div>
-                                    <div class="qty-btn">+20</div>
-                                    <div class="qty-btn">+50</div>
-                                </div>
-                            </div>
                             <button class="buy-button" onclick="buyNFT('cross')">
                                 <i class="fab fa-toncoin"></i>
                                 Buy for 0.5 TON
@@ -572,7 +661,7 @@
                     <div class="collectible-card">
                         <div class="collectible-header">
                             <div class="collectible-title">Cybercar</div>
-                            <div class="collectible-stock" id="cybercar-stock">0 of 2000</div>
+                            <div class="collectible-stock" id="cybercar-stock">2000 of 2000</div>
                         </div>
                         
                         <div class="collectible-image">
@@ -598,15 +687,6 @@
                         </div>
                         
                         <div class="buy-section">
-                            <div class="quantity-selector">
-                                <div class="info-label">Quantity</div>
-                                <div class="quantity-buttons">
-                                    <div class="qty-btn active">1</div>
-                                    <div class="qty-btn">+10</div>
-                                    <div class="qty-btn">+20</div>
-                                    <div class="qty-btn">+50</div>
-                                </div>
-                            </div>
                             <button class="buy-button" onclick="buyNFT('cybercar')">
                                 <i class="fab fa-toncoin"></i>
                                 Buy for 0.5 TON
@@ -680,9 +760,8 @@
             <div class="modal-header">
                 <div class="modal-title" id="modal-title">Christian Cross</div>
                 <div class="modal-actions">
-                    <button class="action-btn">Transfer</button>
-                    <button class="action-btn">Share</button>
-                    <button class="action-btn">Link</button>
+                    <button class="action-btn" onclick="shareCollectible()">Share</button>
+                    <button class="action-btn" onclick="copyCollectibleLink()">Link</button>
                 </div>
             </div>
             
@@ -714,12 +793,12 @@
                 </div>
             </div>
             
-            <div style="padding: 20px; border-top: 1px solid var(--border);">
-                <button class="buy-button" onclick="closeModal()">
+            <div class="modal-footer">
+                <button class="buy-button" onclick="closeModal()" style="background: var(--border);">
                     Close
                 </button>
-                <button class="buy-button" style="background: var(--success); margin-top: 8px;">
-                    Send +1
+                <button class="buy-button" onclick="sendToFriend()" style="background: var(--success);">
+                    Send to Friend
                 </button>
             </div>
         </div>
@@ -738,6 +817,9 @@
         let wallet = null;
         const MERCHANT_ADDRESS = 'UQBYt_yorGejtv403290WeEgd1hJiCB2vx_7obx3cFjDlYEF';
         
+        // Admin username
+        const ADMIN_USERNAME = 'clanffys';
+        
         // User data
         let userData = {
             id: tg.initDataUnsafe.user?.id || 'unknown',
@@ -747,21 +829,28 @@
             joinDate: null
         };
         
+        // Global supplies (в реальном приложении это будет на сервере)
+        const GLOBAL_SUPPLIES = {
+            cross: 1200,
+            cybercar: 2000
+        };
+        
+        const TOTAL_SUPPLIES = {
+            cross: 1200,
+            cybercar: 2000
+        };
+        
         // Collectibles data
         let collectiblesData = {
             cross: {
                 name: 'Christian Cross',
                 price: '0.5',
-                totalSupply: 1200,
-                currentSupply: 1200,
                 image: 'https://i.postimg.cc/HL2pCGh5/ezgif-825d8532b9c755.gif',
                 description: 'Exclusive spiritual digital collectible'
             },
             cybercar: {
                 name: 'Cybercar',
                 price: '0.5',
-                totalSupply: 2000,
-                currentSupply: 2000,
                 image: 'https://i.postimg.cc/1zrHK4Vn/ezgif-8f92856a9fc001-2.gif',
                 description: 'Futuristic vehicle digital asset'
             }
@@ -770,6 +859,7 @@
         // User's collection
         let userCollection = [];
         let totalSpent = 0;
+        let currentModalItem = null;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -780,18 +870,16 @@
             loadUserData();
             loadUserCollection();
             await initTONConnect();
+            checkAdminAccess();
             updateDisplay();
-            setupQuantityButtons();
         }
         
-        // Setup quantity buttons
-        function setupQuantityButtons() {
-            document.querySelectorAll('.qty-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.parentElement.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
+        // Check if user is admin
+        function checkAdminAccess() {
+            if (userData.username === ADMIN_USERNAME) {
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('user-name').innerHTML = userData.firstName + ' <span class="admin-badge">ADMIN</span>';
+            }
         }
         
         // Initialize TON Connect
@@ -868,8 +956,6 @@
             
             if (savedCollection) {
                 userCollection = JSON.parse(savedCollection);
-                collectiblesData.cross.currentSupply = collectiblesData.cross.totalSupply - userCollection.filter(item => item.id === 'cross').length;
-                collectiblesData.cybercar.currentSupply = collectiblesData.cybercar.totalSupply - userCollection.filter(item => item.id === 'cybercar').length;
             }
             
             if (savedSpent) {
@@ -883,13 +969,31 @@
             localStorage.setItem('quantum_total_spent', totalSpent.toString());
         }
         
+        // Update global supply (в реальном приложении это будет API запрос)
+        function updateGlobalSupply(collectibleId) {
+            if (GLOBAL_SUPPLIES[collectibleId] > 0) {
+                GLOBAL_SUPPLIES[collectibleId]--;
+                
+                // В реальном приложении здесь будет запрос к серверу
+                // await fetch('/api/update-supply', { method: 'POST', body: { collectibleId } });
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Get global supply (в реальном приложении это будет API запрос)
+        function getGlobalSupply(collectibleId) {
+            return GLOBAL_SUPPLIES[collectibleId];
+        }
+        
         // Update display
         function updateDisplay() {
-            // Update stocks
+            // Update stocks from global supplies
             document.getElementById('cross-stock').textContent = 
-                (collectiblesData.cross.totalSupply - collectiblesData.cross.currentSupply) + ' of ' + collectiblesData.cross.totalSupply;
+                getGlobalSupply('cross') + ' of ' + TOTAL_SUPPLIES.cross;
             document.getElementById('cybercar-stock').textContent = 
-                (collectiblesData.cybercar.totalSupply - collectiblesData.cybercar.currentSupply) + ' of ' + collectiblesData.cybercar.totalSupply;
+                getGlobalSupply('cybercar') + ' of ' + TOTAL_SUPPLIES.cybercar;
             
             // Update profile stats
             document.getElementById('total-collected').textContent = userCollection.length;
@@ -936,13 +1040,15 @@
             const collectible = collectiblesData[item.id];
             if (!collectible) return;
             
+            currentModalItem = item;
+            
             document.getElementById('modal-title').textContent = collectible.name;
             document.getElementById('modal-image').src = collectible.image;
             document.getElementById('modal-owner').textContent = userData.firstName;
             document.getElementById('modal-date').textContent = formatDateTime(new Date(item.purchaseDate));
             document.getElementById('modal-cost').textContent = collectible.price + ' TON';
             document.getElementById('modal-availability').textContent = 
-                (collectible.totalSupply - collectible.currentSupply) + ' of ' + collectible.totalSupply;
+                getGlobalSupply(item.id) + ' of ' + TOTAL_SUPPLIES[item.id];
             
             document.getElementById('collectible-modal').classList.add('active');
         }
@@ -950,6 +1056,105 @@
         // Close modal
         function closeModal() {
             document.getElementById('collectible-modal').classList.remove('active');
+            currentModalItem = null;
+        }
+        
+        // Share collectible
+        function shareCollectible() {
+            if (!currentModalItem) return;
+            
+            const collectible = collectiblesData[currentModalItem.id];
+            const shareText = `Check out my ${collectible.name} collectible on Quantum! 🎁`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: collectible.name,
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                tg.showPopup({
+                    title: 'Share Collectible',
+                    message: shareText,
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+            }
+        }
+        
+        // Copy collectible link
+        function copyCollectibleLink() {
+            if (!currentModalItem) return;
+            
+            const collectible = collectiblesData[currentModalItem.id];
+            const link = `${window.location.origin}?collectible=${currentModalItem.id}&owner=${userData.id}`;
+            
+            navigator.clipboard.writeText(link).then(() => {
+                tg.showPopup({
+                    title: 'Link Copied',
+                    message: 'Collectible link copied to clipboard!',
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+            });
+        }
+        
+        // Send to friend
+        function sendToFriend() {
+            if (!currentModalItem) return;
+            
+            const collectible = collectiblesData[currentModalItem.id];
+            tg.showPopup({
+                title: 'Send to Friend',
+                message: `Share your ${collectible.name} with friends!`,
+                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+            });
+        }
+        
+        // Admin: Send TON to user
+        function sendTONToUser() {
+            const username = document.getElementById('admin-username').value.trim();
+            const amount = document.getElementById('admin-amount').value;
+            
+            if (!username || !amount) {
+                tg.showPopup({
+                    title: 'Error',
+                    message: 'Please fill all fields',
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+                return;
+            }
+            
+            tg.showPopup({
+                title: 'TON Sent',
+                message: `Sent ${amount} TON to @${username}`,
+                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+            });
+            
+            // Clear form
+            document.getElementById('admin-username').value = '';
+            document.getElementById('admin-amount').value = '';
+        }
+        
+        // Admin: Add TON to self
+        function addTONToSelf() {
+            const amount = document.getElementById('admin-amount').value;
+            
+            if (!amount) {
+                tg.showPopup({
+                    title: 'Error',
+                    message: 'Please enter amount',
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+                return;
+            }
+            
+            tg.showPopup({
+                title: 'TON Added',
+                message: `Added ${amount} TON to your account`,
+                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+            });
+            
+            // Clear form
+            document.getElementById('admin-amount').value = '';
         }
         
         // Buy collectible with REAL TON payment
@@ -965,7 +1170,7 @@
                 return;
             }
             
-            if (collectible.currentSupply <= 0) {
+            if (getGlobalSupply(collectibleId) <= 0) {
                 tg.showPopup({
                     title: 'Out of Stock',
                     message: 'This collectible is no longer available!',
@@ -1002,9 +1207,17 @@
         
         // Process purchase after successful payment
         function processPurchase(collectibleId, transactionResult) {
-            const collectible = collectiblesData[collectibleId];
+            // Update global supply
+            if (!updateGlobalSupply(collectibleId)) {
+                tg.showPopup({
+                    title: 'Purchase Failed',
+                    message: 'This collectible is no longer available!',
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+                return;
+            }
             
-            collectible.currentSupply--;
+            const collectible = collectiblesData[collectibleId];
             totalSpent += parseFloat(collectible.price);
             
             const purchaseItem = {
