@@ -1,70 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum | TON NFT Marketplace</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --tg-theme-bg-color: #0a0a0a;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-hint-color: #888888;
-            --tg-theme-link-color: #0088cc;
-            --tg-theme-button-color: #0088cc;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-secondary-bg-color: #1a1a1a;
-            --border-color: #2a2a2a;
-            --accent-color: #0088cc;
-            --ton-color: #0088cc;
-            --success-color: #00d26a;
-            --card-bg: #151515;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #0088cc;
+            --ton: #0088cc;
+            --success: #00c781;
+            --border: #2a2a2a;
+            --gradient: linear-gradient(135deg, #0088cc, #00c6ff);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI Emoji', sans-serif;
         }
         
         body {
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             padding-bottom: 80px;
-            overflow-x: hidden;
         }
         
         .container {
-            max-width: 600px;
+            max-width: 428px;
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 0 20px;
         }
         
         .header {
-            text-align: center;
             padding: 24px 0;
-            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 24px;
-            position: relative;
         }
         
-        .header h1 {
+        .logo {
             font-size: 28px;
             font-weight: 700;
-            letter-spacing: 1px;
-            background: linear-gradient(135deg, #0088cc, #00c6ff);
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -0.5px;
         }
         
-        .header p {
-            color: var(--tg-theme-hint-color);
-            margin-top: 8px;
+        .subtitle {
+            color: var(--text-secondary);
             font-size: 14px;
+            margin-top: 4px;
+            font-weight: 400;
         }
         
         .section {
@@ -77,315 +75,226 @@
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         
         .section-title i {
-            color: var(--accent-color);
+            color: var(--accent);
         }
         
-        .gift-grid {
+        .wallet-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        
+        .wallet-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .wallet-address {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .connect-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .connect-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+        }
+        
+        .connect-btn.connected {
+            background: var(--success);
+        }
+        
+        .grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 16px;
         }
         
-        .gift-card {
-            background: var(--card-bg);
-            border-radius: 16px;
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .nft-card {
+            background: var(--bg-card);
+            border-radius: 20px;
             overflow: hidden;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
-            position: relative;
+            cursor: pointer;
         }
         
-        .gift-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-color);
-            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.15);
+        .nft-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 24px rgba(0, 136, 204, 0.15);
         }
         
-        .gift-image {
+        .nft-image {
             width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            height: 160px;
+            background: var(--bg-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
         }
         
-        .gift-image img {
+        .nft-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
         
-        .gift-card:hover .gift-image img {
-            transform: scale(1.05);
-        }
-        
-        .gift-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-        
-        .gift-info {
+        .nft-content {
             padding: 16px;
         }
         
-        .gift-name {
+        .nft-name {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 8px;
         }
         
-        .gift-price {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        
-        .gift-stock {
-            font-size: 12px;
-            color: var(--tg-theme-hint-color);
-        }
-        
-        .price {
+        .nft-price {
             display: flex;
             align-items: center;
             gap: 6px;
             font-weight: 600;
-            color: var(--ton-color);
+            color: var(--ton);
+            margin-bottom: 8px;
         }
         
-        .price i {
-            font-size: 16px;
+        .nft-stock {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
         
-        .buy-button {
+        .buy-btn {
             width: 100%;
-            padding: 12px 0;
-            background: linear-gradient(135deg, var(--ton-color), #0066aa);
+            background: var(--gradient);
             color: white;
             border: none;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            margin-top: 8px;
         }
         
-        .buy-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+        .buy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
         }
         
-        .buy-button:disabled {
-            background: var(--border-color);
+        .buy-btn:disabled {
+            background: var(--border);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
         
         .profile-card {
-            background: var(--card-bg);
-            border-radius: 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
             padding: 24px;
             margin-bottom: 24px;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             text-align: center;
         }
         
-        .profile-avatar {
+        .avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
+            background: var(--gradient);
             margin: 0 auto 16px;
-            border: 2px solid var(--accent-color);
-            overflow: hidden;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .profile-avatar i {
             font-size: 32px;
-            color: var(--accent-color);
+            color: white;
         }
         
-        .profile-name {
+        .username {
             font-size: 20px;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         
-        .profile-joined {
+        .member-since {
             font-size: 14px;
-            color: var(--tg-theme-hint-color);
+            color: var(--text-secondary);
             margin-bottom: 16px;
         }
         
-        .wallet-info {
-            background: rgba(0, 136, 204, 0.1);
-            border-radius: 10px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .wallet-info i {
-            color: var(--ton-color);
-        }
-        
-        .owned-gifts {
+        .collection-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
         
-        .owned-gift {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-        
-        .owned-gift:hover {
-            transform: scale(1.05);
-        }
-        
-        .owned-gift-image {
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .owned-gift-image i {
-            font-size: 24px;
-            color: var(--accent-color);
-        }
-        
-        .owned-gift-name {
-            font-size: 11px;
-            padding: 8px 4px;
-            font-weight: 500;
-        }
-        
-        .info-box {
-            background: var(--card-bg);
+        .collection-item {
+            background: var(--bg-card);
             border-radius: 16px;
-            padding: 20px;
-            margin-top: 24px;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         
-        .info-box:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--ton-color), #00c6ff);
+        .collection-item:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
         }
         
-        .info-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
+        .collection-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 8px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
             display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .info-text {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color);
-            line-height: 1.5;
-        }
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--tg-theme-bg-color);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            padding: 12px 0;
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-        }
-        
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: color 0.2s ease;
-            padding: 8px 0;
-        }
-        
-        .nav-item.active {
-            color: var(--accent-color);
-        }
-        
-        .nav-icon {
             font-size: 20px;
         }
         
-        .nav-label {
+        .collection-name {
             font-size: 12px;
             font-weight: 500;
         }
         
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .page.active {
-            display: block;
-        }
-        
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
-            color: var(--tg-theme-hint-color);
+            padding: 48px 20px;
+            color: var(--text-secondary);
         }
         
         .empty-state i {
@@ -394,187 +303,269 @@
             opacity: 0.5;
         }
         
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: var(--accent-color);
-            animation: spin 1s ease-in-out infinite;
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 12px 20px;
+            backdrop-filter: blur(20px);
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .payment-processing {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .status-badge {
-            display: inline-flex;
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            gap: 4px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item.active {
+            background: rgba(0, 136, 204, 0.1);
+            color: var(--accent);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            margin: 20px;
+            max-width: 380px;
+            width: 100%;
+            border: 1px solid var(--border);
+            animation: modalSlide 0.3s ease;
+        }
+        
+        @keyframes modalSlide {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
             font-weight: 600;
-            margin-left: 10px;
         }
         
-        .status-badge.connected {
-            background: rgba(0, 210, 106, 0.2);
-            color: var(--success-color);
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
         }
         
-        .status-badge.disconnected {
-            background: rgba(255, 59, 48, 0.2);
-            color: #ff3b30;
+        .modal-image {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
         
-        .ton-payment-info {
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .info-label {
+            color: var(--text-secondary);
+        }
+        
+        .info-value {
+            font-weight: 500;
+        }
+        
+        .upgrade-notice {
             background: rgba(0, 136, 204, 0.1);
             border-radius: 12px;
             padding: 16px;
+            margin-top: 20px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .upgrade-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .upgrade-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .purchase-time {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 12px;
             margin-top: 16px;
             font-size: 13px;
-            border-left: 3px solid var(--ton-color);
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>QUANTUM</h1>
-            <p>Premium NFT Marketplace on TON</p>
+            <div class="logo">QUANTUM</div>
+            <div class="subtitle">Premium Digital Collectibles</div>
         </div>
         
         <!-- Store Page -->
         <div id="store-page" class="page active">
+            <div class="wallet-card">
+                <div class="wallet-info">
+                    <div class="wallet-address" id="wallet-address">Not connected</div>
+                    <button class="connect-btn" id="connect-btn">
+                        <i class="fas fa-wallet"></i>
+                        <span id="connect-text">Connect Wallet</span>
+                    </button>
+                </div>
+            </div>
+            
             <div class="section">
                 <h2 class="section-title">
                     <i class="fas fa-gem"></i>
                     Exclusive Collection
                 </h2>
                 
-                <div class="gift-grid">
+                <div class="grid grid-2">
                     <!-- Christian Cross -->
-                    <div class="gift-card">
-                        <div class="gift-image">
+                    <div class="nft-card" onclick="showNFTModal('cross')">
+                        <div class="nft-image">
                             <i class="fas fa-cross" style="font-size: 48px; color: #fff;"></i>
-                            <div class="gift-badge">LIMITED</div>
                         </div>
-                        <div class="gift-info">
-                            <div class="gift-name">Christian Cross</div>
-                            <div class="gift-price">
-                                <div class="price">
-                                    <i class="fab fa-toncoin"></i>
-                                    <span>0.5</span>
-                                </div>
-                                <div class="gift-stock" id="cross-stock">1,200 available</div>
-                            </div>
-                            <button class="buy-button" onclick="initiateTONPurchase('cross')" id="buy-cross">
+                        <div class="nft-content">
+                            <div class="nft-name">Christian Cross</div>
+                            <div class="nft-price">
                                 <i class="fab fa-toncoin"></i>
-                                Buy for 0.5 TON
+                                <span>0.5 TON</span>
+                            </div>
+                            <div class="nft-stock" id="cross-stock">1,200 available</div>
+                            <button class="buy-btn" onclick="event.stopPropagation(); buyNFT('cross')">
+                                Purchase
                             </button>
                         </div>
                     </div>
                     
                     <!-- Cybercar -->
-                    <div class="gift-card">
-                        <div class="gift-image">
-                            <i class="fas fa-car" style="font-size: 48px; color: #00c6ff;"></i>
-                            <div class="gift-badge">NEW</div>
+                    <div class="nft-card" onclick="showNFTModal('cybercar')">
+                        <div class="nft-image">
+                            <img src="https://t.me/qentrum/6" alt="Cybercar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <i class="fas fa-car" style="font-size: 48px; color: #00c6ff; display: none;"></i>
                         </div>
-                        <div class="gift-info">
-                            <div class="gift-name">Cybercar</div>
-                            <div class="gift-price">
-                                <div class="price">
-                                    <i class="fab fa-toncoin"></i>
-                                    <span>0.5</span>
-                                </div>
-                                <div class="gift-stock" id="cybercar-stock">2,000 available</div>
-                            </div>
-                            <button class="buy-button" onclick="initiateTONPurchase('cybercar')" id="buy-cybercar">
+                        <div class="nft-content">
+                            <div class="nft-name">Cybercar</div>
+                            <div class="nft-price">
                                 <i class="fab fa-toncoin"></i>
-                                Buy for 0.5 TON
+                                <span>0.5 TON</span>
+                            </div>
+                            <div class="nft-stock" id="cybercar-stock">2,000 available</div>
+                            <button class="buy-btn" onclick="event.stopPropagation(); buyNFT('cybercar')">
+                                Purchase
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="info-box">
-                <div class="info-title">
-                    <i class="fas fa-rocket"></i>
-                    Future Evolution
-                </div>
-                <div class="info-text">
-                    Your collectibles will soon be upgradable to exclusive NFTs with unique traits and rarity scores. These digital assets will be tradeable on our upcoming marketplace, creating new opportunities for collectors and investors in the TON ecosystem.
-                </div>
-                <div class="ton-payment-info">
-                    <i class="fas fa-info-circle"></i>
-                    All payments are processed securely on the TON blockchain. Each purchase is a verified on-chain transaction.
                 </div>
             </div>
         </div>
         
         <!-- Profile Page -->
         <div id="profile-page" class="page">
-            <div class="section">
-                <div class="profile-card">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="profile-name" id="user-name">User</div>
-                    <div class="profile-joined" id="user-joined">Member since: Loading...</div>
-                    
-                    <div class="wallet-info">
-                        <i class="fas fa-wallet"></i>
-                        <span>TON Wallet: </span>
-                        <span id="wallet-status" class="status-badge disconnected">Not Connected</span>
-                    </div>
+            <div class="profile-card">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
                 </div>
-                
+                <div class="username" id="user-name">User</div>
+                <div class="member-since" id="user-joined">Member since: Loading...</div>
+            </div>
+            
+            <div class="section">
                 <h2 class="section-title">
                     <i class="fas fa-crown"></i>
                     My Collection
                 </h2>
                 
-                <div id="owned-gifts-container">
-                    <div class="empty-state" id="no-gifts-message">
+                <div id="collection-container">
+                    <div class="empty-state" id="empty-collection">
                         <i class="fas fa-box-open"></i>
                         <p>Your collection is empty</p>
-                        <p style="font-size: 13px; margin-top: 8px;">Start building your NFT collection</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Start building your digital assets</p>
                     </div>
-                    <div class="owned-gifts" id="owned-gifts-list" style="display: none;">
-                        <!-- Owned gifts will appear here -->
+                    <div class="collection-grid" id="collection-grid" style="display: none;">
+                        <!-- Collection items will appear here -->
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Payment Processing -->
-        <div id="payment-processing" class="page">
-            <div class="payment-processing">
-                <div class="loading" style="margin-bottom: 20px;"></div>
-                <h3>Processing TON Payment</h3>
-                <p style="margin-top: 10px; color: var(--tg-theme-hint-color);">Confirm the transaction in your wallet...</p>
-                <div class="ton-payment-info" style="margin-top: 20px;">
-                    <i class="fas fa-shield-alt"></i>
-                    Secure blockchain transaction
                 </div>
             </div>
         </div>
@@ -586,13 +577,70 @@
             <div class="nav-icon">
                 <i class="fas fa-store"></i>
             </div>
-            <div class="nav-label">Store</div>
+            <div class="nav-label">Market</div>
         </div>
         <div class="nav-item" onclick="showPage('profile-page')">
             <div class="nav-icon">
                 <i class="fas fa-user"></i>
             </div>
             <div class="nav-label">Profile</div>
+        </div>
+    </div>
+    
+    <!-- NFT Modal -->
+    <div class="modal" id="nft-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">NFT Details</div>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-image" id="modal-image">
+                <!-- Image will be inserted here -->
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">Name:</div>
+                <div class="info-value" id="modal-name">-</div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">Price:</div>
+                <div class="info-value" id="modal-price">-</div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">Supply:</div>
+                <div class="info-value" id="modal-supply">-</div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-label">Upgrade Status:</div>
+                <div class="info-value" id="modal-upgrade">Not available</div>
+            </div>
+            
+            <div id="purchase-time-container" style="display: none;">
+                <div class="purchase-time">
+                    <i class="fas fa-clock"></i>
+                    Purchased: <span id="purchase-time">-</span>
+                </div>
+            </div>
+            
+            <div class="upgrade-notice">
+                <div class="upgrade-title">
+                    <i class="fas fa-rocket"></i>
+                    Evolution Roadmap
+                </div>
+                <div class="upgrade-text">
+                    Enhancement upgrades are scheduled for release in the near future. These digital collectibles will be convertible into exclusive NFTs with unique traits and rarity scores. The community and holders will govern pricing dynamics on our upcoming marketplace platform.
+                </div>
+            </div>
+            
+            <button class="buy-btn" id="modal-buy-btn" style="margin-top: 20px; display: none;">
+                Purchase for 0.5 TON
+            </button>
         </div>
     </div>
 
@@ -604,15 +652,9 @@
         tg.expand();
         tg.enableClosingConfirmation();
         
-        // TON Configuration
-        const TON_CONFIG = {
-            merchantAddress: 'UQBYt_yorGejtv403290WeEgd1hJiCB2vx_7obx3cFjDlYEF',
-            network: 'ton-mainnet',
-            prices: {
-                cross: 0.5,
-                cybercar: 0.5
-            }
-        };
+        // TON Connect
+        let tonConnectUI;
+        let isConnected = false;
         
         // User data
         let userData = {
@@ -620,31 +662,35 @@
             firstName: tg.initDataUnsafe.user?.first_name || 'User',
             lastName: tg.initDataUnsafe.user?.last_name || '',
             username: tg.initDataUnsafe.user?.username || '',
-            photoUrl: tg.initDataUnsafe.user?.photo_url || '',
             joinDate: null
         };
         
-        // Gifts data
-        let giftsData = {
+        // NFTs data
+        let nftsData = {
             cross: {
                 name: 'Christian Cross',
-                price: 0.5,
-                stock: 1200,
+                price: '0.5 TON',
+                totalSupply: 1200,
+                currentSupply: 1200,
                 icon: 'cross',
-                productId: 'christian_cross_001'
+                image: null,
+                description: 'Exclusive spiritual digital collectible'
             },
             cybercar: {
                 name: 'Cybercar',
-                price: 0.5,
-                stock: 2000,
+                price: '0.5 TON',
+                totalSupply: 2000,
+                currentSupply: 2000,
                 icon: 'car',
-                productId: 'cybercar_001'
+                image: 'https://t.me/qentrum/6',
+                description: 'Futuristic vehicle digital asset'
             }
         };
         
-        // User's purchased gifts
-        let userGifts = [];
-        let tonWalletConnected = false;
+        // User's collection
+        let userCollection = [];
+        let currentModalNFT = null;
+        let isViewingOwnedNFT = false;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -655,14 +701,51 @@
             // Load user data
             loadUserData();
             
-            // Load purchased gifts
-            loadUserGifts();
+            // Load user collection
+            loadUserCollection();
+            
+            // Initialize TON Connect
+            initTONConnect();
             
             // Update display
-            updateGiftDisplay();
+            updateDisplay();
+        }
+        
+        // Initialize TON Connect
+        function initTONConnect() {
+            // In a real app, you would initialize TON Connect UI here
+            // tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            //     manifestUrl: 'https://your-domain.com/tonconnect-manifest.json'
+            // });
             
-            // Initialize TON wallet
-            initTONWallet();
+            // For demo purposes, we'll simulate wallet connection
+            setTimeout(() => {
+                // Simulate wallet connection
+                document.getElementById('connect-btn').addEventListener('click', toggleWalletConnection);
+            }, 1000);
+        }
+        
+        // Toggle wallet connection
+        function toggleWalletConnection() {
+            if (!isConnected) {
+                // Connect wallet
+                isConnected = true;
+                document.getElementById('connect-text').textContent = 'Connected';
+                document.getElementById('connect-btn').classList.add('connected');
+                document.getElementById('wallet-address').textContent = 'UQBYt...lYEF';
+                
+                tg.showPopup({
+                    title: 'Wallet Connected',
+                    message: 'TON wallet successfully connected. You can now purchase digital collectibles.',
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+            } else {
+                // Disconnect wallet
+                isConnected = false;
+                document.getElementById('connect-text').textContent = 'Connect Wallet';
+                document.getElementById('connect-btn').classList.remove('connected');
+                document.getElementById('wallet-address').textContent = 'Not connected';
+            }
         }
         
         // Load user data
@@ -685,111 +768,182 @@
             }
         }
         
-        // Initialize TON Wallet
-        function initTONWallet() {
-            // Check if TON wallet is available
-            if (window.ton && ton.isTonWallet) {
-                connectTONWallet();
-            } else {
-                // For demo purposes, simulate wallet connection
-                setTimeout(() => {
-                    tonWalletConnected = true;
-                    updateWalletStatus();
-                }, 1000);
-            }
-        }
-        
-        // Connect TON Wallet
-        async function connectTONWallet() {
-            try {
-                if (window.ton) {
-                    await ton.request({ method: 'ton_requestAccounts' });
-                    tonWalletConnected = true;
-                    updateWalletStatus();
-                    
-                    tg.showPopup({
-                        title: 'TON Wallet Connected',
-                        message: 'Your TON wallet is now connected and ready for transactions.',
-                        buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                    });
-                }
-            } catch (error) {
-                console.error('TON Wallet connection failed:', error);
-                tg.showPopup({
-                    title: 'Connection Failed',
-                    message: 'Unable to connect TON wallet. Please try again.',
-                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+        // Load user collection
+        function loadUserCollection() {
+            const savedCollection = localStorage.getItem('quantum_user_collection');
+            if (savedCollection) {
+                userCollection = JSON.parse(savedCollection);
+                
+                // Update NFT supplies based on purchases
+                userCollection.forEach(item => {
+                    if (nftsData[item.id]) {
+                        nftsData[item.id].currentSupply--;
+                    }
                 });
             }
         }
         
-        // Update wallet status display
-        function updateWalletStatus() {
-            const statusElement = document.getElementById('wallet-status');
-            if (tonWalletConnected) {
-                statusElement.textContent = 'Connected';
-                statusElement.className = 'status-badge connected';
-            } else {
-                statusElement.textContent = 'Not Connected';
-                statusElement.className = 'status-badge disconnected';
-            }
+        // Save user collection
+        function saveUserCollection() {
+            localStorage.setItem('quantum_user_collection', JSON.stringify(userCollection));
         }
         
-        // Load user gifts
-        function loadUserGifts() {
-            const savedGifts = localStorage.getItem('quantum_user_gifts');
-            if (savedGifts) {
-                userGifts = JSON.parse(savedGifts);
-            }
-        }
-        
-        // Save user gifts
-        function saveUserGifts() {
-            localStorage.setItem('quantum_user_gifts', JSON.stringify(userGifts));
-        }
-        
-        // Update gift display
-        function updateGiftDisplay() {
-            // Update stock in store
-            document.getElementById('cross-stock').textContent = giftsData.cross.stock.toLocaleString() + ' available';
-            document.getElementById('cybercar-stock').textContent = giftsData.cybercar.stock.toLocaleString() + ' available';
+        // Update display
+        function updateDisplay() {
+            // Update NFT stocks
+            document.getElementById('cross-stock').textContent = 
+                nftsData.cross.currentSupply.toLocaleString() + ' / ' + nftsData.cross.totalSupply.toLocaleString();
+            document.getElementById('cybercar-stock').textContent = 
+                nftsData.cybercar.currentSupply.toLocaleString() + ' / ' + nftsData.cybercar.totalSupply.toLocaleString();
             
-            // Update owned gifts in profile
-            const ownedGiftsList = document.getElementById('owned-gifts-list');
-            const noGiftsMessage = document.getElementById('no-gifts-message');
+            // Update collection
+            updateCollectionDisplay();
+        }
+        
+        // Update collection display
+        function updateCollectionDisplay() {
+            const emptyCollection = document.getElementById('empty-collection');
+            const collectionGrid = document.getElementById('collection-grid');
             
-            if (userGifts.length > 0) {
-                noGiftsMessage.style.display = 'none';
-                ownedGiftsList.style.display = 'grid';
+            if (userCollection.length > 0) {
+                emptyCollection.style.display = 'none';
+                collectionGrid.style.display = 'grid';
                 
-                // Clear list
-                ownedGiftsList.innerHTML = '';
+                // Clear grid
+                collectionGrid.innerHTML = '';
                 
-                // Add owned gifts
-                userGifts.forEach(gift => {
-                    const giftElement = document.createElement('div');
-                    giftElement.className = 'owned-gift';
+                // Add collection items
+                userCollection.forEach((item, index) => {
+                    const nft = nftsData[item.id];
+                    if (!nft) return;
                     
-                    giftElement.innerHTML = `
-                        <div class="owned-gift-image">
-                            <i class="fas fa-${gift.icon}" style="font-size: 24px; color: ${gift.icon === 'car' ? '#00c6ff' : '#fff'};"></i>
+                    const collectionItem = document.createElement('div');
+                    collectionItem.className = 'collection-item';
+                    collectionItem.onclick = () => showOwnedNFTModal(item);
+                    
+                    collectionItem.innerHTML = `
+                        <div class="collection-icon">
+                            <i class="fas fa-${nft.icon}" style="color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>
                         </div>
-                        <div class="owned-gift-name">${gift.name}</div>
+                        <div class="collection-name">${nft.name}</div>
                     `;
                     
-                    ownedGiftsList.appendChild(giftElement);
+                    collectionGrid.appendChild(collectionItem);
                 });
             } else {
-                noGiftsMessage.style.display = 'block';
-                ownedGiftsList.style.display = 'none';
+                emptyCollection.style.display = 'block';
+                collectionGrid.style.display = 'none';
             }
         }
         
-        // Initiate TON purchase
-        function initiateTONPurchase(giftId) {
-            const gift = giftsData[giftId];
+        // Show NFT modal for purchase
+        function showNFTModal(nftId) {
+            const nft = nftsData[nftId];
+            if (!nft) return;
             
-            if (gift.stock <= 0) {
+            currentModalNFT = nftId;
+            isViewingOwnedNFT = false;
+            
+            // Set modal content
+            document.getElementById('modal-title').textContent = 'Collectible Details';
+            document.getElementById('modal-name').textContent = nft.name;
+            document.getElementById('modal-price').textContent = nft.price;
+            document.getElementById('modal-supply').textContent = 
+                nft.currentSupply.toLocaleString() + ' / ' + nft.totalSupply.toLocaleString();
+            document.getElementById('modal-upgrade').textContent = 'Not available';
+            
+            // Set image
+            const modalImage = document.getElementById('modal-image');
+            modalImage.innerHTML = '';
+            if (nft.image) {
+                const img = document.createElement('img');
+                img.src = nft.image;
+                img.alt = nft.name;
+                img.onerror = () => {
+                    modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
+                };
+                modalImage.appendChild(img);
+            } else {
+                modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
+            }
+            
+            // Show/hide purchase time
+            document.getElementById('purchase-time-container').style.display = 'none';
+            
+            // Show buy button
+            const buyBtn = document.getElementById('modal-buy-btn');
+            buyBtn.style.display = 'block';
+            buyBtn.textContent = `Purchase for ${nft.price}`;
+            buyBtn.onclick = () => buyNFT(nftId);
+            buyBtn.disabled = nft.currentSupply <= 0;
+            
+            // Show modal
+            document.getElementById('nft-modal').classList.add('active');
+        }
+        
+        // Show owned NFT modal
+        function showOwnedNFTModal(item) {
+            const nft = nftsData[item.id];
+            if (!nft) return;
+            
+            currentModalNFT = item.id;
+            isViewingOwnedNFT = true;
+            
+            // Set modal content
+            document.getElementById('modal-title').textContent = 'Your Collectible';
+            document.getElementById('modal-name').textContent = nft.name;
+            document.getElementById('modal-price').textContent = 'Owned';
+            document.getElementById('modal-supply').textContent = 
+                nft.currentSupply.toLocaleString() + ' / ' + nft.totalSupply.toLocaleString();
+            document.getElementById('modal-upgrade').textContent = 'Not available';
+            
+            // Set image
+            const modalImage = document.getElementById('modal-image');
+            modalImage.innerHTML = '';
+            if (nft.image) {
+                const img = document.createElement('img');
+                img.src = nft.image;
+                img.alt = nft.name;
+                img.onerror = () => {
+                    modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
+                };
+                modalImage.appendChild(img);
+            } else {
+                modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
+            }
+            
+            // Show purchase time
+            document.getElementById('purchase-time-container').style.display = 'block';
+            document.getElementById('purchase-time').textContent = formatDateTime(new Date(item.purchaseDate));
+            
+            // Hide buy button
+            document.getElementById('modal-buy-btn').style.display = 'none';
+            
+            // Show modal
+            document.getElementById('nft-modal').classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('nft-modal').classList.remove('active');
+            currentModalNFT = null;
+            isViewingOwnedNFT = false;
+        }
+        
+        // Buy NFT
+        function buyNFT(nftId) {
+            const nft = nftsData[nftId];
+            
+            if (!isConnected) {
+                tg.showPopup({
+                    title: 'Wallet Not Connected',
+                    message: 'Please connect your TON wallet to make purchases.',
+                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                });
+                return;
+            }
+            
+            if (nft.currentSupply <= 0) {
                 tg.showPopup({
                     title: 'Out of Stock',
                     message: 'This collectible is no longer available!',
@@ -798,94 +952,67 @@
                 return;
             }
             
-            if (!tonWalletConnected) {
-                tg.showPopup({
-                    title: 'Wallet Not Connected',
-                    message: 'Please connect your TON wallet to make purchases.',
-                    buttons: [
-                        {id: 'cancel', type: 'cancel', text: 'Cancel'},
-                        {id: 'connect', type: 'default', text: 'Connect Wallet'}
-                    ]
-                }, (buttonId) => {
-                    if (buttonId === 'connect') {
-                        connectTONWallet();
-                    }
-                });
-                return;
-            }
-            
-            // Show payment processing
-            showPage('payment-processing');
-            
-            // Simulate TON payment processing
-            setTimeout(() => {
-                completeTONPurchase(giftId);
-            }, 3000);
+            // In a real app, this would open TON Connect payment modal
+            // For demo, we'll simulate payment
+            tg.showPopup({
+                title: 'Confirm Purchase',
+                message: `Purchase ${nft.name} for ${nft.price}?`,
+                buttons: [
+                    {id: 'cancel', type: 'cancel', text: 'Cancel'},
+                    {id: 'buy', type: 'default', text: 'Confirm Purchase'}
+                ]
+            }, (buttonId) => {
+                if (buttonId === 'buy') {
+                    processPurchase(nftId);
+                }
+            });
         }
         
-        // Complete TON purchase
-        function completeTONPurchase(giftId) {
-            const gift = giftsData[giftId];
+        // Process purchase
+        function processPurchase(nftId) {
+            const nft = nftsData[nftId];
             
-            // Decrease stock
-            gift.stock--;
+            // Decrease supply
+            nft.currentSupply--;
             
-            // Add gift to user's collection
-            userGifts.push({
-                id: giftId,
-                name: gift.name,
-                icon: gift.icon,
+            // Add to user collection
+            const purchaseItem = {
+                id: nftId,
                 purchaseDate: new Date().toISOString(),
                 transactionId: generateTransactionId()
-            });
+            };
+            
+            userCollection.push(purchaseItem);
             
             // Save data
-            saveUserGifts();
+            saveUserCollection();
             
             // Update display
-            updateGiftDisplay();
+            updateDisplay();
             
-            // Return to store
-            showPage('store-page');
+            // Close modal
+            closeModal();
             
             // Show success message
             tg.showPopup({
                 title: 'Purchase Complete!',
-                message: `You successfully acquired ${gift.name}! This collectible has been added to your collection.`,
+                message: `You successfully acquired ${nft.name}! This digital collectible has been added to your collection.`,
                 buttons: [{id: 'ok', type: 'default', text: 'View Collection'}]
             }, () => {
                 showPage('profile-page');
             });
             
-            // In a real app, you would send transaction data to your backend
-            sendTONTransactionToServer(giftId, userData.id);
+            // In a real app, you would send transaction to blockchain here
+            sendTONTransaction(nftId, userData.id, nft.price);
         }
         
-        // Send transaction data to server (for real implementation)
-        async function sendTONTransactionToServer(giftId, userId) {
-            // This would send the transaction details to your backend
-            // for verification and recording on the blockchain
-            try {
-                const response = await fetch('/api/ton-purchase', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        giftId: giftId,
-                        userId: userId,
-                        merchantAddress: TON_CONFIG.merchantAddress,
-                        amount: giftsData[giftId].price,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-                
-                if (response.ok) {
-                    console.log('TON transaction recorded on server');
-                }
-            } catch (error) {
-                console.error('Error recording TON transaction:', error);
-            }
+        // Send TON transaction (for real implementation)
+        function sendTONTransaction(nftId, userId, amount) {
+            // This would send the actual TON transaction to the blockchain
+            console.log(`Sending ${amount} TON for ${nftId} from user ${userId}`);
+            
+            // In a real implementation, you would use:
+            // tonConnectUI.sendTransaction(transaction)
         }
         
         // Generate transaction ID
@@ -917,7 +1044,19 @@
         
         // Format date
         function formatDate(date) {
-            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        // Format date and time
+        function formatDateTime(date) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
             return date.toLocaleDateString('en-US', options);
         }
     </script>
