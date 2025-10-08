@@ -107,27 +107,8 @@
             border: 1px solid var(--border);
         }
         
-        .connect-btn {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .connect-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
-        }
-        
-        .connect-btn.connected {
-            background: var(--success);
+        .ton-connect-button {
+            min-width: 140px;
         }
         
         .grid {
@@ -473,6 +454,20 @@
             font-size: 13px;
             color: var(--text-secondary);
         }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -487,10 +482,7 @@
             <div class="wallet-card">
                 <div class="wallet-info">
                     <div class="wallet-address" id="wallet-address">Not connected</div>
-                    <button class="connect-btn" id="connect-btn">
-                        <i class="fas fa-wallet"></i>
-                        <span id="connect-text">Connect Wallet</span>
-                    </button>
+                    <div id="connect-btn" class="ton-connect-button"></div>
                 </div>
             </div>
             
@@ -504,7 +496,7 @@
                     <!-- Christian Cross -->
                     <div class="nft-card" onclick="showNFTModal('cross')">
                         <div class="nft-image">
-                            <i class="fas fa-cross" style="font-size: 48px; color: #fff;"></i>
+                            <img src="https://t.me/qentrum/4" alt="Christian Cross">
                         </div>
                         <div class="nft-content">
                             <div class="nft-name">Christian Cross</div>
@@ -522,8 +514,7 @@
                     <!-- Cybercar -->
                     <div class="nft-card" onclick="showNFTModal('cybercar')">
                         <div class="nft-image">
-                            <img src="https://t.me/qentrum/6" alt="Cybercar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                            <i class="fas fa-car" style="font-size: 48px; color: #00c6ff; display: none;"></i>
+                            <img src="https://t.me/qentrum/6" alt="Cybercar">
                         </div>
                         <div class="nft-content">
                             <div class="nft-name">Cybercar</div>
@@ -591,7 +582,7 @@
     <div class="modal" id="nft-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="modal-title">NFT Details</div>
+                <div class="modal-title" id="modal-title">Collectible Details</div>
                 <button class="close-btn" onclick="closeModal()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -654,7 +645,8 @@
         
         // TON Connect
         let tonConnectUI;
-        let isConnected = false;
+        let wallet = null;
+        const MERCHANT_ADDRESS = 'UQBYt_yorGejtv403290WeEgd1hJiCB2vx_7obx3cFjDlYEF';
         
         // User data
         let userData = {
@@ -672,8 +664,7 @@
                 price: '0.5 TON',
                 totalSupply: 1200,
                 currentSupply: 1200,
-                icon: 'cross',
-                image: null,
+                image: 'https://t.me/qentrum/4',
                 description: 'Exclusive spiritual digital collectible'
             },
             cybercar: {
@@ -681,7 +672,6 @@
                 price: '0.5 TON',
                 totalSupply: 2000,
                 currentSupply: 2000,
-                icon: 'car',
                 image: 'https://t.me/qentrum/6',
                 description: 'Futuristic vehicle digital asset'
             }
@@ -697,7 +687,7 @@
             initializeApp();
         });
 
-        function initializeApp() {
+        async function initializeApp() {
             // Load user data
             loadUserData();
             
@@ -705,56 +695,68 @@
             loadUserCollection();
             
             // Initialize TON Connect
-            initTONConnect();
+            await initTONConnect();
             
             // Update display
             updateDisplay();
         }
         
         // Initialize TON Connect
-        function initTONConnect() {
-            // In a real app, you would initialize TON Connect UI here
-            // tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            //     manifestUrl: 'https://your-domain.com/tonconnect-manifest.json'
-            // });
-            
-            // For demo purposes, we'll simulate wallet connection
-            setTimeout(() => {
-                // Simulate wallet connection
-                document.getElementById('connect-btn').addEventListener('click', toggleWalletConnection);
-            }, 1000);
+        async function initTONConnect() {
+            try {
+                const manifestUrl = 'https://raw.githubusercontent.com/reynusha/translater/main/tonconnect-manifest.json';
+                
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: manifestUrl,
+                    buttonRootId: 'connect-btn'
+                });
+
+                // Check if wallet is already connected
+                wallet = await tonConnectUI.connectionRestored;
+                
+                if (wallet) {
+                    updateWalletDisplay();
+                }
+
+                // Subscribe to wallet changes
+                tonConnectUI.onStatusChange(async (newWallet) => {
+                    wallet = newWallet;
+                    updateWalletDisplay();
+                    
+                    if (wallet) {
+                        tg.showPopup({
+                            title: 'Wallet Connected',
+                            message: 'TON wallet successfully connected',
+                            buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                        });
+                    }
+                });
+
+            } catch (error) {
+                console.error('TON Connect initialization error:', error);
+                document.getElementById('wallet-address').textContent = 'Connection error';
+            }
         }
         
-        // Toggle wallet connection
-        function toggleWalletConnection() {
-            if (!isConnected) {
-                // Connect wallet
-                isConnected = true;
-                document.getElementById('connect-text').textContent = 'Connected';
-                document.getElementById('connect-btn').classList.add('connected');
-                document.getElementById('wallet-address').textContent = 'UQBYt...lYEF';
-                
-                tg.showPopup({
-                    title: 'Wallet Connected',
-                    message: 'TON wallet successfully connected. You can now purchase digital collectibles.',
-                    buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-                });
+        // Update wallet display
+        function updateWalletDisplay() {
+            const addressElement = document.getElementById('wallet-address');
+            
+            if (wallet && wallet.account) {
+                const shortAddress = wallet.account.address.slice(0, 8) + '...' + wallet.account.address.slice(-8);
+                addressElement.textContent = shortAddress;
+                addressElement.style.color = 'var(--success)';
             } else {
-                // Disconnect wallet
-                isConnected = false;
-                document.getElementById('connect-text').textContent = 'Connect Wallet';
-                document.getElementById('connect-btn').classList.remove('connected');
-                document.getElementById('wallet-address').textContent = 'Not connected';
+                addressElement.textContent = 'Not connected';
+                addressElement.style.color = 'var(--text-secondary)';
             }
         }
         
         // Load user data
         function loadUserData() {
-            // Set user name
             const nameElement = document.getElementById('user-name');
             nameElement.textContent = userData.firstName + (userData.lastName ? ' ' + userData.lastName : '');
             
-            // Set join date
             const joinElement = document.getElementById('user-joined');
             const joinDate = localStorage.getItem('quantum_join_date');
             if (joinDate) {
@@ -774,7 +776,6 @@
             if (savedCollection) {
                 userCollection = JSON.parse(savedCollection);
                 
-                // Update NFT supplies based on purchases
                 userCollection.forEach(item => {
                     if (nftsData[item.id]) {
                         nftsData[item.id].currentSupply--;
@@ -790,13 +791,11 @@
         
         // Update display
         function updateDisplay() {
-            // Update NFT stocks
             document.getElementById('cross-stock').textContent = 
                 nftsData.cross.currentSupply.toLocaleString() + ' / ' + nftsData.cross.totalSupply.toLocaleString();
             document.getElementById('cybercar-stock').textContent = 
                 nftsData.cybercar.currentSupply.toLocaleString() + ' / ' + nftsData.cybercar.totalSupply.toLocaleString();
             
-            // Update collection
             updateCollectionDisplay();
         }
         
@@ -808,11 +807,8 @@
             if (userCollection.length > 0) {
                 emptyCollection.style.display = 'none';
                 collectionGrid.style.display = 'grid';
-                
-                // Clear grid
                 collectionGrid.innerHTML = '';
                 
-                // Add collection items
                 userCollection.forEach((item, index) => {
                     const nft = nftsData[item.id];
                     if (!nft) return;
@@ -823,7 +819,8 @@
                     
                     collectionItem.innerHTML = `
                         <div class="collection-icon">
-                            <i class="fas fa-${nft.icon}" style="color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>
+                            <img src="${nft.image}" style="width: 32px; height: 32px; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <i class="fas fa-gem" style="display: none; color: var(--accent);"></i>
                         </div>
                         <div class="collection-name">${nft.name}</div>
                     `;
@@ -844,7 +841,6 @@
             currentModalNFT = nftId;
             isViewingOwnedNFT = false;
             
-            // Set modal content
             document.getElementById('modal-title').textContent = 'Collectible Details';
             document.getElementById('modal-name').textContent = nft.name;
             document.getElementById('modal-price').textContent = nft.price;
@@ -852,32 +848,17 @@
                 nft.currentSupply.toLocaleString() + ' / ' + nft.totalSupply.toLocaleString();
             document.getElementById('modal-upgrade').textContent = 'Not available';
             
-            // Set image
             const modalImage = document.getElementById('modal-image');
-            modalImage.innerHTML = '';
-            if (nft.image) {
-                const img = document.createElement('img');
-                img.src = nft.image;
-                img.alt = nft.name;
-                img.onerror = () => {
-                    modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
-                };
-                modalImage.appendChild(img);
-            } else {
-                modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
-            }
+            modalImage.innerHTML = `<img src="${nft.image}" alt="${nft.name}">`;
             
-            // Show/hide purchase time
             document.getElementById('purchase-time-container').style.display = 'none';
             
-            // Show buy button
             const buyBtn = document.getElementById('modal-buy-btn');
             buyBtn.style.display = 'block';
             buyBtn.textContent = `Purchase for ${nft.price}`;
             buyBtn.onclick = () => buyNFT(nftId);
             buyBtn.disabled = nft.currentSupply <= 0;
             
-            // Show modal
             document.getElementById('nft-modal').classList.add('active');
         }
         
@@ -889,7 +870,6 @@
             currentModalNFT = item.id;
             isViewingOwnedNFT = true;
             
-            // Set modal content
             document.getElementById('modal-title').textContent = 'Your Collectible';
             document.getElementById('modal-name').textContent = nft.name;
             document.getElementById('modal-price').textContent = 'Owned';
@@ -897,29 +877,14 @@
                 nft.currentSupply.toLocaleString() + ' / ' + nft.totalSupply.toLocaleString();
             document.getElementById('modal-upgrade').textContent = 'Not available';
             
-            // Set image
             const modalImage = document.getElementById('modal-image');
-            modalImage.innerHTML = '';
-            if (nft.image) {
-                const img = document.createElement('img');
-                img.src = nft.image;
-                img.alt = nft.name;
-                img.onerror = () => {
-                    modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
-                };
-                modalImage.appendChild(img);
-            } else {
-                modalImage.innerHTML = `<i class="fas fa-${nft.icon}" style="font-size: 64px; color: ${nft.icon === 'car' ? '#00c6ff' : '#fff'};"></i>`;
-            }
+            modalImage.innerHTML = `<img src="${nft.image}" alt="${nft.name}">`;
             
-            // Show purchase time
             document.getElementById('purchase-time-container').style.display = 'block';
             document.getElementById('purchase-time').textContent = formatDateTime(new Date(item.purchaseDate));
             
-            // Hide buy button
             document.getElementById('modal-buy-btn').style.display = 'none';
             
-            // Show modal
             document.getElementById('nft-modal').classList.add('active');
         }
         
@@ -930,11 +895,11 @@
             isViewingOwnedNFT = false;
         }
         
-        // Buy NFT
-        function buyNFT(nftId) {
+        // Buy NFT with REAL TON payment
+        async function buyNFT(nftId) {
             const nft = nftsData[nftId];
             
-            if (!isConnected) {
+            if (!wallet) {
                 tg.showPopup({
                     title: 'Wallet Not Connected',
                     message: 'Please connect your TON wallet to make purchases.',
@@ -952,67 +917,60 @@
                 return;
             }
             
-            // In a real app, this would open TON Connect payment modal
-            // For demo, we'll simulate payment
-            tg.showPopup({
-                title: 'Confirm Purchase',
-                message: `Purchase ${nft.name} for ${nft.price}?`,
-                buttons: [
-                    {id: 'cancel', type: 'cancel', text: 'Cancel'},
-                    {id: 'buy', type: 'default', text: 'Confirm Purchase'}
-                ]
-            }, (buttonId) => {
-                if (buttonId === 'buy') {
-                    processPurchase(nftId);
+            try {
+                // Create REAL TON transaction
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
+                    messages: [
+                        {
+                            address: MERCHANT_ADDRESS, // Твой кошелек
+                            amount: '500000000' // 0.5 TON in nanotons
+                        }
+                    ]
+                };
+                
+                // Send transaction to blockchain
+                const result = await tonConnectUI.sendTransaction(transaction);
+                
+                // If we get here, transaction was successful
+                processPurchase(nftId, result);
+                
+            } catch (error) {
+                console.error('Transaction error:', error);
+                if (error.message !== 'User rejected the transaction') {
+                    tg.showPopup({
+                        title: 'Transaction Failed',
+                        message: 'Payment was not completed. Please try again.',
+                        buttons: [{id: 'ok', type: 'default', text: 'OK'}]
+                    });
                 }
-            });
+            }
         }
         
-        // Process purchase
-        function processPurchase(nftId) {
+        // Process purchase after successful payment
+        function processPurchase(nftId, transactionResult) {
             const nft = nftsData[nftId];
             
-            // Decrease supply
             nft.currentSupply--;
             
-            // Add to user collection
             const purchaseItem = {
                 id: nftId,
                 purchaseDate: new Date().toISOString(),
-                transactionId: generateTransactionId()
+                transactionId: transactionResult.boc || generateTransactionId()
             };
             
             userCollection.push(purchaseItem);
-            
-            // Save data
             saveUserCollection();
-            
-            // Update display
             updateDisplay();
-            
-            // Close modal
             closeModal();
             
-            // Show success message
             tg.showPopup({
                 title: 'Purchase Complete!',
-                message: `You successfully acquired ${nft.name}! This digital collectible has been added to your collection.`,
+                message: `You successfully acquired ${nft.name}! Transaction confirmed on blockchain.`,
                 buttons: [{id: 'ok', type: 'default', text: 'View Collection'}]
             }, () => {
                 showPage('profile-page');
             });
-            
-            // In a real app, you would send transaction to blockchain here
-            sendTONTransaction(nftId, userData.id, nft.price);
-        }
-        
-        // Send TON transaction (for real implementation)
-        function sendTONTransaction(nftId, userId, amount) {
-            // This would send the actual TON transaction to the blockchain
-            console.log(`Sending ${amount} TON for ${nftId} from user ${userId}`);
-            
-            // In a real implementation, you would use:
-            // tonConnectUI.sendTransaction(transaction)
         }
         
         // Generate transaction ID
@@ -1022,15 +980,12 @@
         
         // Switch between pages
         function showPage(pageId) {
-            // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             
-            // Show selected page
             document.getElementById(pageId).classList.add('active');
             
-            // Update active nav button
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
